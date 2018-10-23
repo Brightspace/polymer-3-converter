@@ -14,7 +14,8 @@ echo "*** Temporarily changing tabs to spaces for all js and html files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i -e 's/\t/    /g' $line
+	sed -i.original 's/	/    /g' $line
+	rm -f $line.original
 done
 
 echo "*** Temporarily add this script to the .gitignore file ***"
@@ -45,37 +46,42 @@ echo "*** Update .eslintrc.json files ***"
 array=(`find . -name "*.eslintrc.json" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i -e "s/polymer-config/polymer-3-config/" $line
-	sed -i -e "s/wct-config/wct-polymer-3-config/" $line
+	sed -i.original "s/polymer-config/polymer-3-config/" $line
+	sed -i.original "s/wct-config/wct-polymer-3-config/" $line
+	rm -f $line.original
 done
 
 echo "*** Update polymer.json files ***"
 array=(`find . -name "polymer.json" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i "2i\  \"npm\": true," $line
-	sed -i -e "s/2-hybrid/3/" $line
+	sed -i.original "2i\  \"npm\": true," $line
+	sed -i.original "s/2-hybrid/3/" $line
+	rm -f $line.original
 done
 
 echo "*** Replace uses of bower_components with node_modules in .scss files ***"
 array=(`find . -name "*.scss" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i -e "s/bower_components/node_modules/g" $line
+	sed -i.original "s/bower_components/node_modules/g" $line
+	rm -f $line.original
 done
 
 echo "*** Replace \\$ with just $ in .js files ***"
 array=(`find . -name "*.js" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i -e "s/[\]\\$=/\$=/g" $line
+	sed -i.original "s/[\]\\$=/\$=/g" $line
+	rm -f $line.original
 done
 
 echo "*** Fix test html files (remove extra <script> tag) ***"
 array=(`find . -path "./test/*.html" -not \( -path "./test/acceptance/*" \)`)
 for line in "${array[@]}"
 do
-	sed -i -z "s/<script>\n *<script type=\"module\">/<script type=\"module\">/" $line
+	sed -i.original -z "s/<script>\n *<script type=\"module\">/<script type=\"module\">/" $line
+	rm -f $line.original
 done
 
 echo "*** Update .eslintignore file ***"
@@ -102,15 +108,17 @@ echo "*** Add babel polyfill to test files (for IE11 test fix) ***"
 array=(`find . -path "./test/*.html" -not \( -path "./test/acceptance/*" -o -path "./test/index.html" \)`)
 for line in "${array[@]}"
 do
-	sed -i '/webcomponents-bundle.js/i\        <script src=\"..\/..\/@babel\/polyfill\/browser.js\"><\/script>' $line
+	sed -i.original '/webcomponents-bundle.js/i\        <script src=\"..\/..\/@babel\/polyfill\/browser.js\"><\/script>' $line
+	rm -f $line.original
 done
 
 echo "*** Remove postinstall from package.json ***"
-sed -i -e "/\"postinstall\":/d" package.json
+sed -i.original "/\"postinstall\":/d" package.json
 
 echo "*** Update linting in package.json ***"
-sed -i "/\"lint\":/c\    \"lint\": \"npm run lint:wc && npm run lint:js\"," package.json
-sed -i "/\"lint:html\":/c\    \"lint:js\": \"eslint . test/** demo/** --ext .js,.html\"," package.json
+sed -i.original "/\"lint\":/c\    \"lint\": \"npm run lint:wc && npm run lint:js\"," package.json
+sed -i.original "/\"lint:html\":/c\    \"lint:js\": \"eslint . test/** demo/** --ext .js,.html\"," package.json
+rm -f package.json.original
 
 echo "*** Convert d2l bower components to polymer-3 npm versions ***"
 declare -A dependencies
@@ -141,7 +149,8 @@ echo "*** Convert spaces back to tabs for the html and js files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i -e 's/    /\t/g' $line
+	sed -i.original 's/    /	/g' $line
+	rm -f $line.original
 done
 
 echo "*** Commit Polymer 3 conversion changes ***"
@@ -149,7 +158,8 @@ git add -A
 git commit -m "Polymer 3 Conversion $message"
 
 echo "*** Cleanup .gitignore file ***"
-sed -i -e "/\(bower*\|toPolymer3.sh\)/d" .gitignore
+sed -i.original "/\(bower*\|toPolymer3.sh\)/d" .gitignore
+rm -f .gitignore.original
 
 echo "*** Commit .gitignore file ***"
 git add .gitignore
