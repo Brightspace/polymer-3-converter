@@ -1,10 +1,10 @@
 # polymer-3-converter
 
-Tested on: Windows 10 - Git Bash
+**Tested on:** Windows 10 - Git Bash
 
 The purpose of this script is to help convert a hybrid Polymer 1 web component to Polymer 3, using `polymer-modulizer`.
 
-##How to convert a Hybrid web component to a Polymer 3 web component
+## How to convert a Hybrid web component to a Polymer 3 web component
 
 1. Make sure you are on the master branch and have pulled the latest changes
 2. Branch off master and create a hybrid branch
@@ -19,7 +19,7 @@ The purpose of this script is to help convert a hybrid Polymer 1 web component t
 11. Make a major release against master
 12. Make sure to update the `dependencies` array in the script with your new version, so all further conversions can use the polymer 3 version of this component.
 
-##If changes have occurred on the hybrid branch, and you need to update master/polymer 3
+## If changes have occurred on the hybrid branch, and you need to update master/polymer 3
 
 1. Go to the hybrid branch and pull the latest changes
 2. Make sure you have no uncommitted changes
