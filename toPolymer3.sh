@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if [ "$1" != "" ]; then
-    echo "*** Commit Message: $1 ***"
+	echo "*** Commit Message: $1 ***"
 	message=" - $1"
 else
-    message=""
+	message=""
 fi
 
 echo "*** Make Polymer 3 branch ***"
@@ -14,7 +14,7 @@ echo "*** Temporarily changing tabs to spaces for all js and html files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-    expand -i -t 4 $line > $line.tmp && mv $line.tmp $line
+	expand -i -t 4 $line > $line.tmp && mv $line.tmp $line
 done
 
 echo "*** Temporarily add this script to the .gitignore file ***"
@@ -61,14 +61,14 @@ echo "*** Replace uses of bower_components with node_modules in .scss files ***"
 array=(`find . -name "*.scss" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-    sed -i -e "s/bower_components/node_modules/g" $line
+	sed -i -e "s/bower_components/node_modules/g" $line
 done
 
 echo "*** Replace \\$ with just $ in .js files ***"
 array=(`find . -name "*.js" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-    sed -i -e "s/[\]\\$=/\$=/g" $line
+	sed -i -e "s/[\]\\$=/\$=/g" $line
 done
 
 echo "*** Fix test html files (remove extra <script> tag) ***"
@@ -80,10 +80,10 @@ done
 
 echo "*** Update .eslintignore file ***"
 if !(grep -q "test/acceptance/*" .eslintignore); then
-    echo "test/acceptance/*" >> .eslintignore
+	echo "test/acceptance/*" >> .eslintignore
 fi
 if !(grep -q "reports" .eslintignore); then
-    echo "reports" >> .eslintignore
+	echo "reports" >> .eslintignore
 fi
 
 echo "*** Add webcomponentsjs to package.json ***"
@@ -141,7 +141,7 @@ echo "*** Convert spaces back to tabs for the html and js files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-    unexpand -t 4 --first-only $line > $line.tmp && mv $line.tmp $line
+	unexpand -t 4 --first-only $line > $line.tmp && mv $line.tmp $line
 done
 
 echo "*** Commit Polymer 3 conversion changes ***"
