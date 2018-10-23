@@ -1,0 +1,31 @@
+--- /test/acceptance/link.test.js	2018-08-23 14:28:40.700977838 -0400
++++ /test/acceptance/link.test.js	2018-08-23 14:43:18.295223103 -0400
+@@ -28,7 +28,6 @@
+ };
+
+ var mainlineEndpoint = 'http://localhost:8081/components/d2l-link/test/acceptance/link.html';
+-var xEndpoint = 'http://localhost:8000/components/d2l-link/test/acceptance/link.html';
+ var spec = 'test/acceptance/link.gspec';
+ var shadowSpec = 'test/acceptance/link.shadow.gspec';
+
+@@ -41,20 +40,6 @@
+ 		spec: spec,
+ 		size: '1024x768',
+ 		tags: ['desktop']
+-	});
+-
+-	test.shadow('1.x-button-shadow', {
+-		endpoint: xEndpoint + '?dom=shadow',
+-		spec: shadowSpec,
+-		size: '1024x768',
+-		tags: ['desktop']
+-	});
+-
+-	test('1.x-button-shady', {
+-		endpoint: xEndpoint + '?wc-shadydom=true&wc-ce=true',
+-		spec: spec,
+-		size: '1024x768',
+-		tags: ['desktop']
+ 	});
+
+ });
