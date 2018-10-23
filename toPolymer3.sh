@@ -77,14 +77,6 @@ do
 	rm -f $line.original
 done
 
-echo "*** Fix test html files (remove extra <script> tag) ***"
-array=(`find . -path "./test/*.html" -not \( -path "./test/acceptance/*" \)`)
-for line in "${array[@]}"
-do
-	sed -i.original -z "s/<script>\n *<script type=\"module\">/<script type=\"module\">/" $line
-	rm -f $line.original
-done
-
 echo "*** Update .eslintignore file ***"
 if !(grep -q "test/acceptance/*" .eslintignore); then
 	echo "test/acceptance/*" >> .eslintignore
