@@ -55,7 +55,8 @@ echo "*** Update polymer.json files ***"
 array=(`find . -name "polymer.json" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i.original "2i\  \"npm\": true," $line
+	sed -i.original "2i\
+	\  \"npm\": true," $line
 	sed -i.original "s/2-hybrid/3/" $line
 	rm -f $line.original
 done
@@ -108,7 +109,8 @@ echo "*** Add babel polyfill to test files (for IE11 test fix) ***"
 array=(`find . -path "./test/*.html" -not \( -path "./test/acceptance/*" -o -path "./test/index.html" \)`)
 for line in "${array[@]}"
 do
-	sed -i.original '/webcomponents-bundle.js/i\        <script src=\"..\/..\/@babel\/polyfill\/browser.js\"><\/script>' $line
+	sed -i.original '/webcomponents-bundle.js/i\
+	\    <script src=\"..\/..\/@babel\/polyfill\/browser.js\"><\/script>' $line
 	rm -f $line.original
 done
 
@@ -116,8 +118,14 @@ echo "*** Remove postinstall from package.json ***"
 sed -i.original "/\"postinstall\":/d" package.json
 
 echo "*** Update linting in package.json ***"
-sed -i.original "/\"lint\":/c\    \"lint\": \"npm run lint:wc && npm run lint:js\"," package.json
-sed -i.original "/\"lint:html\":/c\    \"lint:js\": \"eslint . test/** demo/** --ext .js,.html\"," package.json
+sed -i.original "/\"lint\":/c\
+\    \"lint\": \"npm run lint:wc && npm run lint:js\"," package.json
+sed -i.original "/\"lint:html\":/c\
+\    \"lint:js\": \"eslint . test/** demo/** --ext .js,.html\"," package.json
+sed -i.original "/\"test:lint\":/c\
+\    \"test:lint\": \"npm run test:lint:wc && npm run test:lint:js\"," package.json
+sed -i.original "/\"test:lint:html\":/c\
+\    \"test:lint:js\": \"eslint . test/** demo/** --ext .js,.html\"," package.json
 rm -f package.json.original
 
 echo "*** Convert d2l bower components to polymer-3 npm versions ***"
@@ -158,7 +166,8 @@ git add -A
 git commit -m "Polymer 3 Conversion $message"
 
 echo "*** Cleanup .gitignore file ***"
-sed -i.original "/\(bower*\|toPolymer3.sh\)/d" .gitignore
+sed -i.original "/bower*/d" .gitignore
+sed -i.original "/toPolymer3.sh/d" .gitignore
 rm -f .gitignore.original
 
 echo "*** Commit .gitignore file ***"
