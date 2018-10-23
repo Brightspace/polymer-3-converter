@@ -14,7 +14,7 @@ echo "*** Temporarily changing tabs to spaces for all js and html files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	expand -i -t 4 $line > $line.tmp && mv $line.tmp $line
+	sed -i -e 's/\t/    /g' $line
 done
 
 echo "*** Temporarily add this script to the .gitignore file ***"
@@ -141,7 +141,7 @@ echo "*** Convert spaces back to tabs for the html and js files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	unexpand -t 4 --first-only $line > $line.tmp && mv $line.tmp $line
+	sed -i -e 's/    /\t/g' $line
 done
 
 echo "*** Commit Polymer 3 conversion changes ***"
