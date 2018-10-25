@@ -32,7 +32,10 @@ npm install -g bower
 bower install
 
 echo "*** Remove node_modules folder (Windows issue, otherwise you get a heap stack error) ***"
-rm -r node_modules
+rm -rf node_modules
+
+echo "*** Remove package-lock.json file ***"
+rm -f package-lock.json
 
 echo "*** Run the modulizer ***"
 npm install -g polymer-modulizer
