@@ -140,13 +140,15 @@ rm -f package.json.original
 
 echo "*** Convert d2l bower components to polymer-3 npm versions ***"
 declare -A dependencies
-dependencies["d2l-colors"]="git+https://github.com/BrightspaceUI/colors.git#polymer-3"
-dependencies["d2l-typography"]="git+https://github.com/BrightspaceUI/typography.git#polymer-3"
-dependencies["d2l-offscreen"]="git+https://github.com/BrightspaceUI/offscreen.git#polymer-3"
-dependencies["d2l-polymer-behaviors"]="git+https://github.com/Brightspace/d2l-polymer-behaviors-ui.git#polymer-3.x"
-dependencies["d2l-icons"]="git+https://github.com/BrightspaceUI/icons.git#polymer-3"
-dependencies["d2l-button"]="git+https://github.com/BrightspaceUI/button.git#polymer-3"
-dependencies["d2l-link"]="git+https://github.com/BrightspaceUI/link.git#polymer-3"
+dependencies=(
+["d2l-colors"]="git+https://github.com/BrightspaceUI/colors.git#polymer-3"
+["d2l-typography"]="git+https://github.com/BrightspaceUI/typography.git#polymer-3"
+["d2l-offscreen"]="git+https://github.com/BrightspaceUI/offscreen.git#polymer-3"
+["d2l-polymer-behaviors"]="git+https://github.com/Brightspace/d2l-polymer-behaviors-ui.git#polymer-3.x"
+["d2l-icons"]="git+https://github.com/BrightspaceUI/icons.git#polymer-3"
+["d2l-button"]="git+https://github.com/BrightspaceUI/button.git#polymer-3"
+["d2l-link"]="git+https://github.com/BrightspaceUI/link.git#polymer-3"
+)
 
 array=(`grep -i "^    \"d2l-.*\":" bower.json | cut -d"\"" -f2`)
 for line in "${array[@]}"
