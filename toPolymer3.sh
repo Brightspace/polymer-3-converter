@@ -181,3 +181,6 @@ git reset -- toPolymer3.sh
 git reset -- README.md
 git checkout README.md
 git commit -m "Polymer 3 Conversion $message"
+
+echo "*** Re-install npm dependencies ***"
+npm i
