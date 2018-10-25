@@ -176,4 +176,6 @@ echo "*** Squash commits for better review experience (no merge conflicts) ***"
 git reset --soft master
 git add -A
 git reset -- toPolymer3.sh
+git reset -- README.md
+git checkout README.md
 git commit -m "Polymer 3 Conversion $message"
