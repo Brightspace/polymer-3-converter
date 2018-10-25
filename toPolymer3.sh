@@ -1,4 +1,3 @@
-#!/bin/bash
 
 if [ "$1" != "" ]; then
 	echo "*** Commit Message: $1 ***"
