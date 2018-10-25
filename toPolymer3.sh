@@ -43,7 +43,7 @@ rm -f package-lock.json
 
 echo "*** Run the modulizer ***"
 npm install -g polymer-modulizer
-modulizer --out .
+echo | modulizer --out .
 
 echo "*** Discard the travis file changes (they are not needed) ***"
 git checkout .travis.yml
