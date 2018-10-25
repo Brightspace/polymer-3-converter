@@ -124,11 +124,17 @@ sed -i.original '/\"lint\":/c\
 sed -i.original '/\"lint:html\":/c\
 \    \"lint:js\": \"eslint . test/** demo/** --ext .js,.html\",
 ' package.json
+sed -i.original '/\"lint:wc\":/c\
+\    \"lint:wc\": \"polymer lint\",
+' package.json
 sed -i.original '/\"test:lint\":/c\
 \    \"test:lint\": \"npm run test:lint:wc && npm run test:lint:js\",
 ' package.json
 sed -i.original '/\"test:lint:html\":/c\
 \    \"test:lint:js\": \"eslint . test/** demo/** --ext .js,.html\",
+' package.json
+sed -i.original '/\"test:lint:wc\":/c\
+\    \"test:lint:wc\": \"polymer lint\",
 ' package.json
 rm -f package.json.original
 
