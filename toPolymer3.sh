@@ -151,15 +151,25 @@ dependencies=(
 )
 
 array=(`grep -i "^    \"d2l-.*\":" bower.json | cut -d"\"" -f2`)
+depError=false
+errorComponents=""
 for line in "${array[@]}"
 do
 	echo $line
 	if [ ${dependencies[$line]} ]
 	then
 		echo ${dependencies[$line]}
-		npm i --save --package-lock-only --no-package-lock ${dependencies[$line]}
+		npm i --save --package-lock-only --no-package-lock ${dependencies[$line]} || { errorComponents="$errorComponents * $line"; depError=true; } 
 	fi
 done
+if $depError
+then
+	echo ""
+	echo "*** FAILURE ***"
+	echo "The following components have not been migrated to Polymer 3 yet and should be done first:"
+	echo "$errorComponents"
+	exit 1;
+fi
 
 echo "*** Remove bower_components directory and bower.json ***"
 rm -rf bower_components
