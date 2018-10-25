@@ -4,6 +4,8 @@
 
 The purpose of this script is to help convert a hybrid Polymer 1 web component to Polymer 3, using `polymer-modulizer`.
 
+Mac users should check and update their version of Bash (4.x requried).  See [updating-bash](updating-bash.md).
+
 ## How to convert a Hybrid web component to a Polymer 3 web component
 
 1. Make sure you are on the master branch and have pulled the latest changes
