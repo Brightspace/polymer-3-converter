@@ -9,6 +9,10 @@ fi
 echo "*** Make Polymer 3 branch ***"
 git checkout -b polymer-3-`date +%Y-%m-%d-%H%M%S` master
 
+echo "*** Remove index.html and all-imports.html ***"
+rm -f index.html
+rm -f all-imports.html
+
 echo "*** Temporarily changing tabs to spaces for all js and html files ***"
 array=(`find . \( -name "*.html" -o -name "*.js" \) -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
@@ -22,7 +26,7 @@ echo "toPolymer3.sh" >> ./.gitignore
 
 echo "*** Committing this change as the modulizer needs a clean repo ***"
 git add -u
-git commit -m "Temporarily change tabs to spaces for modulizer"
+git commit -m "Cleanup files and temporarily change tabs to spaces for modulizer"
 
 echo "*** Run bower install ***"
 rm -rf bower_components
