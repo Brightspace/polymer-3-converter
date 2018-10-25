@@ -9,7 +9,7 @@ Mac users should check and update their version of Bash (4.x requried).  See [up
 ## How to convert a Hybrid web component to a Polymer 3 web component
 
 1. Make sure you are on the master branch and have pulled the latest changes
-2. Branch off master and create a hybrid branch
+2. Branch off master and create a `hybrid` branch
 3. Switch back to the master branch
 4. Make sure you have no uncommitted changes
 5. Add the `toPolymer3.sh` file to the root of the component repo you are converting
