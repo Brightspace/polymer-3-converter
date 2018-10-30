@@ -30,3 +30,7 @@ Mac users should check and update their version of Bash (4.x requried).  See [up
 5. Apply any special repo patches (found in the `/patches` folder of this repo) with `git apply <patch_name>`
 6. Put up the PR against master
 7. If all is good (you see the same changes as made to the hybrid branch), merge and make a release!
+
+## Testing
+
+See: [Polymer 3 Test Plan](polymer-3-testplan.md).
