@@ -39,9 +39,6 @@ bower install
 echo "*** Remove node_modules folder (Windows issue, otherwise you get a heap stack error) ***"
 rm -rf node_modules
 
-echo "*** Remove package-lock.json file ***"
-rm -f package-lock.json
-
 echo "*** Run the modulizer ***"
 npm install -g polymer-modulizer
 curl https://raw.githubusercontent.com/Brightspace/polymer-3-converter/master/dependency-map.txt -o dependency-map.txt
@@ -175,6 +172,9 @@ git reset -- dependency-map.txt
 git reset -- README.md
 git checkout README.md
 git commit -m "Polymer 3 Conversion $message"
+
+echo "*** Remove package-lock.json file ***"
+rm -f package-lock.json
 
 echo "*** Re-install npm dependencies ***"
 npm i
