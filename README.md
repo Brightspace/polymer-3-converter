@@ -1,10 +1,10 @@
 # polymer-3-converter
 
-**Tested on:** Windows 10 - Git Bash
+**Tested on:**
+- Windows 10 - Git Bash
+- MacOS Sierra (10.12.6) - Bash
 
 The purpose of this script is to help convert a hybrid Polymer 1 web component to Polymer 3, using `polymer-modulizer`.
-
-Mac users should check and update their version of Bash (4.x requried).  See [updating-bash](updating-bash.md).
 
 ## How to convert a Hybrid web component to a Polymer 3 web component
 
@@ -19,7 +19,7 @@ Mac users should check and update their version of Bash (4.x requried).  See [up
 9. If there are specific repo issues you need to make after running the script (for example, special galen changes), you can save those as a patch and add it to the `/patches` folder here.
 10. Once all is good, merge!
 11. Make a major release against master
-12. Make sure to update the `dependencies` array in the script with your new version, so all further conversions can use the polymer 3 version of this component.
+12. Make sure to check the `dependency-map.txt` file in the repo has the correct major version, so all further conversions can use the polymer 3 version of this component.
 
 ## If changes have occurred on the hybrid branch, and you need to update master/polymer 3
 
