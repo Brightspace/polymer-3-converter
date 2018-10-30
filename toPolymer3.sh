@@ -21,8 +21,9 @@ do
 	rm -f $line.original
 done
 
-echo "*** Temporarily add this script to the .gitignore file ***"
+echo "*** Temporarily add this script and dependency map to the .gitignore file ***"
 echo "toPolymer3.sh" >> ./.gitignore
+echo "dependency-map.txt" >> ./.gitignore
 
 echo "*** Committing this change as the modulizer needs a clean repo ***"
 git add -u
@@ -43,7 +44,9 @@ rm -f package-lock.json
 
 echo "*** Run the modulizer ***"
 npm install -g polymer-modulizer
-echo | modulizer --out .
+curl https://raw.githubusercontent.com/Brightspace/polymer-3-converter/master/dependency-map.txt -o dependency-map.txt
+echo | modulizer --out . --dependency-mapping $(cat dependency-map.txt | tr '\
+' ' ' | tr -d '\r')
 
 echo "*** Discard the travis file changes (they are not needed) ***"
 git checkout .travis.yml
@@ -138,39 +141,6 @@ sed -i.original '/\"test:lint:wc\":/c\
 ' package.json
 rm -f package.json.original
 
-echo "*** Convert d2l bower components to polymer-3 npm versions ***"
-declare -A dependencies
-dependencies=(
-["d2l-colors"]="git+https://github.com/BrightspaceUI/colors.git#polymer-3"
-["d2l-typography"]="git+https://github.com/BrightspaceUI/typography.git#polymer-3"
-["d2l-offscreen"]="git+https://github.com/BrightspaceUI/offscreen.git#polymer-3"
-["d2l-polymer-behaviors"]="git+https://github.com/Brightspace/d2l-polymer-behaviors-ui.git#polymer-3.x"
-["d2l-icons"]="git+https://github.com/BrightspaceUI/icons.git#polymer-3"
-["d2l-button"]="git+https://github.com/BrightspaceUI/button.git#polymer-3"
-["d2l-link"]="git+https://github.com/BrightspaceUI/link.git#polymer-3"
-)
-
-array=(`grep -i "^    \"d2l-.*\":" bower.json | cut -d"\"" -f2`)
-depError=false
-errorComponents=""
-for line in "${array[@]}"
-do
-	echo $line
-	if [ ${dependencies[$line]} ]
-	then
-		echo ${dependencies[$line]}
-		npm i --save --package-lock-only --no-package-lock ${dependencies[$line]} || { errorComponents="$errorComponents * $line"; depError=true; } 
-	fi
-done
-if $depError
-then
-	echo ""
-	echo "*** FAILURE ***"
-	echo "The following components have not been migrated to Polymer 3 yet and should be done first:"
-	echo "$errorComponents"
-	exit 1;
-fi
-
 echo "*** Remove bower_components directory and bower.json ***"
 rm -rf bower_components
 rm -f bower.json
@@ -190,6 +160,7 @@ git commit -m "Polymer 3 Conversion $message"
 echo "*** Cleanup .gitignore file ***"
 sed -i.original "/bower*/d" .gitignore
 sed -i.original "/toPolymer3.sh/d" .gitignore
+sed -i.original "/dependency-map.txt/d" .gitignore
 rm -f .gitignore.original
 
 echo "*** Commit .gitignore file ***"
@@ -200,6 +171,7 @@ echo "*** Squash commits for better review experience (no merge conflicts) ***"
 git reset --soft master
 git add -A
 git reset -- toPolymer3.sh
+git reset -- dependency-map.txt
 git reset -- README.md
 git checkout README.md
 git commit -m "Polymer 3 Conversion $message"
