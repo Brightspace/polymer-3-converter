@@ -1,4 +1,4 @@
-d2l-colors,d2l-colors,git+https://github.com/BrightspaceUI/colors.git#polymer-3
+d2l-colors,d2l-colors,git+https://github.com/BrightspaceUI/colors.git#^4.0.0
 d2l-typography,d2l-typography,git+https://github.com/BrightspaceUI/typography.git#polymer-3
 d2l-offscreen,d2l-offscreen,git+https://github.com/BrightspaceUI/offscreen.git#polymer-3
 d2l-polymer-behaviors,d2l-polymer-behaviors,git+https://github.com/Brightspace/d2l-polymer-behaviors-ui.git#polymer-3.x
