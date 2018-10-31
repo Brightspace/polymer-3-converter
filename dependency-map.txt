@@ -5,3 +5,4 @@ d2l-polymer-behaviors,d2l-polymer-behaviors,git+https://github.com/Brightspace/d
 d2l-icons,d2l-icons,git+https://github.com/BrightspaceUI/icons.git#polymer-3
 d2l-button,d2l-button,git+https://github.com/BrightspaceUI/button.git#polymer-3
 d2l-link,d2l-link,git+https://github.com/BrightspaceUI/link.git#polymer-3
+d2l-fastdom-import,fastdom,^1.0.8
