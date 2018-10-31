@@ -65,6 +65,7 @@ do
 \  \"npm\": true,
 ' $line
 	sed -i.original "s/2-hybrid/3/" $line
+	sed -i.original "s/polymer-2/polymer-3/" $line
 	rm -f $line.original
 done
 
