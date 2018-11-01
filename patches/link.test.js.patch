@@ -1,5 +1,5 @@
---- /test/acceptance/link.test.js	2018-08-23 14:28:40.700977838 -0400
-+++ /test/acceptance/link.test.js	2018-08-23 14:43:18.295223103 -0400
+--- /test/acceptance/link.test.js
++++ /test/acceptance/link.test.js
 @@ -28,7 +28,6 @@
  };
 
