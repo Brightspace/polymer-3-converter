@@ -7,7 +7,7 @@ else
 fi
 
 echo "*** Make Polymer 3 branch ***"
-git checkout -b polymer-3-`date +%Y-%m-%d-%H%M%S` master
+git checkout -b polymer-3-`date +%Y-%m-%d-%H%M%S`
 
 echo "*** Remove index.html and all-imports.html ***"
 rm -f index.html
