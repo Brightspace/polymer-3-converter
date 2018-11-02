@@ -6,6 +6,16 @@
 
 The purpose of this script is to help convert a hybrid Polymer 1 web component to Polymer 3, using `polymer-modulizer`.
 
+## Before Converting
+
+In order to keep the script simple, it assumes some things about how the repo is setup.  It's easiest to make these changes in master first, before making the `hybrid` branch and running the converter.  Some things to look for:
+- It looks for the following set of linting commands to update, and you should use one of these naming conventions:
+  - `lint`, `lint:html` and `lint:wc`
+  - `test:lint`, `test:lint:html` and `test:lint:wc`
+- You'll want to have `strip-whitespace` in the `template` to get a consistent output style from the modulizer
+
+You should also make sure the components work in Shadow DOM _before_ converting. See: [Polymer 3 Test Plan](polymer-3-testplan.md).
+
 ## How to convert a Hybrid web component to a Polymer 3 web component
 
 1. Make sure you are on the master branch and have pulled the latest changes
