@@ -8,4 +8,5 @@ d2l-loading-spinner,d2l-loading-spinner,BrightspaceUI/loading-spinner#semver:^7.
 d2l-localize-behavior,d2l-localize-behavior,BrightspaceUI/localize-behavior#semver:^2.0.0
 d2l-offscreen,d2l-offscreen,git+https://github.com/BrightspaceUI/offscreen.git#polymer-3
 d2l-polymer-behaviors,d2l-polymer-behaviors,git+https://github.com/Brightspace/d2l-polymer-behaviors-ui.git#polymer-3.x
+d2l-resize-observer-polyfill-import,resize-observer-polyfill,^1.5.0
 d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7.0.0
