@@ -1,5 +1,5 @@
---- modulizer_workspace/icons/cli/iconset-builder.js
-+++ modulizer_workspace/icons/cli/iconset-builder.js
+--- cli/iconset-builder.js
++++ cli/iconset-builder.js
 @@ -6,10 +6,6 @@ var path = require('path'),
  	fs = require('fs');
 
