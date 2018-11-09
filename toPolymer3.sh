@@ -89,7 +89,7 @@ echo "*** Fix import { Element } in .js files ***"
 array=(`find . -name "*.js" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -i.original "s,import { Element } from '@polymer/polymer/polymer-element.js';,import { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';,g" $line
+	sed -i.original "s,import { Element } from '@polymer/polymer/polymer-element.js';,// WORKAROUND: polymer-modulizer grabs non-existing Element export from polymer-element\n// TODO: Remove Element reference\nimport { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';,g" $line
 	rm -f $line.original
 done
 
