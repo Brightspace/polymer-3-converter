@@ -85,6 +85,14 @@ do
 	rm -f $line.original
 done
 
+echo "*** Fix import { Element } in .js files ***"
+array=(`find . -name "*.js" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
+for line in "${array[@]}"
+do
+	sed -i.original "s,import { Element } from '@polymer/polymer/polymer-element.js';,import { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';,g" $line
+	rm -f $line.original
+done
+
 echo "*** Update .eslintignore file ***"
 if !(grep -q "test/acceptance/*" .eslintignore); then
 	echo "test/acceptance/*" >> .eslintignore
