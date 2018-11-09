@@ -1,0 +1,154 @@
+diff --git a/d2l-focusable-behavior.js b/d2l-focusable-behavior.js
+index 45b8dc5..5156a3d 100644
+--- a/d2l-focusable-behavior.js
++++ b/d2l-focusable-behavior.js
+@@ -1,76 +1,18 @@
+ import '../@polymer/polymer/polymer-legacy.js';
+ import { dom } from '../@polymer/polymer/lib/legacy/polymer.dom.js';
+-import { Element } from '../@polymer/polymer/polymer-element.js';
+-import { useShadow } from '../@polymer/polymer/lib/utils/settings.js';
+ window.D2L = window.D2L || {};
+ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+ 
+ /** @polymerBehavior */
+ D2L.PolymerBehaviors.FocusableBehavior = {
+ 
+-	properties: {
+-		/**
+-		 * Fired when the focusable receives focus.
+-		 *
+-		 * @event focus
+-		*/
+-
+-		/**
+-		 * Fired when the focusable loses focus.
+-		 *
+-		 * @event blur
+-		*/
+-	},
+-
+-	ready: function() {
+-		this._focusHandler = this._handleFocus.bind(this);
+-		this._blurHandler = this._handleBlur.bind(this);
+-	},
+-
+-	attached: function() {
+-		var elem = dom(this.root).querySelector('.d2l-focusable');
+-		if (!elem) return;
+-		elem.addEventListener('focus', this._focusHandler);
+-		elem.addEventListener('blur', this._blurHandler);
+-	},
+-
+-	detached: function() {
+-		var elem = dom(this.root).querySelector('.d2l-focusable');
+-		if (!elem) return;
+-		elem.removeEventListener('focus', this._focusHandler);
+-		elem.removeEventListener('blur', this._blurHandler);
+-	},
+-
+ 	/**
+ 	 * Applies focus to descendent with `d2l-focusable` class.
+ 	 */
+ 	focus: function() {
+-		// Note: focus event will not be triggered with using Polymer 1 + shady.  If necessary,
+-		// we can raise a custom event. For now, keeping this bare-bones.
+ 		var elem = dom(this.root).querySelector('.d2l-focusable');
+ 		if (!elem) return;
+ 		elem.focus();
+-	},
+-
+-	_handleFocus: function() {
+-		if (!Element && !useShadow) {
+-			// This custom focus event is only needed for Polymer 1. We should
+-			// be able to remove this event once we move to Polymer 2.
+-			this.dispatchEvent(new CustomEvent(
+-				'focus',
+-				{bubbles: false}
+-			));
+-		}
+-	},
+-
+-	_handleBlur: function() {
+-		if (!Element && !useShadow) {
+-			// This custom focus event is only needed for Polymer 1. We should
+-			// be able to remove this event once we move to Polymer 2.
+-			this.dispatchEvent(new CustomEvent(
+-				'blur',
+-				{bubbles: false}
+-			));
+-		}
+ 	}
++
+ };
+diff --git a/d2l-gestures-swipe.html b/d2l-gestures-swipe.html
+deleted file mode 100644
+index adf2865..0000000
+--- a/d2l-gestures-swipe.html
++++ /dev/null
+@@ -1 +0,0 @@
+-<script src="./d2l-gestures-swipe.js"></script>
+diff --git a/test/dom.html b/test/dom.html
+index 5a79119..82327c9 100644
+--- a/test/dom.html
++++ b/test/dom.html
+@@ -45,19 +45,15 @@
+ 		<script type="module">
+ import '../d2l-dom.js';
+ import './dom-components.js';
+-import { useShadow } from '../../@polymer/polymer/lib/utils/settings.js';
+-import { Element } from '../../@polymer/polymer/polymer-element.js';
+ import { dom as dom$0 } from '../../@polymer/polymer/lib/legacy/polymer.dom.js';
+ describe('d2l-dom', function() {
+ 
+ 	var simpleFixture, wcFixture, mixedFixture;
+-	var shadow;
+ 
+ 	beforeEach(function() {
+ 		simpleFixture = fixture('simpleFixture');
+ 		wcFixture = fixture('wcFixture');
+ 		mixedFixture = fixture('mixedFixture');
+-		shadow = undefined.dom === 'shadow' || useShadow;
+ 	});
+ 
+ 	describe('findComposedAncestor', function() {
+@@ -113,10 +109,8 @@ describe('d2l-dom', function() {
+ 		it('returns distributed child elements for insertion point', function() {
+ 			var container = wcFixture.getContainer();
+ 			var children = D2L.Dom.getComposedChildren(container);
+-			if (shadow || Element) {
+-				expect(children[0].tagName).to.be.oneOf(['SLOT', 'CONTENT']);
+-				children = D2L.Dom.getComposedChildren(children[0]);
+-			}
++			expect(children[0].tagName).to.be.oneOf(['SLOT', 'CONTENT']);
++			children = D2L.Dom.getComposedChildren(children[0]);
+ 			expect(children.length).to.equal(2);
+ 			expect(children[0]).to.equal(wcFixture.querySelector('#light1'));
+ 			expect(children[1]).to.equal(wcFixture.querySelector('#light2'));
+@@ -132,23 +126,13 @@ describe('d2l-dom', function() {
+ 		});
+ 
+ 		it('returns insertion point as parent of distributed node', function() {
+-			if (shadow || Element) {
+-				expect(D2L.Dom.getComposedParent(wcFixture.querySelector('#light1')))
+-					.to.equal(dom$0(wcFixture.querySelector('#light1')).getDestinationInsertionPoints()[0]);
+-			} else {
+-				expect(D2L.Dom.getComposedParent(wcFixture.querySelector('#light1')))
+-					.to.equal(wcFixture.getContainer());
+-			}
++			expect(D2L.Dom.getComposedParent(wcFixture.querySelector('#light1')))
++				.to.equal(dom$0(wcFixture.querySelector('#light1')).getDestinationInsertionPoints()[0]);
+ 		});
+ 
+ 		it('returns host as parent of shadow-root', function() {
+-			if (shadow || Element) {
+-				expect(D2L.Dom.getComposedParent(wcFixture.root))
+-					.to.equal(wcFixture);
+-			} else {
+-				expect(D2L.Dom.getComposedParent(wcFixture.getContainer()))
+-					.to.equal(wcFixture);
+-			}
++			expect(D2L.Dom.getComposedParent(wcFixture.root))
++				.to.equal(wcFixture);
+ 		});
+ 
+ 		it('returns null as parent of detached element', function() {
