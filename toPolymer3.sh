@@ -85,6 +85,19 @@ do
 	rm -f $line.original
 done
 
+echo "*** Replace <s-html> with htmlLiteral in .js files. Rewrite CSS rules to not point directly to s-html element before conversion ***"
+array=(`grep -lR --include="*.js" "<s-html"`)
+for line in "${array[@]}"
+do
+	# Add htmlLiteral to imports
+	sed -i.original -r "s,import \{(.*)( ?)\} from '@polymer/polymer/lib/utils/html-tag.js',import {\1\, htmlLiteral } from '@polymer/polymer/lib/utils/html-tag.js'," $line
+	# Remove s-html import
+	sed -i -r "/import 's-html/s-html.js';/d" $line
+	# Replace s-html with htmlLiteral
+	sed -i -r 's,<s-html(.*) html(\$?)=("?)(.*)(\3)></s-html>,<div\1>${htmlLiteral`\4`}</div>,g' $line
+	rm -f $line.original
+done
+
 echo "*** Update .eslintignore file ***"
 if !(grep -q "test/acceptance/*" .eslintignore); then
 	echo "test/acceptance/*" >> .eslintignore
