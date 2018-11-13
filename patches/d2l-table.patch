@@ -10,6 +10,49 @@ index 47a863e..0e9282e 100644
  import './d2l-td.js';
  import { Polymer } from '../@polymer/polymer/lib/legacy/polymer-fn.js';
  import { dom } from '../@polymer/polymer/lib/legacy/polymer.dom.js';
+diff --git a/demo/simple.html b/demo/simple.html
+index 0badda8..36d3deb 100644
+--- a/demo/simple.html
++++ b/demo/simple.html
+@@ -65,10 +65,7 @@ document.body.appendChild($_documentContainer.content);
+ 	</head>
+ 
+ 	<body class="d2l-typography">
+-		<script type="module">
+-const $_documentContainer = document.createElement('template');
+-
+-$_documentContainer.innerHTML = `<div class="container">
++		<div class="container">
+ 			<div class="screenshots screenshot-wide">
+ 				<d2l-table-wrapper><table class="d2l-table">
+ 					<thead>
+@@ -502,10 +499,7 @@ $_documentContainer.innerHTML = `<div class="container">
+ 					</d2l-tbody>
+ 				</d2l-table>
+ 			</div>
+-		</div>`;
+-
+-document.body.appendChild($_documentContainer.content);
+-</script>
++		</div>
+ 		<script type="module">
+ import '../d2l-table.js';
+ import './reset.js';
+@@ -584,12 +578,10 @@ function createD2LTable() {
+ 
+ }
+ 
+-window.addEventListener('WebComponentsReady', function() {
+-	setTimeout(function() {
++setTimeout(function() {
+ 	createTable();
+ 	createD2LTable();
+-	}, 0);
+-});
++}, 0);
+ </script>
+ 	</body>
+ </html>
 diff --git a/table.test.js b/table.test.js
 index 1a7150b..2b0f0b9 100644
 --- a/table.test.js
