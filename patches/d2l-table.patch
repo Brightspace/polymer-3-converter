@@ -11,17 +11,19 @@ index 47a863e..0e9282e 100644
  import { Polymer } from '../@polymer/polymer/lib/legacy/polymer-fn.js';
  import { dom } from '../@polymer/polymer/lib/legacy/polymer.dom.js';
 diff --git a/demo/simple.html b/demo/simple.html
-index 0badda8..36d3deb 100644
+index 0badda8..103ac7c 100644
 --- a/demo/simple.html
 +++ b/demo/simple.html
-@@ -65,10 +65,7 @@ document.body.appendChild($_documentContainer.content);
+@@ -64,11 +64,8 @@ document.body.appendChild($_documentContainer.content);
+ </script>
  	</head>
  
- 	<body class="d2l-typography">
+-	<body class="d2l-typography">
 -		<script type="module">
 -const $_documentContainer = document.createElement('template');
 -
 -$_documentContainer.innerHTML = `<div class="container">
++	<body class="d2l-typography" unresolved>
 +		<div class="container">
  			<div class="screenshots screenshot-wide">
  				<d2l-table-wrapper><table class="d2l-table">
