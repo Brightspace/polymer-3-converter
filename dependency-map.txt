@@ -12,3 +12,4 @@ d2l-polymer-behaviors,d2l-polymer-behaviors,Brightspace/d2l-polymer-behaviors-ui
 d2l-resize-observer-polyfill-import,resize-observer-polyfill,^1.5.0
 d2l-status-indicator,d2l-status-indicator,BrightspaceUI/status-indicator#semver:^3.0.0
 d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7.0.0
+stickyfill,stickyfilljs,^2.1.0
