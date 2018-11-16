@@ -1,19 +1,35 @@
---- /test/acceptance/link.test.js
-+++ /test/acceptance/link.test.js
-@@ -28,7 +28,6 @@
+diff --git a/test/acceptance/link.shadow.gspec b/test/acceptance/link.shadow.gspec
+deleted file mode 100644
+index 4f305df..0000000
+--- a/test/acceptance/link.shadow.gspec
++++ /dev/null
+@@ -1,8 +0,0 @@
+-@objects
+-	custom-element-standard			#custom-element-standard /deep/ a
+-	custom-element-standard-focus	#custom-element-standard-focus /deep/ a
+-	custom-element-main				#custom-element-main /deep/ a
+-	custom-element-small			#custom-element-small /deep/ a
+-	custom-element-main-small		#custom-element-main-small /deep/ a
+-
+-@import link.common.gspec
+diff --git a/test/acceptance/link.test.js b/test/acceptance/link.test.js
+index e0cd23d..9734616 100644
+--- a/test/acceptance/link.test.js
++++ b/test/acceptance/link.test.js
+@@ -28,9 +28,7 @@ var browsers = {
  };
-
+ 
  var mainlineEndpoint = 'http://localhost:8081/components/d2l-link/test/acceptance/link.html';
 -var xEndpoint = 'http://localhost:8000/components/d2l-link/test/acceptance/link.html';
  var spec = 'test/acceptance/link.gspec';
- var shadowSpec = 'test/acceptance/link.shadow.gspec';
-
-@@ -41,20 +40,6 @@
- 		spec: spec,
- 		size: '1024x768',
+-var shadowSpec = 'test/acceptance/link.shadow.gspec';
+ 
+ polymerTests(browsers, function(test) {
+ 
+@@ -43,18 +41,4 @@ polymerTests(browsers, function(test) {
  		tags: ['desktop']
--	});
--
+ 	});
+ 
 -	test.shadow('1.x-button-shadow', {
 -		endpoint: xEndpoint + '?dom=shadow',
 -		spec: shadowSpec,
@@ -26,6 +42,6 @@
 -		spec: spec,
 -		size: '1024x768',
 -		tags: ['desktop']
- 	});
-
+-	});
+-
  });
