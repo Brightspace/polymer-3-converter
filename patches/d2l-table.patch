@@ -1,15 +1,3 @@
-diff --git a/d2l-tspan.js b/d2l-tspan.js
-index 47a863e..0e9282e 100644
---- a/d2l-tspan.js
-+++ b/d2l-tspan.js
-@@ -1,6 +1,6 @@
- import '../@polymer/polymer/polymer-legacy.js';
- import './d2l-table-observer-behavior.js';
--import '../resize-observer-polyfill/resize-observer.js';
-+import ResizeObserver from '../resize-observer-polyfill/dist/ResizeObserver.es.js';
- import './d2l-td.js';
- import { Polymer } from '../@polymer/polymer/lib/legacy/polymer-fn.js';
- import { dom } from '../@polymer/polymer/lib/legacy/polymer.dom.js';
 diff --git a/demo/simple.html b/demo/simple.html
 index 0badda8..103ac7c 100644
 --- a/demo/simple.html
@@ -17,7 +5,7 @@ index 0badda8..103ac7c 100644
 @@ -64,11 +64,8 @@ document.body.appendChild($_documentContainer.content);
  </script>
  	</head>
- 
+
 -	<body class="d2l-typography">
 -		<script type="module">
 -const $_documentContainer = document.createElement('template');
@@ -41,9 +29,9 @@ index 0badda8..103ac7c 100644
  import '../d2l-table.js';
  import './reset.js';
 @@ -584,12 +578,10 @@ function createD2LTable() {
- 
+
  }
- 
+
 -window.addEventListener('WebComponentsReady', function() {
 -	setTimeout(function() {
 +setTimeout(function() {
@@ -62,7 +50,7 @@ index 1a7150b..2b0f0b9 100644
 @@ -44,26 +44,8 @@ var cssBrowsers = {
  	cssSafariMac: browsers.safariMac
  };
- 
+
 -var xBrowsers = {
 -	xChrome: browsers.chrome,
 -	xChromeWindows: browsers.chromeWindows,
@@ -85,7 +73,7 @@ index 1a7150b..2b0f0b9 100644
 -var demoEndpoint = 'http://localhost:8081/components/d2l-table/demo/index.html';
 +var mainlineEndpoint = 'http://localhost:8080/components/d2l-table/demo/simple.html';
 +var demoEndpoint = 'http://localhost:8080/components/d2l-table/demo/index.html';
- 
+
  polymerTests(browsers, function(test) {
  	test('d2l-table', {
 @@ -133,76 +115,3 @@ polymerTests(cssBrowsers, function(test, ctx) {
