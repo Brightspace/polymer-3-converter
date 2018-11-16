@@ -1,0 +1,155 @@
+diff --git a/demo/simple.html b/demo/simple.html
+index 0badda8..103ac7c 100644
+--- a/demo/simple.html
++++ b/demo/simple.html
+@@ -64,11 +64,8 @@ document.body.appendChild($_documentContainer.content);
+ </script>
+ 	</head>
+
+-	<body class="d2l-typography">
+-		<script type="module">
+-const $_documentContainer = document.createElement('template');
+-
+-$_documentContainer.innerHTML = `<div class="container">
++	<body class="d2l-typography" unresolved>
++		<div class="container">
+ 			<div class="screenshots screenshot-wide">
+ 				<d2l-table-wrapper><table class="d2l-table">
+ 					<thead>
+@@ -502,10 +499,7 @@ $_documentContainer.innerHTML = `<div class="container">
+ 					</d2l-tbody>
+ 				</d2l-table>
+ 			</div>
+-		</div>`;
+-
+-document.body.appendChild($_documentContainer.content);
+-</script>
++		</div>
+ 		<script type="module">
+ import '../d2l-table.js';
+ import './reset.js';
+@@ -584,12 +578,10 @@ function createD2LTable() {
+
+ }
+
+-window.addEventListener('WebComponentsReady', function() {
+-	setTimeout(function() {
++setTimeout(function() {
+ 	createTable();
+ 	createD2LTable();
+-	}, 0);
+-});
++}, 0);
+ </script>
+ 	</body>
+ </html>
+diff --git a/table.test.js b/table.test.js
+index 1a7150b..2b0f0b9 100644
+--- a/table.test.js
++++ b/table.test.js
+@@ -44,26 +44,8 @@ var cssBrowsers = {
+ 	cssSafariMac: browsers.safariMac
+ };
+
+-var xBrowsers = {
+-	xChrome: browsers.chrome,
+-	xChromeWindows: browsers.chromeWindows,
+-	xie11Windows: browsers.ie11Windows,
+-	xedgeWindows: browsers.edgeWindows,
+-	xChromeMac: browsers.chromeMac,
+-	xSafariMac: browsers.safariMac
+-};
+-
+-var xCssBrowsers = {
+-	xCssChrome: browsers.chrome,
+-	xCssChromeWindows: browsers.chromeWindows,
+-	xCssedgeWindows: browsers.edgeWindows,
+-	xCssChromeMac: browsers.chromeMac,
+-	xCssSafariMac: browsers.safariMac
+-};
+-
+-var mainlineEndpoint = 'http://localhost:8081/components/d2l-table/demo/simple.html';
+-var xEndpoint = 'http://localhost:8000/components/d2l-table/demo/simple.html';
+-var demoEndpoint = 'http://localhost:8081/components/d2l-table/demo/index.html';
++var mainlineEndpoint = 'http://localhost:8080/components/d2l-table/demo/simple.html';
++var demoEndpoint = 'http://localhost:8080/components/d2l-table/demo/index.html';
+
+ polymerTests(browsers, function(test) {
+ 	test('d2l-table', {
+@@ -133,76 +115,3 @@ polymerTests(cssBrowsers, function(test, ctx) {
+ 		}
+ 	});*/
+ });
+-
+-polymerTests(xBrowsers, function(test) {
+-	test('d2l-table', {
+-		endpoint: xEndpoint + '?wc-shadydom',
+-		spec: 'test/acceptance/table.gspec',
+-		tags: ['1.x', 'shady', 'shim-css', 'ltr'],
+-		vars: {
+-			overridePath: 'd2l-table'
+-		}
+-	});
+-
+-	test('d2l-table-rtl', {
+-		endpoint: xEndpoint + '?wc-shadydom&dir=rtl',
+-		spec: 'test/acceptance/table.gspec',
+-		tags: ['1.x', 'shady', 'shim-css', 'rtl'],
+-		vars: {
+-			overridePath: 'd2l-table-rtl'
+-		}
+-	});
+-
+-	test.shadow('d2l-table-shadow', {
+-		endpoint: xEndpoint + '?dom=shadow',
+-		spec: 'test/acceptance/table.gspec',
+-		tags: ['1.x', 'shadow', 'shim-css', 'ltr'],
+-		vars: {
+-			overridePath: 'd2l-table'
+-		}
+-	});
+-
+-	/*
+-	// This spec fails because the icon mirroring is broken in Chrome's ShadowDOM
+-	test.shadow('d2l-table-rtl-shadow', {
+-		endpoint: xEndpoint + '?dir=rtl&dom=shadow',
+-		spec: 'test/acceptance/table.gspec',
+-		vars: {
+-			overridePath: 'd2l-table-rtl'
+-		}
+-	});*/
+-});
+-
+-polymerTests(xCssBrowsers, function(test, ctx) {
+-	// See https://github.com/webcomponents/shadycss/blob/74577b11f20442594cedf4c5a51152dca06eb67c/src/style-settings.js#L29
+-	var hasCss = ctx.driver.executeScript('return Boolean(!navigator.userAgent.match(/AppleWebKit\\/601|Edge\\/15/) && window.CSS && window.CSS.supports("color", "var(--primary)"))').booleanValue();
+-
+-	if (hasCss) {
+-		test('d2l-table-css', {
+-			endpoint: xEndpoint + '?wc-shadydom&useNativeCSSProperties=true',
+-			spec: 'test/acceptance/table.gspec',
+-			tags: ['1.x', 'shady', 'native-css', 'ltr'],
+-			vars: {
+-				overridePath: 'd2l-table'
+-			}
+-		});
+-
+-		test('d2l-table-css-rtl', {
+-			endpoint: xEndpoint + '?wc-shadydom&dir=rtl&useNativeCSSProperties=true',
+-			spec: 'test/acceptance/table.gspec',
+-			tags: ['1.x', 'shady', 'native-css', 'rtl'],
+-			vars: {
+-				overridePath: 'd2l-table-rtl'
+-			}
+-		});
+-
+-		test.shadow('d2l-table-css-shadow', {
+-			endpoint: xEndpoint + '?dom=shadow&useNativeCSSProperties=true',
+-			spec: 'test/acceptance/table.gspec',
+-			tags: ['1.x', 'shadow', 'native-css', 'ltr'],
+-			vars: {
+-				overridePath: 'd2l-table'
+-			}
+-		});
+-	}
+-});

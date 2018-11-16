@@ -1,0 +1,28 @@
+diff --git a/demo/index.html b/demo/index.html
+index 7b8b40e..aae97f7 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -41,7 +41,7 @@
+ </script>
+ 		<script type="module">
+ const $_documentContainer = document.createElement('template');
+-$_documentContainer.innerHTML = `<h1>Typography</h1>`;
++$_documentContainer.innerHTML = '<h1>Typography</h1>';
+ document.body.appendChild($_documentContainer.content);
+ </script>
+ 		<script type="module">
+diff --git a/test/acceptance/typography.test.js b/test/acceptance/typography.test.js
+index 6c74d49..9a4b34f 100644
+--- a/test/acceptance/typography.test.js
++++ b/test/acceptance/typography.test.js
+@@ -28,8 +28,8 @@ var browsers = {
+ 	})
+ };
+
+-var endpoint = 'http://localhost:8000/components/d2l-typography/test/acceptance/typography.html';
+-var endpointMixins = 'http://localhost:8000/components/d2l-typography/test/acceptance/typography-mixins.html';
++var endpoint = 'http://localhost:8081/components/d2l-typography/test/acceptance/typography.html';
++var endpointMixins = 'http://localhost:8081/components/d2l-typography/test/acceptance/typography-mixins.html';
+ var spec = 'test/acceptance/typography.gspec';
+
+ polymerTests(browsers, function(test) {
