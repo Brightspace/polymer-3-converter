@@ -52,15 +52,3 @@ index 2fe8be0..333aaff 100644
  </script>
 +</body>
 +</html>
-diff --git a/package.json b/package.json
-index f0ca871..60fad53 100644
---- a/package.json
-+++ b/package.json
-@@ -24,6 +24,7 @@
-     "eslint": "^4.15.0",
-     "eslint-config-brightspace": "^0.4.0",
-     "eslint-plugin-html": "^4.0.1",
-+    "lie": "^3.3.0",
-     "polymer-cli": "^1.9.1",
-     "wct-browser-legacy": "^1.0.1"
-   },
