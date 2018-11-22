@@ -1,0 +1,66 @@
+diff --git a/demo/index.html b/demo/index.html
+index 2fe8be0..333aaff 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -123,29 +123,30 @@ <h2>Summary</h2>
+ 			<div id="point6" style="height: 70px;"><div>scroll point 6<div></div>
+ 		</div>
+
+-		<script>
+-		window.addEventListener('WebComponentsReady', function() {
++</div></div>`;
+
+-			document.addEventListener('d2l-scroll-spy', function(e) {
+-				var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-state');
+-				ptState.textContent = (e.detail.visible ? 'yes' : 'no');
+-			});
++document.body.appendChild($_documentContainer.content);
++</script>
+
+-			document.addEventListener('d2l-scroll-spy-once', function(e) {
+-				var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-once-state');
+-				ptState.textContent = (e.detail.visible ? 'yes' : 'no');
+-			});
++<script>
++window.addEventListener('WebComponentsReady', function() {
+
+-			var spyOnce = (window.location.search.indexOf('spy-once=true') > -1);
+-			// manual reg of pt5...
+-			D2L.ScrollSpy.registerPoint('pt6', document.getElementById('point6'), { duration: 500, onlyOnce: spyOnce });
+-			D2L.ScrollSpy.setEnabled(true);
+-		});
++	document.addEventListener('d2l-scroll-spy', function(e) {
++		var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-state');
++		ptState.textContent = (e.detail.visible ? 'yes' : 'no');
++	});
+
+-		&lt;/script>
+-
++	document.addEventListener('d2l-scroll-spy-once', function(e) {
++		var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-once-state');
++		ptState.textContent = (e.detail.visible ? 'yes' : 'no');
++	});
+
+-</div></div>`;
++	var spyOnce = (window.location.search.indexOf('spy-once=true') > -1);
++	// manual reg of pt5...
++	D2L.ScrollSpy.registerPoint('pt6', document.getElementById('point6'), { duration: 500, onlyOnce: spyOnce });
++	D2L.ScrollSpy.setEnabled(true);
++});
+
+-document.body.appendChild($_documentContainer.content);
+ </script>
++</body>
++</html>
+diff --git a/package.json b/package.json
+index f0ca871..60fad53 100644
+--- a/package.json
++++ b/package.json
+@@ -24,6 +24,7 @@
+     "eslint": "^4.15.0",
+     "eslint-config-brightspace": "^0.4.0",
+     "eslint-plugin-html": "^4.0.1",
++    "lie": "^3.3.0",
+     "polymer-cli": "^1.9.1",
+     "wct-browser-legacy": "^1.0.1"
+   },
