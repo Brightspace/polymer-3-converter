@@ -1,0 +1,18 @@
+diff --git a/d2l-simple-overlay.js b/d2l-simple-overlay.js
+index 5ec3d31..3b77440 100644
+--- a/d2l-simple-overlay.js
++++ b/d2l-simple-overlay.js
+@@ -127,9 +127,11 @@ Polymer({
+ 		document.body.style.overflow = 'hidden';
+ 	},
+ 	_updateBackdropStyle: function() {
+-		var style = document.createElement('style', 'custom-style');
++		var customStyle = document.createElement('custom-style');
++		var style = document.createElement('style');
+ 		style.innerHTML = 'iron-overlay-backdrop { --iron-overlay-backdrop-opacity: 0.0; }';
+-		document.body.appendChild(style);
++		customStyle.appendChild(style);
++		document.body.appendChild(customStyle);
+ 	},
+ 	get scrollRegion() {
+ 		return dom(this.root).querySelector('.scrollable');
