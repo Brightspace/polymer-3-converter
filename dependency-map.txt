@@ -1,4 +1,4 @@
-d2l-button,d2l-button,git+https://github.com/BrightspaceUI/button.git#polymer-3
+d2l-button,d2l-button,BrightspaceUI/button#semver:^5.0.0
 d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4.0.0
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2.0.0
