@@ -1,3 +1,4 @@
+d2l-alert,d2l-alert,BrightspaceUI/alert#semver:^4.0.0
 d2l-button,d2l-button,BrightspaceUI/button#semver:^5.0.0
 d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4.0.0
 d2l-fastdom-import,fastdom,^1.0.8
