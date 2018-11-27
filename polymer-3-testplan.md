@@ -97,3 +97,5 @@ This list will not be constantly updated. This list is to be used as examples of
 | DE31831	| Polymer 3 > Shadow DOM > My Courses Widget. With Shadow DOM on in Polymer 1 the My courses widget is showing 20 courses instead of 12 |
 | DE31799	| Polymer 3 > shadow DOM > Navbar - changing the link area colour for the Navbar isn't shown when shadow DOM is on |
 | DE31778	| Polymer 3 > Shadow DOM > My Courses Widget > Course cards lose padding when Shadow DOM is turned on. |
+| DE32043   | Polymer 3 - Enter Grades Tab names are much lighter in colour with shadow DOM turned on.|
+| DE32045	| Polymer 3 -  shadow DOM - extra padding in the overall score boxes in the rubric when shadow DOM is turned on.|
