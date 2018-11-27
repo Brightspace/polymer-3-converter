@@ -1,0 +1,31 @@
+commit c41588b32365c67437fe80802c423e69e4e92c27
+Author: Anthony Wikkerink <Anthony.Wikkerink@D2L.com>
+Date:   Tue Nov 27 14:43:18 2018 -0500
+
+    Remove unused eslint stuff
+
+diff --git a/.eslintignore b/.eslintignore
+deleted file mode 100644
+index 58d9402..0000000
+--- a/.eslintignore
++++ /dev/null
+@@ -1,2 +0,0 @@
+-test/acceptance/*
+-reports
+diff --git a/package.json b/package.json
+index 61b14a6..fc2b22b 100644
+--- a/package.json
++++ b/package.json
+@@ -31,12 +31,10 @@
+     "@polymer/polymer": "^3.0.0"
+   },
+   "devDependencies": {
+-    "@babel/polyfill": "^7.0.0",
+     "@polymer/iron-component-page": "^3.0.0-pre.18",
+     "@polymer/paper-styles": "^3.0.0-pre.18",
+     "@polymer/test-fixture": "^3.0.0-pre.18",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
+-    "babel-eslint": "^10.0.1",
+     "polymer-cli": "^1.9.1",
+     "wct-browser-legacy": "^1.0.1"
+   }
