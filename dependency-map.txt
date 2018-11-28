@@ -1,6 +1,7 @@
 d2l-alert,d2l-alert,BrightspaceUI/alert#semver:^4.0.0
 d2l-button,d2l-button,BrightspaceUI/button#semver:^5.0.0
 d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4.0.0
+d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7.0.0
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2.0.0
 d2l-hierarchical-view,d2l-hierarchical-view,BrightspaceUI/hierarchical-view#semver:^2.0.0
