@@ -1,0 +1,42 @@
+diff --git a/d2l-search-widget-behavior.js b/d2l-search-widget-behavior.js
+index 087e406..5a301da 100644
+--- a/d2l-search-widget-behavior.js
++++ b/d2l-search-widget-behavior.js
+@@ -1,5 +1,5 @@
+ import '../@polymer/polymer/polymer-legacy.js';
+-import '../siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+ window.D2L = window.D2L || {};
+ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+
+@@ -121,7 +121,7 @@ D2L.PolymerBehaviors.SearchWidgetBehavior = {
+ 		}
+
+ 		// Siren parser can only parse entities, so make a fake one with the given action
+-		var entity = window.D2L.Hypermedia.Siren.Parse({
++		var entity = SirenParse({
+ 			actions: [ searchAction ]
+ 		});
+ 		var parsedSearchAction = entity.actions[0];
+@@ -170,7 +170,7 @@ D2L.PolymerBehaviors.SearchWidgetBehavior = {
+ 				}
+ 				return Promise.reject(response.status + ' ' + response.statusText);
+ 			})
+-			.then(window.D2L.Hypermedia.Siren.Parse)
++			.then(SirenParse)
+ 			.then(this._onSearchResponse.bind(this));
+ 	}
+
+diff --git a/package.json b/package.json
+index ead7e4e..c13657f 100644
+--- a/package.json
++++ b/package.json
+@@ -5,7 +5,7 @@
+     "test": "npm run test:lint && polymer test --skip-plugin sauce",
+     "test:lint": "npm run test:lint:wc && npm run test:lint:js",
+     "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "test:lint:wc": "polymer lint",
++    "test:lint:wc": "polymer lint"
+   },
+   "author": "D2L Corporation",
+   "license": "Apache-2.0",
