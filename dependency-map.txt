@@ -6,6 +6,7 @@ d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4.0.0
 d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7.0.0
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2.0.0
+d2l-fetch-siren-entity-behavior,d2l-fetch-siren-entity-behavior,Brightspace/d2l-fetch-siren-entity-behavior.git#semver:^6.0.0
 d2l-hierarchical-view,d2l-hierarchical-view,BrightspaceUI/hierarchical-view#semver:^2.0.0
 d2l-hm-constants-behavior,d2l-hypermedia-constants,^6.0.0
 d2l-icons,d2l-icons,BrightspaceUI/icons#semver:^6.0.0
