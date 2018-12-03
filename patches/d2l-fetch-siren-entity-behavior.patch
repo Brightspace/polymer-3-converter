@@ -1,0 +1,82 @@
+diff --git a/d2l-fetch-siren-entity-behavior.js b/d2l-fetch-siren-entity-behavior.js
+index fdaa3a2..36da479 100644
+--- a/d2l-fetch-siren-entity-behavior.js
++++ b/d2l-fetch-siren-entity-behavior.js
+@@ -1,7 +1,7 @@
+ import '../@polymer/polymer/polymer-legacy.js';
+ import '../d2l-fetch/d2l-fetch.js';
+ import { IronMeta } from '../@polymer/iron-meta/iron-meta.js';
+-import '../siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+
+ window.D2L = window.D2L || {};
+ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+@@ -75,7 +75,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior = {
+ 				}
+ 				return Promise.reject(response.status);
+ 			})
+-			.then(window.D2L.Hypermedia.Siren.Parse);
++			.then(SirenParse);
+ 	},
+
+ 	// this function is purely for mocking out while testing
+diff --git a/package.json b/package.json
+index 28532af..575015c 100644
+--- a/package.json
++++ b/package.json
+@@ -17,7 +17,7 @@
+     "test": "npm run test:lint:js && npm run test:lint:wc && npm run test:unit:local",
+     "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+     "test:lint:wc": "polymer lint",
+-    "test:unit:local": "cross-env LAUNCHPAD_BROWSERS=chrome polymer test --skip-plugin sauce"
++    "test:unit:local": "cross-env LAUNCHPAD_BROWSERS=chrome polymer test --skip-plugin sauce --npm"
+   },
+   "bugs": {
+     "url": "https://github.com/Brightspace/d2l-fetch-siren-entity-behavior/issues"
+diff --git a/test/d2l-fetch-siren-entity-behavior.html b/test/d2l-fetch-siren-entity-behavior.html
+index 25bdab5..9676493 100644
+--- a/test/d2l-fetch-siren-entity-behavior.html
++++ b/test/d2l-fetch-siren-entity-behavior.html
+@@ -15,6 +15,6 @@
+ 			</template>
+ 		</test-fixture>
+
+-		<script src="./d2l-fetch-siren-entity-behavior.js"></script>
++		<script type="module" src="./d2l-fetch-siren-entity-behavior.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/d2l-fetch-siren-entity-behavior.js b/test/d2l-fetch-siren-entity-behavior.js
+index 7447f46..f045975 100644
+--- a/test/d2l-fetch-siren-entity-behavior.js
++++ b/test/d2l-fetch-siren-entity-behavior.js
+@@ -1,5 +1,6 @@
+ /* global describe, it, expect, fixture, beforeEach, afterEach, sinon */
+
++import { IronMeta } from '../../@polymer/iron-meta/iron-meta.js';
+ 'use strict';
+
+ var validUrls = [
+@@ -41,7 +42,7 @@ describe('d2l-fetch-siren-entity-behavior', function() {
+ 	});
+
+ 	afterEach(function() {
+-		window.D2L.PolymerBehaviors.FetchSirenEntityBehaviorMeta = new Polymer.IronMeta(
++		window.D2L.PolymerBehaviors.FetchSirenEntityBehaviorMeta = new IronMeta(
+ 			{
+ 				key: 'whitelistedDomains',
+ 				value: [
+diff --git a/test/index.html b/test/index.html
+index 2a9712c..511a056 100644
+--- a/test/index.html
++++ b/test/index.html
+@@ -7,6 +7,7 @@
+ 	</head>
+ 	<body>
+ 		<script>
++			/* global WCT */
+ 			'use strict';
+ 			WCT.loadSuites([
+ 				'd2l-fetch-siren-entity-behavior.html?wc-shadydom=true',
+--
+2.17.2 (Apple Git-113)
+
