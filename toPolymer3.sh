@@ -42,7 +42,7 @@ rm -rf node_modules
 echo "*** Run the modulizer ***"
 npm install -g polymer-modulizer
 curl https://raw.githubusercontent.com/Brightspace/polymer-3-converter/master/dependency-map.txt -o dependency-map.txt
-echo | modulizer --out . --dependency-mapping $(cat dependency-map.txt | tr '\
+echo | modulizer --import-style name --out . --dependency-mapping $(cat dependency-map.txt | tr '\
 ' ' ' | tr -d '\r')
 
 echo "*** Discard the travis file changes (they are not needed) ***"
