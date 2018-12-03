@@ -1,5 +1,5 @@
 diff --git a/d2l-button-icon.js b/d2l-button-icon.js
-index d03b321..7251496 100644
+index f2b6676..cccdd91 100644
 --- a/d2l-button-icon.js
 +++ b/d2l-button-icon.js
 @@ -113,11 +113,26 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button-icon">
@@ -32,7 +32,7 @@ index d03b321..7251496 100644
  
  document.head.appendChild($_documentContainer.content);
 diff --git a/d2l-button-subtle.js b/d2l-button-subtle.js
-index dce93ab..7528cd2 100644
+index e61de15..3edff6b 100644
 --- a/d2l-button-subtle.js
 +++ b/d2l-button-subtle.js
 @@ -151,13 +151,27 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button-subtle">
@@ -66,7 +66,7 @@ index dce93ab..7528cd2 100644
  
  document.head.appendChild($_documentContainer.content);
 diff --git a/d2l-button.js b/d2l-button.js
-index ff5b7f8..5018d2b 100644
+index afd08c4..91069df 100644
 --- a/d2l-button.js
 +++ b/d2l-button.js
 @@ -95,9 +95,23 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button">
@@ -96,14 +96,13 @@ index ff5b7f8..5018d2b 100644
  
  document.head.appendChild($_documentContainer.content);
 diff --git a/d2l-floating-buttons.js b/d2l-floating-buttons.js
-index 3546148..06cdf5e 100644
+index 5a6a5d2..05720db 100644
 --- a/d2l-floating-buttons.js
 +++ b/d2l-floating-buttons.js
-@@ -98,9 +98,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-floating-buttons">
- 		<div class="d2l-floating-buttons-spacer"></div>
+@@ -99,8 +99,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-floating-buttons">
  
  	</template>
--
+ 
 -	
 -
  </dom-module>`;
@@ -113,7 +112,7 @@ diff --git a/demo/floating-buttons-helper.js b/demo/floating-buttons-helper.js
 deleted file mode 100644
 index e69de29..0000000
 diff --git a/demo/floating-buttons-standard.html b/demo/floating-buttons-standard.html
-index bd234d6..d652d5c 100644
+index 90ef443..8b6200a 100644
 --- a/demo/floating-buttons-standard.html
 +++ b/demo/floating-buttons-standard.html
 @@ -56,38 +56,38 @@ document.body.appendChild($_documentContainer.content);
@@ -166,16 +165,16 @@ index bd234d6..d652d5c 100644
  document.body.appendChild($_documentContainer.content);
  </script>
  		<script type="module">
--import '../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
--import '../../@polymer/iron-demo-helpers/demo-snippet.js';
--import '../../d2l-typography/d2l-typography.js';
+-import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+-import '@polymer/iron-demo-helpers/demo-snippet.js';
+-import 'd2l-typography/d2l-typography.js';
 -import '../d2l-button.js';
 -import '../d2l-floating-buttons.js';
- import { dom } from '../../@polymer/polymer/lib/legacy/polymer.dom.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
  var page_buttonCount = 0;
  var page_floatingButtons;
 diff --git a/demo/floating-buttons.html b/demo/floating-buttons.html
-index 25f586b..181c96d 100644
+index 0762782..555f21c 100644
 --- a/demo/floating-buttons.html
 +++ b/demo/floating-buttons.html
 @@ -55,38 +55,38 @@ document.body.appendChild($_documentContainer.content);
@@ -228,35 +227,16 @@ index 25f586b..181c96d 100644
  document.body.appendChild($_documentContainer.content);
  </script>
  		<script type="module">
--import '../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
--import '../../@polymer/iron-demo-helpers/demo-snippet.js';
--import '../../d2l-typography/d2l-typography.js';
+-import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+-import '@polymer/iron-demo-helpers/demo-snippet.js';
+-import 'd2l-typography/d2l-typography.js';
 -import '../d2l-button.js';
 -import '../d2l-floating-buttons.js';
- import { dom } from '../../@polymer/polymer/lib/legacy/polymer.dom.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
  var page_buttonCount = 0;
  var page_floatingButtons;
-diff --git a/package.json b/package.json
-index 6e5aef5..080e9aa 100644
---- a/package.json
-+++ b/package.json
-@@ -55,11 +55,11 @@
-   },
-   "main": "d2l-button.js",
-   "dependencies": {
-+    "@polymer/iron-media-query": "^3.0.0-pre.18",
-+    "@polymer/polymer": "^3.0.0",
-     "d2l-colors": "BrightspaceUI/colors#semver:^4.0.0",
-     "d2l-icons": "BrightspaceUI/icons#semver:^6.0.0",
-     "d2l-polymer-behaviors": "Brightspace/d2l-polymer-behaviors-ui#semver:^2.0.0",
--    "d2l-typography": "BrightspaceUI/typography#semver:^7.0.1",
--    "@polymer/iron-media-query": "^3.0.0-pre.18",
--    "@polymer/polymer": "^3.0.0"
-+    "d2l-typography": "BrightspaceUI/typography#semver:^7.0.1"
-   }
- }
 diff --git a/test/acceptance/button.test.js b/test/acceptance/button.test.js
-index 5b0db0c..f0e0ecb 100644
+index 5b0db0c..9dbc6dc 100644
 --- a/test/acceptance/button.test.js
 +++ b/test/acceptance/button.test.js
 @@ -35,7 +35,6 @@ var browsers = {
@@ -267,12 +247,10 @@ index 5b0db0c..f0e0ecb 100644
  var buttonEndpoint = '/test/acceptance/button.html';
  var buttonSpec = 'test/acceptance/button.gspec';
  var buttonSubtleEndpoint = '/test/acceptance/button-subtle.html';
-@@ -113,5 +112,4 @@ polymerTests(browsers, function(test) {
+@@ -113,5 +112,5 @@ polymerTests(browsers, function(test) {
  	}
  
  	runTests('mainline', mainlineEndpoint);
 -	runTests('1.x', xEndpoint);
++
  });
--- 
-2.17.2 (Apple Git-113)
-
