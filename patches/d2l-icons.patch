@@ -1,5 +1,7 @@
---- /cli/iconset-builder.js
-+++ /cli/iconset-builder.js
+diff --git a/cli/iconset-builder.js b/cli/iconset-builder.js
+index 3cc8d11..627dc53 100644
+--- a/cli/iconset-builder.js
++++ b/cli/iconset-builder.js
 @@ -6,10 +6,6 @@ var path = require('path'),
  	fs = require('fs');
 
@@ -9,24 +11,23 @@
 -		{'$': {'rel': 'import', 'href': '../iron-iconset-svg/iron-iconset-svg.html'}}
 -	],
  	'iron-iconset-svg': {
- 		'$': {'name': '', 'size': '', 'rtl-mirroring': true},
+ 		'$': {'name': '', 'size': '', 'rtl-mirroring': true, 'use-global-rtl-attribute': true},
  		'svg': {'defs': {'g': []}}
-@@ -105,8 +101,16 @@ module.exports = function(iconsetPath) {
- 			var builder = new xml2js.Builder({headless: true});
- 			return builder.buildObject(iconsetObj);
- 		}).then(function(xml) {
+@@ -108,9 +104,14 @@ module.exports = function(iconsetPath) {
+
+ 			var deferred = q.defer();
+
 -			xml = xml.substring(7, xml.length - 7);
--			return fs.writeFile(path.join(__dirname, '../', name + '-icons.html'), xml);
-+			//xml = xml.substring(7, xml.length - 7);
-+			var content = `import '../@polymer/polymer/polymer-legacy.js';
-+import '../@polymer/iron-iconset-svg/iron-iconset-svg.js';
+-
+-			fs.writeFile(path.join(__dirname, '../', name + '-icons.html'), xml, function(err) {
++			var content = `import '@polymer/polymer/polymer-legacy.js';
++import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 +const $_documentContainer = document.createElement('template');
 +$_documentContainer.setAttribute('style', 'display: none;');
-+
 +$_documentContainer.innerHTML = \`${xml}\`;
 +document.head.appendChild($_documentContainer.content);
 +`;
-+			return fs.writeFile(path.join(__dirname, '../', name + '-icons.js'), content);
- 		});
-
- };
++			fs.writeFile(path.join(__dirname, '../', name + '-icons.js'), content, function(err) {
+ 				if (err) {
+ 					return deferred.reject(err);
+ 				}
