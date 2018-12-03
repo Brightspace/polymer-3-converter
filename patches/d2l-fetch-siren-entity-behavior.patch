@@ -1,12 +1,12 @@
 diff --git a/d2l-fetch-siren-entity-behavior.js b/d2l-fetch-siren-entity-behavior.js
-index fdaa3a2..36da479 100644
+index 2672b4b..196cbc8 100644
 --- a/d2l-fetch-siren-entity-behavior.js
 +++ b/d2l-fetch-siren-entity-behavior.js
 @@ -1,7 +1,7 @@
- import '../@polymer/polymer/polymer-legacy.js';
- import '../d2l-fetch/d2l-fetch.js';
- import { IronMeta } from '../@polymer/iron-meta/iron-meta.js';
--import '../siren-parser/siren-parser.js';
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-fetch/d2l-fetch.js';
+ import { IronMeta } from '@polymer/iron-meta/iron-meta.js';
+-import 'siren-parser/siren-parser.js';
 +import SirenParse from 'siren-parser';
 
  window.D2L = window.D2L || {};
@@ -46,17 +46,18 @@ index 25bdab5..9676493 100644
  	</body>
  </html>
 diff --git a/test/d2l-fetch-siren-entity-behavior.js b/test/d2l-fetch-siren-entity-behavior.js
-index 7447f46..f045975 100644
+index 7447f46..b24033c 100644
 --- a/test/d2l-fetch-siren-entity-behavior.js
 +++ b/test/d2l-fetch-siren-entity-behavior.js
-@@ -1,5 +1,6 @@
+@@ -1,5 +1,7 @@
  /* global describe, it, expect, fixture, beforeEach, afterEach, sinon */
 
-+import { IronMeta } from '../../@polymer/iron-meta/iron-meta.js';
++import {IronMeta}  from '@polymer/iron-meta/iron-meta.js';
++
  'use strict';
 
  var validUrls = [
-@@ -41,7 +42,7 @@ describe('d2l-fetch-siren-entity-behavior', function() {
+@@ -41,7 +43,7 @@ describe('d2l-fetch-siren-entity-behavior', function() {
  	});
 
  	afterEach(function() {
@@ -65,18 +66,3 @@ index 7447f46..f045975 100644
  			{
  				key: 'whitelistedDomains',
  				value: [
-diff --git a/test/index.html b/test/index.html
-index 2a9712c..511a056 100644
---- a/test/index.html
-+++ b/test/index.html
-@@ -7,6 +7,7 @@
- 	</head>
- 	<body>
- 		<script>
-+			/* global WCT */
- 			'use strict';
- 			WCT.loadSuites([
- 				'd2l-fetch-siren-entity-behavior.html?wc-shadydom=true',
---
-2.17.2 (Apple Git-113)
-
