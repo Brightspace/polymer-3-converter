@@ -30,7 +30,7 @@ d2l-simple-overlay,d2l-simple-overlay,Brightspace/simple-overlay.git#semver:^3.0
 d2l-status-indicator,d2l-status-indicator,BrightspaceUI/status-indicator#semver:^3.0.0
 d2l-table,d2l-table,BrightspaceUI/table#semver:^2.0.0
 d2l-tooltip,d2l-tooltip,BrightspaceUI/tooltip#semver:^3.0.0
-d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7.0.1
+d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7.0.2
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3.0.0
 lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
