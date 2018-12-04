@@ -1,12 +1,15 @@
 diff --git a/d2l-focusable-behavior.js b/d2l-focusable-behavior.js
-index 45b8dc5..5156a3d 100644
+index e753b19..40dfd92 100644
 --- a/d2l-focusable-behavior.js
 +++ b/d2l-focusable-behavior.js
-@@ -1,76 +1,18 @@
- import '../@polymer/polymer/polymer-legacy.js';
- import { dom } from '../@polymer/polymer/lib/legacy/polymer.dom.js';
--import { Element } from '../@polymer/polymer/polymer-element.js';
--import { useShadow } from '../@polymer/polymer/lib/utils/settings.js';
+@@ -1,78 +1,19 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+-// WORKAROUND: polymer-modulizer grabs non-existing Element export from polymer-element
+-// TODO: Remove Element reference
+-import { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';
+-import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
++
  window.D2L = window.D2L || {};
  window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
  
@@ -88,16 +91,16 @@ index adf2865..0000000
 @@ -1 +0,0 @@
 -<script src="./d2l-gestures-swipe.js"></script>
 diff --git a/test/dom.html b/test/dom.html
-index 5a79119..82327c9 100644
+index 30e29b3..f217024 100644
 --- a/test/dom.html
 +++ b/test/dom.html
 @@ -45,19 +45,15 @@
  		<script type="module">
  import '../d2l-dom.js';
  import './dom-components.js';
--import { useShadow } from '../../@polymer/polymer/lib/utils/settings.js';
--import { Element } from '../../@polymer/polymer/polymer-element.js';
- import { dom as dom$0 } from '../../@polymer/polymer/lib/legacy/polymer.dom.js';
+-import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
+-import { Element } from '@polymer/polymer/polymer-element.js';
+ import { dom as dom$0 } from '@polymer/polymer/lib/legacy/polymer.dom.js';
  describe('d2l-dom', function() {
  
  	var simpleFixture, wcFixture, mixedFixture;
