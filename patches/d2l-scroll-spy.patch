@@ -1,54 +1,53 @@
 diff --git a/demo/index.html b/demo/index.html
-index 2fe8be0..333aaff 100644
+index 2fe8be0..d0b2dbe 100644
 --- a/demo/index.html
 +++ b/demo/index.html
-@@ -123,29 +123,30 @@ <h2>Summary</h2>
+@@ -123,29 +123,26 @@ $_documentContainer.innerHTML = `<div class="scroll-points" style="height:3000px
  			<div id="point6" style="height: 70px;"><div>scroll point 6<div></div>
  		</div>
-
+ 
 -		<script>
 -		window.addEventListener('WebComponentsReady', function() {
-+</div></div>`;
-
+-
 -			document.addEventListener('d2l-scroll-spy', function(e) {
 -				var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-state');
 -				ptState.textContent = (e.detail.visible ? 'yes' : 'no');
 -			});
-+document.body.appendChild($_documentContainer.content);
-+</script>
-
+-
 -			document.addEventListener('d2l-scroll-spy-once', function(e) {
 -				var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-once-state');
 -				ptState.textContent = (e.detail.visible ? 'yes' : 'no');
 -			});
-+<script>
-+window.addEventListener('WebComponentsReady', function() {
-
+-
 -			var spyOnce = (window.location.search.indexOf('spy-once=true') > -1);
 -			// manual reg of pt5...
 -			D2L.ScrollSpy.registerPoint('pt6', document.getElementById('point6'), { duration: 500, onlyOnce: spyOnce });
 -			D2L.ScrollSpy.setEnabled(true);
 -		});
+-
+-		&lt;/script>
+-	
+-
+ </div></div>`;
+ 
+ document.body.appendChild($_documentContainer.content);
+ </script>
++
++<script>
++window.addEventListener('WebComponentsReady', function() {
 +	document.addEventListener('d2l-scroll-spy', function(e) {
 +		var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-state');
 +		ptState.textContent = (e.detail.visible ? 'yes' : 'no');
 +	});
-
--		&lt;/script>
--
 +	document.addEventListener('d2l-scroll-spy-once', function(e) {
 +		var ptState = document.querySelector('#' + e.detail.key + '-state > #spy-once-state');
 +		ptState.textContent = (e.detail.visible ? 'yes' : 'no');
 +	});
-
--</div></div>`;
 +	var spyOnce = (window.location.search.indexOf('spy-once=true') > -1);
 +	// manual reg of pt5...
 +	D2L.ScrollSpy.registerPoint('pt6', document.getElementById('point6'), { duration: 500, onlyOnce: spyOnce });
 +	D2L.ScrollSpy.setEnabled(true);
 +});
-
--document.body.appendChild($_documentContainer.content);
- </script>
++</script>
 +</body>
 +</html>
