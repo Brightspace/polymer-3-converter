@@ -1,0 +1,26 @@
+diff --git a/package.json b/package.json
+index 5ec9629..f41cf8c 100644
+--- a/package.json
++++ b/package.json
+@@ -15,7 +15,7 @@
+   "scripts": {
+     "test": "npm run lint && npm run test:polymer:local",
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html",
+     "lint:wc": "polymer lint",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local"
+diff --git a/test/d2l-organization-hm-behavior.html b/test/d2l-organization-hm-behavior.html
+index c724170..366900d 100644
+--- a/test/d2l-organization-hm-behavior.html
++++ b/test/d2l-organization-hm-behavior.html
+@@ -8,7 +8,7 @@
+ 		<script src="../../wct-browser-legacy/browser.js"></script>
+ 
+ 		<script type="module" src="./consumer-element.js"></script>
+-		<script type="module" src="../../siren-parser/siren-parser.js"></script>
++		<script type="module" src="../../siren-parser/global.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="default-fixture">
