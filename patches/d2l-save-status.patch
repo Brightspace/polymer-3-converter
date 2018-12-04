@@ -1,0 +1,26 @@
+diff --git a/demo/d2l-save-status-demo.html b/demo/d2l-save-status-demo.html
+index e53b55a..067e8c0 100644
+--- a/demo/d2l-save-status-demo.html
++++ b/demo/d2l-save-status-demo.html
+@@ -25,7 +25,7 @@
+ 		-->
+ 	<script type="module">
+ const $_documentContainer = document.createElement('template');
+-$_documentContainer.innerHTML = `<style is="custom-style" include="demo-pages-shared-styles"></style>`;
++$_documentContainer.innerHTML = '<style is="custom-style" include="demo-pages-shared-styles"></style>';
+ document.head.appendChild($_documentContainer.content);
+ </script>
+ 	<script type="module">
+diff --git a/package.json b/package.json
+index 19fb16b..a6f3909 100644
+--- a/package.json
++++ b/package.json
+@@ -18,7 +18,7 @@
+   },
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.html",
+     "lint:wc": "polymer lint",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local",
