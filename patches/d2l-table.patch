@@ -1,11 +1,12 @@
 diff --git a/demo/simple.html b/demo/simple.html
-index 0badda8..103ac7c 100644
+index d5c86cd..dc261ec 100644
 --- a/demo/simple.html
 +++ b/demo/simple.html
-@@ -64,11 +64,8 @@ document.body.appendChild($_documentContainer.content);
+@@ -63,12 +63,8 @@ $_documentContainer.innerHTML = `<custom-style>
+ document.body.appendChild($_documentContainer.content);
  </script>
  	</head>
-
+-
 -	<body class="d2l-typography">
 -		<script type="module">
 -const $_documentContainer = document.createElement('template');
@@ -16,7 +17,7 @@ index 0badda8..103ac7c 100644
  			<div class="screenshots screenshot-wide">
  				<d2l-table-wrapper><table class="d2l-table">
  					<thead>
-@@ -502,10 +499,7 @@ $_documentContainer.innerHTML = `<div class="container">
+@@ -502,10 +498,7 @@ $_documentContainer.innerHTML = `<div class="container">
  					</d2l-tbody>
  				</d2l-table>
  			</div>
@@ -28,17 +29,19 @@ index 0badda8..103ac7c 100644
  		<script type="module">
  import '../d2l-table.js';
  import './reset.js';
-@@ -584,12 +578,10 @@ function createD2LTable() {
-
+@@ -584,12 +577,10 @@ function createD2LTable() {
+ 
  }
-
+ 
 -window.addEventListener('WebComponentsReady', function() {
 -	setTimeout(function() {
-+setTimeout(function() {
- 	createTable();
- 	createD2LTable();
+-		createTable();
+-		createD2LTable();
 -	}, 0);
 -});
++setTimeout(function() {
++	createTable();
++	createD2LTable();
 +}, 0);
  </script>
  	</body>
@@ -50,7 +53,7 @@ index 1a7150b..2b0f0b9 100644
 @@ -44,26 +44,8 @@ var cssBrowsers = {
  	cssSafariMac: browsers.safariMac
  };
-
+ 
 -var xBrowsers = {
 -	xChrome: browsers.chrome,
 -	xChromeWindows: browsers.chromeWindows,
@@ -73,7 +76,7 @@ index 1a7150b..2b0f0b9 100644
 -var demoEndpoint = 'http://localhost:8081/components/d2l-table/demo/index.html';
 +var mainlineEndpoint = 'http://localhost:8080/components/d2l-table/demo/simple.html';
 +var demoEndpoint = 'http://localhost:8080/components/d2l-table/demo/index.html';
-
+ 
  polymerTests(browsers, function(test) {
  	test('d2l-table', {
 @@ -133,76 +115,3 @@ polymerTests(cssBrowsers, function(test, ctx) {
