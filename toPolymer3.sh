@@ -91,7 +91,7 @@ for line in "${array[@]}"
 do
 	sed -E -i.original "s,import \{ Element \} from '(..\/)?@polymer\/polymer\/polymer-element.js';,// WORKAROUND: polymer-modulizer grabs non-existing Element export from polymer-element\\
 // TODO: Remove Element reference\\
-import { PolymerElement as Element } from '\1@polymer/polymer/polymer-element.js';,g" $line
+import { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';,g" $line
 	rm -f $line.original
 done
 
@@ -99,7 +99,7 @@ echo "*** Fix ResizeObserver path ***"
 array=(`find . -name "*.js" -not \( -path "./node_modules*" -o -path "./bower_components*" -o -path "./.git*" \)`)
 for line in "${array[@]}"
 do
-	sed -E -i.original "s,import '(..\/)?resize-observer-polyfill\/resize-observer.js';,import ResizeObserver from '\1resize-observer-polyfill/dist/ResizeObserver.es.js';,g" $line
+	sed -E -i.original "s,import '(..\/)?resize-observer-polyfill\/resize-observer.js';,import ResizeObserver from 'resize-observer-polyfill/dist/ResizeObserver.es.js';,g" $line
 	rm -f $line.original
 done
 
