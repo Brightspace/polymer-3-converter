@@ -12,7 +12,7 @@ index e53b55a..067e8c0 100644
  </script>
  	<script type="module">
 diff --git a/package.json b/package.json
-index 19fb16b..a6f3909 100644
+index 19fb16b..18f9848 100644
 --- a/package.json
 +++ b/package.json
 @@ -18,7 +18,7 @@
@@ -24,3 +24,38 @@ index 19fb16b..a6f3909 100644
      "lint:wc": "polymer lint",
      "test:polymer:local": "polymer test --skip-plugin sauce",
      "test:polymer:sauce": "polymer test --skip-plugin local",
+@@ -32,12 +32,14 @@
+     "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+     "@polymer/iron-test-helpers": "^3.0.0-pre.18",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
++    "axe-core": "^3.1.2",
+     "babel-eslint": "^10.0.1",
+     "eslint": "^5.9.0",
+     "eslint-config-brightspace": "^0.4.1",
+     "eslint-plugin-html": "^5.0.0",
+     "frau-ci": "^1.33.2",
+     "polymer-cli": "^1.9.1",
++    "pwa-helpers": "^0.9.0",
+     "wct-browser-legacy": "^1.0.1",
+     "web-component-tester-istanbul": "^0.10.0",
+     "whatwg-fetch": "^2.0.0"
+diff --git a/test/d2l-save-status.html b/test/d2l-save-status.html
+index 9768c5a..913b02c 100644
+--- a/test/d2l-save-status.html
++++ b/test/d2l-save-status.html
+@@ -23,10 +23,11 @@
+ 	<script src="./d2l-save-status.js"></script>
+ 
+ 	<script type="module">
+-import '../d2l-save-status.js';
+-import { a11ySuite } from 'wct-browser-legacy/a11ySuite.js';
+-a11ySuite('basic');
+-</script>
++		import '../d2l-save-status.js';
++		import 'axe-core/axe.min.js';
++		import {axeReport} from 'pwa-helpers/axe-report.js';
++		axeReport(fixture('basic'));
++	</script>
+ </body>
+ 
+ </html>

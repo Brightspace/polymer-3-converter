@@ -22,7 +22,7 @@ d2l-offscreen,d2l-offscreen,BrightspaceUI/offscreen#semver:^4.0.0
 d2l-organization-hm-behavior,d2l-organization-hm-behavior,Brightspace/organization-hm-behavior#semver:^3.0.1
 d2l-polymer-behaviors,d2l-polymer-behaviors,Brightspace/d2l-polymer-behaviors-ui#semver:^2.0.1
 d2l-resize-observer-polyfill-import,resize-observer-polyfill,^1.5.0
-d2l-save-status,d2l-save-status,Brightspace/d2l-save-status.git#semver:^3.1.0
+d2l-save-status,d2l-save-status,Brightspace/d2l-save-status.git#semver:^3.7.0
 d2l-scroll-spy,d2l-scroll-spy,BrightspaceUI/scroll-spy#semver:^1.0.0
 d2l-search-widget,d2l-search-widget,Brightspace/d2l-search-widget-ui#semver:^4.0.0
 d2l-seek-bar,@d2l/seek-bar,^1.0.0
