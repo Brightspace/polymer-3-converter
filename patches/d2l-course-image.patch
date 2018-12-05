@@ -1,0 +1,72 @@
+From 6253837bb5aa4c6f72389b3c10334e326f9b2e75 Mon Sep 17 00:00:00 2001
+From: Edward Gao <Edward.Gao@D2L.com>
+Date: Tue, 4 Dec 2018 17:59:44 -0500
+Subject: [PATCH] US102462-patch fixes polymer3 update
+
+---
+ d2l-course-image.js        | 8 ++++----
+ test/d2l-course-image.html | 4 +++-
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/d2l-course-image.js b/d2l-course-image.js
+index 721b0d6..da8334c 100644
+--- a/d2l-course-image.js
++++ b/d2l-course-image.js
+@@ -13,7 +13,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'intersection-observer/intersection-observer.js';
+ import 'd2l-organization-hm-behavior/d2l-organization-hm-behavior.js';
+-import 'siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+@@ -98,7 +98,7 @@ Polymer({
+ 						break;
+ 					}
+ 				}
+-			};
++			}.bind(this);
+ 
+ 			// Small shim for Edge/IE/Safari
+ 			var delayFunction = window.requestIdleCallback || setTimeout;
+@@ -115,7 +115,7 @@ Polymer({
+ 
+ 			var observer = new IntersectionObserver(observerCallback.bind(this));
+ 			observer.observe(imageElement);
+-		});
++		}.bind(this));
+ 	},
+ 	_defaultSizes: {
+ 		mobile: { maxwidth: 767, size: 100 },
+@@ -150,7 +150,7 @@ Polymer({
+ 		}
+ 		if (!image.getLinksByClass) {
+ 			// This will re-call _updateImage with the parsed image, so we can return immediately
+-			this.image = window.D2L.Hypermedia.Siren.Parse(image);
++			this.image = SirenParse(image);
+ 			return;
+ 		}
+ 
+diff --git a/test/d2l-course-image.html b/test/d2l-course-image.html
+index 13d2353..be4f4fe 100644
+--- a/test/d2l-course-image.html
++++ b/test/d2l-course-image.html
+@@ -19,6 +19,8 @@
+ 		<script type="module">
+ import '../d2l-course-image.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
++import SirenParse from 'siren-parser';
++
+ var image = {
+ 	'class': ['course-image'],
+ 	'properties': {
+@@ -144,7 +146,7 @@
+ 	beforeEach(function() {
+ 		component = fixture('d2l-course-image-fixture');
+ 		component._load = true;
+-		sirenImage = window.D2L.Hypermedia.Siren.Parse(image);
++		sirenImage = SirenParse(image);
+ 	});
+ 
+ 	it('should exist on the page', function() {
