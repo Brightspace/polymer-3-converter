@@ -20,7 +20,7 @@ d2l-media-behavior,@d2l/media-behavior,^1.0.1
 d2l-menu,d2l-menu,BrightspaceUI/menu#semver:^2
 d2l-more-less,d2l-more-less,BrightspaceUI/more-less#semver:^5.0.1
 d2l-offscreen,d2l-offscreen,BrightspaceUI/offscreen#semver:^4
-d2l-organization-hm-behavior,d2l-organization-hm-behavior,Brightspace/organization-hm-behavior#semver:^3.0.2
+d2l-organization-hm-behavior,d2l-organization-hm-behavior,Brightspace/organization-hm-behavior#semver:^3
 d2l-polymer-behaviors,d2l-polymer-behaviors,Brightspace/d2l-polymer-behaviors-ui#semver:^2
 d2l-resize-observer-polyfill-import,resize-observer-polyfill,^1.5.0
 d2l-save-status,d2l-save-status,Brightspace/d2l-save-status.git#semver:^3.7.0
