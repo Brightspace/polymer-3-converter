@@ -1,0 +1,116 @@
+diff --git a/d2l-card-footer-link.js b/d2l-card-footer-link.js
+index d3b2104..ebda310 100644
+--- a/d2l-card-footer-link.js
++++ b/d2l-card-footer-link.js
+@@ -34,14 +34,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card-footer-link">
+ 			:host[hidden] {
+ 				display: none;
+ 			}
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) {
+-				left: auto;
+-				margin-left: 0.3rem;
+-				margin-right: 0;
+-				right: -0.6rem;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) {
+ 				left: auto;
+ 				margin-left: 0.3rem;
+@@ -76,11 +68,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card-footer-link">
+ 			.d2l-card-footer-link-text {
+ 				@apply --d2l-offscreen;
+ 			}
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-card-footer-link-text {
+-				@apply --d2l-offscreen-rtl
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-card-footer-link-text {
+ 				@apply --d2l-offscreen-rtl
+ 			}
+@@ -101,12 +88,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card-footer-link">
+ 				right: 0;
+ 				top: 0;
+ 			}
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-card-footer-link-secondary-text {
+-				left: 0;
+-				right: auto;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-card-footer-link-secondary-text {
+ 				left: 0;
+ 				right: auto;
+@@ -124,7 +105,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card-footer-link">
+ 		</div>
+ 	</template>
+ 
+-	
++
+ 
+ </dom-module>`;
+ 
+diff --git a/d2l-card.js b/d2l-card.js
+index faa63ce..49a7927 100644
+--- a/d2l-card.js
++++ b/d2l-card.js
+@@ -58,11 +58,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card">
+ 				@apply --d2l-offscreen;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-card-link-text {
+-				@apply --d2l-offscreen-rtl
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-card-link-text {
+ 				@apply --d2l-offscreen-rtl
+ 			}
+@@ -88,12 +83,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card">
+ 				/* this must be higher than footer z-index so dropdowns will be on top */
+ 				z-index: 3;
+ 			}
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-card-actions {
+-				left: 0.6rem;
+-				right: auto;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-card-actions {
+ 				left: 0.6rem;
+ 				right: auto;
+@@ -101,12 +90,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card">
+ 			.d2l-card-actions ::slotted(*) {
+ 				margin-left: 0.3rem;
+ 			}
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-card-actions ::slotted(*) {
+-				margin-left: 0;
+-				margin-right: 0.3rem;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-card-actions ::slotted(*) {
+ 				margin-left: 0;
+ 				margin-right: 0.3rem;
+@@ -133,11 +116,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card">
+ 				box-sizing: content-box;
+ 				height: auto;
+ 			}
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-card-footer-hidden .d2l-card-footer {
+-				@apply --d2l-offscreen-rtl
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-card-footer-hidden .d2l-card-footer {
+ 				@apply --d2l-offscreen-rtl
+ 			}
+@@ -193,8 +171,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-card">
+ 		</div>
+ 	</template>
+ 
+-	
+-
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
