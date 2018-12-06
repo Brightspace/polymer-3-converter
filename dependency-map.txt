@@ -27,12 +27,12 @@ d2l-save-status,d2l-save-status,Brightspace/d2l-save-status.git#semver:^3.7.0
 d2l-scroll-spy,d2l-scroll-spy,BrightspaceUI/scroll-spy#semver:^1
 d2l-search-widget,d2l-search-widget,Brightspace/d2l-search-widget-ui#semver:^4
 d2l-seek-bar,@d2l/seek-bar,^1.0.0
-d2l-simple-overlay,d2l-simple-overlay,Brightspace/simple-overlay.git#semver:^3.0.2
+d2l-simple-overlay,d2l-simple-overlay,Brightspace/simple-overlay.git#semver:^3
 d2l-status-indicator,d2l-status-indicator,BrightspaceUI/status-indicator#semver:^3
 d2l-table,d2l-table,BrightspaceUI/table#semver:^2.0.1
 d2l-tooltip,d2l-tooltip,BrightspaceUI/tooltip#semver:^3
 d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7
-fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3.0.0
+fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
 lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
 siren-parser-import,siren-parser,^8.0.0
