@@ -1,0 +1,97 @@
+diff --git a/d2l-tab.js b/d2l-tab.js
+index 67d3b3b..495c4e6 100644
+--- a/d2l-tab.js
++++ b/d2l-tab.js
+@@ -41,13 +41,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tab">
+ 				margin-left: 0;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]):host(:first-child) .d2l-tab-text {
+-				margin-left: 0.6rem;
+-				margin-right: 0;
+-			}
+-
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)):first-child .d2l-tab-text {
+ 				margin-left: 0.6rem;
+ 				margin-right: 0;
+@@ -71,13 +64,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tab">
+ 				width: calc(100% - 0.6rem);
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]):host(:first-child) .d2l-tab-selected-indicator {
+-				margin-left: 0.6rem;
+-				margin-right: 0;
+-			}
+-
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)):first-child .d2l-tab-selected-indicator {
+ 				margin-left: 0.6rem;
+ 				margin-right: 0;
+@@ -112,7 +98,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tab">
+ 		<div class="d2l-tab-text">[[text]]</div>
+ 		<div class="d2l-tab-selected-indicator"></div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/d2l-tabs.js b/d2l-tabs.js
+index 4fde393..f4ce6a0 100644
+--- a/d2l-tabs.js
++++ b/d2l-tabs.js
+@@ -90,14 +90,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tabs">
+ 				margin-left: 4px;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-tabs-scroll-previous-container {
+-				left: auto;
+-				margin-left: 0;
+-				margin-right: 4px;
+-				right: 0;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-tabs-scroll-previous-container {
+ 				left: auto;
+ 				margin-left: 0;
+@@ -114,14 +106,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tabs">
+ 				right: 0;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-tabs-scroll-next-container {
+-				left: 0;
+-				margin-left: 4px;
+-				margin-right: 0;
+-				right: auto;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-tabs-scroll-next-container {
+ 				left: 0;
+ 				margin-left: 4px;
+@@ -179,12 +163,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tabs">
+ 				padding-left: 4px;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-tabs-container-ext {
+-				padding-left: 0;
+-				padding-right: 4px;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-tabs-container-ext {
+ 				padding-left: 0;
+ 				padding-right: 4px;
+@@ -209,7 +187,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-tabs">
+ 			<slot></slot>
+ 		</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
