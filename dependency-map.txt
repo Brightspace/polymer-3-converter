@@ -4,7 +4,7 @@ d2l-button,d2l-button,BrightspaceUI/button#semver:^5
 d2l-button-group,d2l-button-group,BrightspaceUI/button-group#semver:^3.0.1
 d2l-card,d2l-card,BrightspaceUI/card#semver:^6
 d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4
-d2l-course-image,d2l-course-image,Brightspace/course-image#semver:^3.0.1
+d2l-course-image,d2l-course-image,Brightspace/course-image#semver:^3
 d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2.0.0
