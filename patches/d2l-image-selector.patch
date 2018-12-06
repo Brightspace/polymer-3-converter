@@ -1,0 +1,107 @@
+diff --git a/d2l-basic-image-selector.js b/d2l-basic-image-selector.js
+index 10d46cc..5ef0bd3 100644
+--- a/d2l-basic-image-selector.js
++++ b/d2l-basic-image-selector.js
+@@ -16,7 +16,7 @@ import 'd2l-fetch/d2l-fetch.js';
+ import 'd2l-icons/d2l-icons.js';
+ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+ import 'd2l-search-widget/d2l-search-widget.js';
+-import 'siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+ import './d2l-image-tile-grid.js';
+ import './localize-behavior.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+@@ -101,7 +101,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-basic-image-selector">
+ 		<d2l-loading-spinner id="lazyLoadSpinner" class$="{{_loadingSpinnerClass}}" size="100">
+ 		</d2l-loading-spinner>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -229,7 +229,7 @@ Polymer({
+ 	},
+ 	_onOrganizationChanged: function(organization) {
+ 		if (!organization.getLinkByRel) {
+-			this.organization = window.D2L.Hypermedia.Siren.Parse(organization);
++			this.organization = SirenParse(organization);
+ 		}
+ 	},
+ 	_initialize: function() {
+@@ -344,6 +344,6 @@ Polymer({
+ 				}
+ 				Promise.reject(response.status + ' ' + response.statusText);
+ 			})
+-			.then(window.D2L.Hypermedia.Siren.Parse);
++			.then(SirenParse);
+ 	}
+ });
+diff --git a/package.json b/package.json
+index 104beb3..73e47a3 100644
+--- a/package.json
++++ b/package.json
+@@ -4,7 +4,7 @@
+   "name": "d2l-image-selector",
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.html",
+     "lint:wc": "polymer lint",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local",
+@@ -16,7 +16,6 @@
+     "@babel/polyfill": "^7.0.0",
+     "@polymer/iron-component-page": "^3.0.0-pre.18",
+     "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+-    "@polymer/promise-polyfill": "^3.0.0-pre.18",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
+     "babel-eslint": "^10.0.1",
+     "d2l-typography": "BrightspaceUI/typography#semver:^7",
+diff --git a/test/d2l-basic-image-selector/d2l-basic-image-selector.html b/test/d2l-basic-image-selector/d2l-basic-image-selector.html
+index ed388d4..7d4bff2 100644
+--- a/test/d2l-basic-image-selector/d2l-basic-image-selector.html
++++ b/test/d2l-basic-image-selector/d2l-basic-image-selector.html
+@@ -4,11 +4,10 @@
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<script src="../../../whatwg-fetch/fetch.js"></script>
+-		<script src="../../@babel/polyfill/browser.js"></script>
++		<script src="../../../@babel/polyfill/browser.js"></script>
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 
+-		<script type="module" src="../../../@polymer/promise-polyfill/promise-polyfill-lite.js"></script>
+ 		<script type="module" src="../../d2l-basic-image-selector.js"></script>
+ 	</head>
+ 	<body>
+diff --git a/test/d2l-image-selector-tile/d2l-image-selector-tile.html b/test/d2l-image-selector-tile/d2l-image-selector-tile.html
+index 1b88378..dc133d2 100644
+--- a/test/d2l-image-selector-tile/d2l-image-selector-tile.html
++++ b/test/d2l-image-selector-tile/d2l-image-selector-tile.html
+@@ -4,11 +4,10 @@
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<script src="../../../whatwg-fetch/fetch.js"></script>
+-		<script src="../../@babel/polyfill/browser.js"></script>
++		<script src="../../../@babel/polyfill/browser.js"></script>
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 
+-		<script type="module" src="../../../@polymer/promise-polyfill/promise-polyfill-lite.js"></script>
+ 		<script type="module" src="../../d2l-image-selector-tile.js"></script>
+ 	</head>
+ 	<body>
+diff --git a/test/localize-behavior/localize-behavior.html b/test/localize-behavior/localize-behavior.html
+index 92d3bc3..83f8630 100644
+--- a/test/localize-behavior/localize-behavior.html
++++ b/test/localize-behavior/localize-behavior.html
+@@ -3,7 +3,7 @@
+ 	<head>
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+-		<script src="../../@babel/polyfill/browser.js"></script>
++		<script src="../../../@babel/polyfill/browser.js"></script>
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 

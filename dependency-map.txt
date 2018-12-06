@@ -12,6 +12,7 @@ d2l-fetch-siren-entity-behavior,d2l-fetch-siren-entity-behavior,Brightspace/d2l-
 d2l-hierarchical-view,d2l-hierarchical-view,BrightspaceUI/hierarchical-view#semver:^2
 d2l-hm-constants-behavior,d2l-hypermedia-constants,^6
 d2l-icons,d2l-icons,BrightspaceUI/icons#semver:^6
+d2l-image-selector,d2l-image-selector,Brightspace/image-selector#semver:^4
 d2l-intersection-observer-polyfill-import,intersection-observer,^0.5.1
 d2l-link,d2l-link,BrightspaceUI/link#semver:^5
 d2l-loading-spinner,d2l-loading-spinner,BrightspaceUI/loading-spinner#semver:^7
