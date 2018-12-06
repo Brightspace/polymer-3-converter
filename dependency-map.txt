@@ -7,7 +7,7 @@ d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4
 d2l-course-image,d2l-course-image,Brightspace/course-image#semver:^3
 d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7
 d2l-fastdom-import,fastdom,^1.0.8
-d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2.0.0
+d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2
 d2l-fetch-siren-entity-behavior,d2l-fetch-siren-entity-behavior,Brightspace/d2l-fetch-siren-entity-behavior.git#semver:^6.0.1
 d2l-hierarchical-view,d2l-hierarchical-view,BrightspaceUI/hierarchical-view#semver:^2
 d2l-hm-constants-behavior,d2l-hypermedia-constants,^6.0.0
@@ -25,7 +25,7 @@ d2l-polymer-behaviors,d2l-polymer-behaviors,Brightspace/d2l-polymer-behaviors-ui
 d2l-resize-observer-polyfill-import,resize-observer-polyfill,^1.5.0
 d2l-save-status,d2l-save-status,Brightspace/d2l-save-status.git#semver:^3.7.0
 d2l-scroll-spy,d2l-scroll-spy,BrightspaceUI/scroll-spy#semver:^1
-d2l-search-widget,d2l-search-widget,Brightspace/d2l-search-widget-ui#semver:^4.0.1
+d2l-search-widget,d2l-search-widget,Brightspace/d2l-search-widget-ui#semver:^4
 d2l-seek-bar,@d2l/seek-bar,^1.0.0
 d2l-simple-overlay,d2l-simple-overlay,Brightspace/simple-overlay.git#semver:^3.0.2
 d2l-status-indicator,d2l-status-indicator,BrightspaceUI/status-indicator#semver:^3
