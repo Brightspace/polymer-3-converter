@@ -1,0 +1,46 @@
+diff --git a/d2l-image-banner-overlay.js b/d2l-image-banner-overlay.js
+index a2e0ffd..c4a0f58 100644
+--- a/d2l-image-banner-overlay.js
++++ b/d2l-image-banner-overlay.js
+@@ -26,9 +26,9 @@ import 'd2l-polymer-behaviors/d2l-dom.js';
+ import 'd2l-polymer-behaviors/d2l-focusable-behavior.js';
+ import 'd2l-simple-overlay/d2l-simple-overlay.js';
+ import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
+-import 'siren-parser/siren-parser.js';
+ import './d2l-image-banner-overlay-styles.js';
+ import './localize-behavior.js';
++import SirenParse from 'siren-parser';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+@@ -306,7 +306,7 @@ Polymer({
+ 		return this.getDefaultImageLink(image, 'wide');
+ 	},
+ 	_parseSiren: function(entity) {
+-		return window.D2L.Hypermedia.Siren.Parse(entity);
++		return SirenParse(entity);
+ 	},
+ 	_computeShowDropdown: function(showRemove, showChange) {
+ 		return showRemove || showChange;
+diff --git a/demo/index.html b/demo/index.html
+index aba8a52..5fa446a 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -5,14 +5,14 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<title>d2l-image-banner-overlay demo</title>
+ 		<script src="../../whatwg-fetch/fetch.js"></script>
+-		<script src="../../sinonjs/sinon.js"></script>
++		<script src="../../sinon/pkg/sinon.js"></script>
+ 		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-		<script src="./demo-mock.js"></script>
+-		<script type="module" src="../../@polymer/promise-polyfill/promise-polyfill-lite.js"></script></link>
++		<script type="module" src="../../@polymer/promise-polyfill/promise-polyfill-lite.js"></script>
+ 		<script type="module" src="../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+ 		<script type="module" src="../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+ 		<script type="module" src="../../d2l-typography/d2l-typography.js"></script>
+ 		<script type="module" src="../d2l-image-banner-overlay.js"></script>
++		<script type="module" src="./demo-mock.js"></script>
+ 		<script type="module" src="./demo-image-banner-container.js"></script>
+ 		<!-- FIXME(polymer-modulizer):
+ 		These imperative modules that innerHTML your HTML are
