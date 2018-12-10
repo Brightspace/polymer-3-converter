@@ -1,3 +1,31 @@
+diff --git a/d2l-image-banner-overlay-styles.js b/d2l-image-banner-overlay-styles.js
+index 8245998..945a049 100644
+--- a/d2l-image-banner-overlay-styles.js
++++ b/d2l-image-banner-overlay-styles.js
+@@ -94,7 +94,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-image-banner-overlay-styles
+ 					margin-top: 30px;
+ 				}
+ 
+-				:host-context([dir='rtl']) #bannerTitle.menu-exists {
++				:host(:dir(rtl)) #bannerTitle.menu-exists {
+ 					padding-left: 50px;
+ 					padding-right: 0;
+ 				}
+@@ -123,12 +123,12 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-image-banner-overlay-styles
+ 			d2l-dropdown-more[hidden] {
+ 				display: none;
+ 			}
+-			:host-context([dir='rtl']) d2l-dropdown-more {
++			:host(:dir(rtl)) d2l-dropdown-more {
+ 				left: 0;
+ 				right: auto;
+ 			}
+ 
+-			:host-context([dir='rtl']) #bannerTitle.menu-exists {
++			:host(:dir(rtl)) #bannerTitle.menu-exists {
+ 				padding-left: 40px;
+ 				padding-right: 0;
+ 			}
 diff --git a/d2l-image-banner-overlay.js b/d2l-image-banner-overlay.js
 index a2e0ffd..c4a0f58 100644
 --- a/d2l-image-banner-overlay.js
