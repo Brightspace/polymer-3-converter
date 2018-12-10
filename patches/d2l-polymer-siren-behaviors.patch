@@ -1,0 +1,76 @@
+diff --git a/.eslintrc.json b/.eslintrc.json
+index fd753e5..2490b51 100644
+--- a/.eslintrc.json
++++ b/.eslintrc.json
+@@ -3,5 +3,8 @@
+   "globals": {
+     "fastdom": false,
+     "Promise": false
++  },
++  "env": {
++    "es6": true
+   }
+ }
+diff --git a/store/entity-behavior.js b/store/entity-behavior.js
+index a9ef7f8..343ff16 100644
+--- a/store/entity-behavior.js
++++ b/store/entity-behavior.js
+@@ -1,6 +1,8 @@
+ import './entity-store.js';
+ // 'use strict';
+
++/*eslint-disable no-unused-vars*/
++
+ window.D2L = window.D2L || {};
+ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+ window.D2L.PolymerBehaviors.Siren = window.D2L.PolymerBehaviors.Siren || {};
+diff --git a/store/entity-store.js b/store/entity-store.js
+index f593a40..ddbeacb 100644
+--- a/store/entity-store.js
++++ b/store/entity-store.js
+@@ -1,5 +1,5 @@
+ import 'd2l-fetch/d2l-fetch.js';
+-import 'siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+
+ function noop() {}
+
+@@ -172,7 +172,7 @@ window.D2L.Siren.EntityStore = {
+ 					.then(checkResponse)
+ 					.then(this._handleCachePriming.bind(this, resolved))
+ 					.then(getResponseJson)
+-					.then(window.D2L.Hypermedia.Siren.Parse)
++					.then(SirenParse)
+ 					.then(function(entity) {
+ 						return this.update(entityId, resolved, entity);
+ 					}.bind(this))
+@@ -385,8 +385,8 @@ window.D2L.Siren.EntityStore = {
+ 	// r['meta'] outputs https://example.org/.meta
+ 	//
+ 	parseLinkHeader: function(links) {
+-		var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
+-		var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
++		var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g; // eslint-disable-line no-useless-escape
++		var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g; // eslint-disable-line no-useless-escape
+
+ 		var matches = links.match(linkexp);
+ 		var _links = [];
+diff --git a/store/siren-action-behavior.js b/store/siren-action-behavior.js
+index 71b2f3a..6f02260 100644
+--- a/store/siren-action-behavior.js
++++ b/store/siren-action-behavior.js
+@@ -1,4 +1,4 @@
+-import 'siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+ import './entity-store.js';
+ import './action-queue.js';
+
+@@ -179,7 +179,7 @@ D2L.PolymerBehaviors.Siren.SirenActionBehaviorImpl = {
+ 						linkRequests.push(window.D2L.Siren.EntityStore.fetch(link.href, token, true));
+ 					});
+ 				}
+-				var entity = window.D2L.Hypermedia.Siren.Parse(result.body);
++				var entity = SirenParse(result.body);
+ 				return Promise.all(linkRequests).then(function() {
+ 					return window.D2L.Siren.EntityStore.update(url.href, token, entity);
+ 				});
