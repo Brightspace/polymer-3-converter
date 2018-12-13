@@ -1,0 +1,257 @@
+diff --git a/components/d2l-enrollment-card/d2l-enrollment-card.js b/components/d2l-enrollment-card/d2l-enrollment-card.js
+index ade8339..5adeb17 100644
+--- a/components/d2l-enrollment-card/d2l-enrollment-card.js
++++ b/components/d2l-enrollment-card/d2l-enrollment-card.js
+@@ -174,12 +174,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-enrollment-card">
+ 				right: -0.375rem;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-enrollment-card-alert-colour-circle {
+-				right: auto;
+-				left: -0.375rem;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-enrollment-card-alert-colour-circle {
+ 				right: auto;
+ 				left: -0.375rem;
+diff --git a/components/d2l-enrollment-card/d2l-enrollment-card.js b/components/d2l-enrollment-card/d2l-enrollment-card.js
+index 9bb2fc8..ade8339 100644
+--- a/components/d2l-enrollment-card/d2l-enrollment-card.js
++++ b/components/d2l-enrollment-card/d2l-enrollment-card.js
+@@ -17,7 +17,9 @@ import 'd2l-course-image/d2l-course-image.js';
+ import 'd2l-dropdown/d2l-dropdown-menu.js';
+ import 'd2l-dropdown/d2l-dropdown-more.js';
+ import 'd2l-fetch/d2l-fetch.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Actions } from 'd2l-hypermedia-constants';
++import { Classes } from 'd2l-hypermedia-constants';
++import { Rels } from 'd2l-hypermedia-constants';
+ import 'd2l-icons/d2l-icon.js';
+ import 'd2l-icons/tier1-icons.js';
+ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+@@ -33,7 +35,7 @@ import 'd2l-card/d2l-card.js';
+ import 'd2l-card/d2l-card-content-meta.js';
+ import 'd2l-button/d2l-button-icon.js';
+ import 'd2l-status-indicator/d2l-status-indicator.js';
+-import 'siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
+ import '../d2l-user-activity-usage/d2l-user-activity-usage.js';
+ import './d2l-enrollment-updates.js';
+ import './localize-behavior.js';
+@@ -385,7 +387,6 @@ Polymer({
+ 		_notifications: Array
+ 	},
+ 	behaviors: [
+-		window.D2L.Hypermedia.HMConstantsBehavior,
+ 		D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior,
+ 		D2L.PolymerBehaviors.Enrollment.Card.LocalizeBehavior
+ 	],
+@@ -468,11 +469,11 @@ Polymer({
+ 
+ 	_computeCanAccessCourseInfo: function(organization) {
+ 		return organization
+-			&& organization.hasLinkByRel(this.HypermediaRels.courseOfferingInfoPage);
++			&& organization.hasLinkByRel(Rels.courseOfferingInfoPage);
+ 	},
+ 	_computeCanChangeCourseImage: function(organization) {
+ 		return organization
+-			&& organization.hasActionByName(this.HypermediaActions.organizations.setCatalogImage);
++			&& organization.hasActionByName(Actions.organizations.setCatalogImage);
+ 	},
+ 	_computeCourseSettingsLabel: function(organization) {
+ 		return organization
+@@ -567,21 +568,21 @@ Polymer({
+ 		if (
+ 			!enrollment
+ 			|| !enrollment.hasLinkByRel
+-			|| !enrollment.hasLinkByRel(this.HypermediaRels.organization)
++			|| !enrollment.hasLinkByRel(Rels.organization)
+ 		) {
+ 			return;
+ 		}
+ 
+ 		this._enrollment = enrollment;
+-		this._pinned = enrollment.hasClass(this.HypermediaClasses.enrollments.pinned);
+-		this._organizationUrl = enrollment.getLinkByRel(this.HypermediaRels.organization).href;
++		this._pinned = enrollment.hasClass(Classes.enrollments.pinned);
++		this._organizationUrl = enrollment.getLinkByRel(Rels.organization).href;
+ 
+ 		this.fire('d2l-enrollment-card-fetched', {
+ 			organizationUrl: this._organizationUrl,
+ 			enrollmentUrl: this._getEntityIdentifier(this._enrollment)
+ 		});
+-		if (enrollment.hasLinkByRel(this.HypermediaRels.Activities.userActivityUsage)) {
+-			this._userActivityUsageUrl = enrollment.getLinkByRel(this.HypermediaRels.Activities.userActivityUsage).href;
++		if (enrollment.hasLinkByRel(Rels.Activities.userActivityUsage)) {
++			this._userActivityUsageUrl = enrollment.getLinkByRel(Rels.Activities.userActivityUsage).href;
+ 		}
+ 
+ 		return this._fetchSirenEntity(this._organizationUrl)
+@@ -611,14 +612,14 @@ Polymer({
+ 			this.fire('course-tile-organization');
+ 		}.bind(this));
+ 
+-		if (organization.hasLinkByRel(this.HypermediaRels.courseOfferingInfoPage)) {
+-			this._courseInfoUrl = organization.getLinkByRel(this.HypermediaRels.courseOfferingInfoPage).href;
++		if (organization.hasLinkByRel(Rels.courseOfferingInfoPage)) {
++			this._courseInfoUrl = organization.getLinkByRel(Rels.courseOfferingInfoPage).href;
+ 		}
+-		if (organization.hasLinkByRel(this.HypermediaRels.Notifications.organizationNotifications)) {
+-			this._notificationsUrl = organization.getLinkByRel(this.HypermediaRels.Notifications.organizationNotifications).href;
++		if (organization.hasLinkByRel(Rels.Notifications.organizationNotifications)) {
++			this._notificationsUrl = organization.getLinkByRel(Rels.Notifications.organizationNotifications).href;
+ 		}
+-		if (organization.hasSubEntityByClass(this.HypermediaClasses.courseImage.courseImage)) {
+-			var imageEntity = organization.getSubEntityByClass(this.HypermediaClasses.courseImage.courseImage);
++		if (organization.hasSubEntityByClass(Classes.courseImage.courseImage)) {
++			var imageEntity = organization.getSubEntityByClass(Classes.courseImage.courseImage);
+ 			if (imageEntity.href) {
+ 				this._fetchSirenEntity(imageEntity.href)
+ 					.then(function(hydratedImageEntity) {
+@@ -628,8 +629,8 @@ Polymer({
+ 				this._image = imageEntity;
+ 			}
+ 		}
+-		if (organization.hasSubEntityByRel(this.HypermediaRels.organizationHomepage)) {
+-			var homepageEntity = organization.getSubEntityByRel(this.HypermediaRels.organizationHomepage);
++		if (organization.hasSubEntityByRel(Rels.organizationHomepage)) {
++			var homepageEntity = organization.getSubEntityByRel(Rels.organizationHomepage);
+ 			this._organizationHomepageUrl = homepageEntity
+ 				&& homepageEntity.properties
+ 				&& homepageEntity.properties.path;
+@@ -741,8 +742,8 @@ Polymer({
+ 	},
+ 	_pinClickHandler: function() {
+ 		var pinAction = this._pinned
+-			? this._enrollment.getActionByName(this.HypermediaActions.enrollments.unpinCourse)
+-			: this._enrollment.getActionByName(this.HypermediaActions.enrollments.pinCourse);
++			? this._enrollment.getActionByName(Actions.enrollments.unpinCourse)
++			: this._enrollment.getActionByName(Actions.enrollments.pinCourse);
+ 
+ 		var body = '';
+ 		var fields = pinAction.fields || [];
+@@ -799,7 +800,7 @@ Polymer({
+ 			return response
+ 				.json()
+ 				.then(function(json) {
+-					return window.D2L.Hypermedia.Siren.Parse(json);
++					return SirenParse(json);
+ 				});
+ 		}
+ 		return Promise.reject(response.status + ' ' + response.statusText);
+diff --git a/components/d2l-user-activity-usage/d2l-user-activity-usage.js b/components/d2l-user-activity-usage/d2l-user-activity-usage.js
+index 6c32688..c06e748 100644
+--- a/components/d2l-user-activity-usage/d2l-user-activity-usage.js
++++ b/components/d2l-user-activity-usage/d2l-user-activity-usage.js
+@@ -13,7 +13,7 @@ Polymer-based web component for a organization due and completion dates.
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-fetch/d2l-fetch.js';
+-import 'siren-parser/siren-parser.js';
++import SirenParser from 'siren-parser';
+ import './localize-behavior.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+@@ -167,7 +167,7 @@ Polymer({
+ 				}
+ 				return Promise.reject(response.status + ' ' + response.statusText);
+ 			})
+-			.then(window.D2L.Hypermedia.Siren.Parse);
++			.then(SirenParser);
+ 	},
+ 	_hideDefaultSlot: function(date, overrideToDefault) {
+ 		return date && !overrideToDefault;
+diff --git a/package.json b/package.json
+index a05e7d9..e33671e 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,7 @@
+     "gulp": "gulp build",
+     "test": "npm run lint && npm run test:polymer:local",
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.{js,html}",
+     "lint:wc": "polymer lint",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local"
+diff --git a/polymer.json b/polymer.json
+index 6b882ff..864a60e 100644
+--- a/polymer.json
++++ b/polymer.json
+@@ -2,8 +2,5 @@
+   "npm": true,
+   "lint": {
+     "rules": ["polymer-3"]
+-  },
+-  "sources": [
+-    "**/*.html"
+-  ]
++  }
+ }
+diff --git a/test/d2l-enrollment-card/d2l-enrollment-card.html b/test/d2l-enrollment-card/d2l-enrollment-card.html
+index 37c33d3..9e3b301 100644
+--- a/test/d2l-enrollment-card/d2l-enrollment-card.html
++++ b/test/d2l-enrollment-card/d2l-enrollment-card.html
+@@ -2,11 +2,11 @@
+ 	<head>
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+-		<script src="../../@babel/polyfill/browser.js"></script>
++		<script src="../../../@babel/polyfill/browser.js"></script>
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-		<script src="https://s.brightspace.com/lib/d2lfetch/1.2.0/d2lfetch.js"></script>
+ 
++		<script type="module" src="../../../siren-parser/global.js"></script>
+ 		<script type="module" src="../../components/d2l-enrollment-card/d2l-enrollment-card.js"></script>
+ 	</head>
+ 	<body>
+diff --git a/test/d2l-enrollment-card/d2l-enrollment-card.js b/test/d2l-enrollment-card/d2l-enrollment-card.js
+index f5ece2f..b513bbb 100644
+--- a/test/d2l-enrollment-card/d2l-enrollment-card.js
++++ b/test/d2l-enrollment-card/d2l-enrollment-card.js
+@@ -528,16 +528,16 @@ describe('d2l-enrollment-card', () => {
+ 				},
+ 			].forEach((testCase) => {
+ 				it(testCase.name, (done) => {
+-					Polymer.dom.flush();
+-					testCase.methods.forEach((method) => method());
+-
+-					setTimeout(() => {
+-						expect(component._badgeText).to.equal(testCase.badge);
+-						var badge = component.$$('d2l-status-indicator');
+-						expect(badge.hasAttribute('hidden')).to.be.false;
+-						done();
++					flush(() => {
++						testCase.methods.forEach((method) => method());
++
++						setTimeout(() => {
++							expect(component._badgeText).to.equal(testCase.badge);
++							var badge = component.$$('d2l-status-indicator');
++							expect(badge.hasAttribute('hidden')).to.be.false;
++							done();
++						});
+ 					});
+-
+ 				});
+ 
+ 			});
+diff --git a/test/d2l-user-activity-usage/d2l-user-activity-usage.html b/test/d2l-user-activity-usage/d2l-user-activity-usage.html
+index 24b32d2..5912c30 100644
+--- a/test/d2l-user-activity-usage/d2l-user-activity-usage.html
++++ b/test/d2l-user-activity-usage/d2l-user-activity-usage.html
+@@ -2,11 +2,11 @@
+ 	<head>
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+-		<script src="../../@babel/polyfill/browser.js"></script>
++		<script src="../../../@babel/polyfill/browser.js"></script>
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-		<script src="https://s.brightspace.com/lib/d2lfetch/1.2.0/d2lfetch.js"></script>
+ 
++		<script type="module" src="../../../siren-parser/global.js"></script>
+ 		<script type="module" src="../../components/d2l-user-activity-usage/d2l-user-activity-usage.js"></script>
+ 	</head>
+ 	<body>
