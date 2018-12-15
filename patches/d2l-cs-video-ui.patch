@@ -1,0 +1,106 @@
+From 88e955c1140459eb22a8828b869dda8504b2165e Mon Sep 17 00:00:00 2001
+From: Martin Bayly <Martin.Bayly@D2L.com>
+Date: Fri, 14 Dec 2018 19:05:19 -0800
+Subject: [PATCH] post polymer 3 conversion fixes
+
+---
+ d2l-cs-unsupported-video.js | 7 ++-----
+ d2l-cs-video-blank.js       | 8 ++++----
+ d2l-cs-video-viewer.js      | 5 +----
+ localize-behavior.js        | 3 +++
+ 4 files changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/d2l-cs-unsupported-video.js b/d2l-cs-unsupported-video.js
+index eed2a71..8f3f114 100644
+--- a/d2l-cs-unsupported-video.js
++++ b/d2l-cs-unsupported-video.js
+@@ -49,13 +49,13 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-cs-unsupported-video">
+ 			}
+ 		</style>
+ 		<div id="container" class="d2l-typography">
+-			<img src$="[[_resolveUrl('images/skeleton_unsupported.svg')]]" alt="[[localize('unsupported_video')]]">
++			<img src$="[[importPath]]images/skeleton_unsupported.svg" alt="[[localize('unsupported_video')]]">
+ 			<div>
+ 				<div id="unsupported-text">[[localize('unsupported_video_message')]]</div>
+ 			</div>
+ 		</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -65,8 +65,5 @@ Polymer({
+ 		D2L.PolymerBehaviors.ClassStreamVideo.LocalizeBehavior
+ 	],
+ 	properties: {
+-	},
+-	_resolveUrl: function(url) {
+-		return this.resolveUrl(url);
+ 	}
+ });
+diff --git a/d2l-cs-video-blank.js b/d2l-cs-video-blank.js
+index 3133b43..eb9d8df 100644
+--- a/d2l-cs-video-blank.js
++++ b/d2l-cs-video-blank.js
+@@ -26,16 +26,16 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-cs-video-blank">
+ 			}
+ 		</style>
+ 		<div id="container" class="d2l-typography">
+-			<img src$="[[_resolveUrl('images/skeleton_video_preview.svg')]]">
++			<img src$="[[importPath]]images/skeleton_video_preview.svg">
+ 		</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+ Polymer({
+ 	is: 'd2l-cs-video-blank',
+-	_resolveUrl: function(url) {
+-		return this.resolveUrl(url);
++	get importMeta() {
++		return import.meta;
+ 	}
+ });
+diff --git a/d2l-cs-video-viewer.js b/d2l-cs-video-viewer.js
+index 7b2b31b..51204dc 100644
+--- a/d2l-cs-video-viewer.js
++++ b/d2l-cs-video-viewer.js
+@@ -38,7 +38,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-cs-video-viewer">
+ 		</div>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -60,9 +60,6 @@ Polymer({
+ 	detached: function() {
+ 		this.unlisten(this.$$('#videoIframe'), 'load', '_iframeOnLoad');
+ 	},
+-	_resolveUrl: function(url) {
+-		return this.resolveUrl(url);
+-	},
+ 	_iframeOnLoad: function() {
+ 		if (this.url) {
+ 			// If video is not 16x9, this will cover any blank space in the iFrame with black
+diff --git a/localize-behavior.js b/localize-behavior.js
+index f0b4e05..cef9c8d 100644
+--- a/localize-behavior.js
++++ b/localize-behavior.js
+@@ -5,6 +5,9 @@ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+ window.D2L.PolymerBehaviors.ClassStreamVideo = window.D2L.PolymerBehaviors.ClassStreamVideo || {};
+ /** @polymerBehavior D2L.PolymerBehaviors.ClassStreamVideo.LocalizeBehavior */
+ D2L.PolymerBehaviors.ClassStreamVideo.LocalizeBehaviorImpl = {
++	get importMeta() {
++		return import.meta;
++	},
+ 	properties: {
+ 		resources: {
+ 			value: function() {
+-- 
+2.18.0.windows.1
+
