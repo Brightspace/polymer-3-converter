@@ -1,14 +1,15 @@
-From 88e955c1140459eb22a8828b869dda8504b2165e Mon Sep 17 00:00:00 2001
+From 9ecda36e113892a3358180273784b94f5a526388 Mon Sep 17 00:00:00 2001
 From: Martin Bayly <Martin.Bayly@D2L.com>
-Date: Fri, 14 Dec 2018 19:05:19 -0800
-Subject: [PATCH] post polymer 3 conversion fixes
+Date: Mon, 17 Dec 2018 13:39:11 -0800
+Subject: [PATCH] post polymer 3 upgrade fixes
 
 ---
  d2l-cs-unsupported-video.js | 7 ++-----
  d2l-cs-video-blank.js       | 8 ++++----
  d2l-cs-video-viewer.js      | 5 +----
  localize-behavior.js        | 3 +++
- 4 files changed, 10 insertions(+), 13 deletions(-)
+ package.json                | 2 ++
+ 5 files changed, 12 insertions(+), 13 deletions(-)
 
 diff --git a/d2l-cs-unsupported-video.js b/d2l-cs-unsupported-video.js
 index eed2a71..8f3f114 100644
@@ -25,10 +26,10 @@ index eed2a71..8f3f114 100644
  			</div>
  		</div>
  	</template>
--	
+-
 +
  </dom-module>`;
- 
+
  document.head.appendChild($_documentContainer.content);
 @@ -65,8 +65,5 @@ Polymer({
  		D2L.PolymerBehaviors.ClassStreamVideo.LocalizeBehavior
@@ -51,10 +52,10 @@ index 3133b43..eb9d8df 100644
 +			<img src$="[[importPath]]images/skeleton_video_preview.svg">
  		</div>
  	</template>
--	
+-
 +
  </dom-module>`;
- 
+
  document.head.appendChild($_documentContainer.content);
  Polymer({
  	is: 'd2l-cs-video-blank',
@@ -71,11 +72,11 @@ index 7b2b31b..51204dc 100644
 @@ -38,7 +38,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-cs-video-viewer">
  		</div>
  	</template>
- 
--	
+
+-
 +
  </dom-module>`;
- 
+
  document.head.appendChild($_documentContainer.content);
 @@ -60,9 +60,6 @@ Polymer({
  	detached: function() {
@@ -101,6 +102,24 @@ index f0b4e05..cef9c8d 100644
  	properties: {
  		resources: {
  			value: function() {
--- 
+diff --git a/package.json b/package.json
+index dea1471..fcf4aaa 100644
+--- a/package.json
++++ b/package.json
+@@ -15,12 +15,14 @@
+     "@polymer/iron-component-page": "^3.0.0-pre.18",
+     "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
++    "async": "^1.5.2",
+     "babel-eslint": "^10.0.1",
+     "chromedriver": "^2.40.0",
+     "cross-env": "^5.2.0",
+     "eslint": "^4.19.1",
+     "eslint-config-brightspace": "^0.4.0",
+     "eslint-plugin-html": "^4.0.5",
++    "lodash": "^3.10.1",
+     "l10n-language-builder": "0.0.6",
+     "polymer-cli": "^1.9.2",
+     "rimraf": "^2.6.2",
+--
 2.18.0.windows.1
-
