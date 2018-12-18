@@ -114,6 +114,12 @@ fi
 echo "*** Add webcomponentsjs to package.json ***"
 npm i --save-dev --package-lock-only --no-package-lock @webcomponents/webcomponentsjs
 
+echo "*** Add async to package.json ***"
+npm i --save-dev --package-lock-only --no-package-lock async@^1.5.2
+
+echo "*** Add lodash to package.json ***"
+npm i --save-dev --package-lock-only --no-package-lock lodash@^3.10.1
+
 echo "*** Add polymer-cli to package.json ***"
 npm i --save-dev --package-lock-only --no-package-lock polymer-cli@latest
 
