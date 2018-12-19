@@ -47,3 +47,4 @@ s-html,s-html,Brightspace/s-html#semver:^2.0.0
 siren-parser-import,siren-parser,^8.0.0
 stickyfill,stickyfilljs,^2.1.0
 d2l-time-picker,d2l-time-picker,BrightspaceUI/time-picker#semver:^2.0.0
+d2l-richtext,d2l-richtext,Brightspace/d2l-richtext#semver:^2
