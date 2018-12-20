@@ -40,6 +40,7 @@ d2l-simple-overlay,d2l-simple-overlay,Brightspace/simple-overlay.git#semver:^3
 d2l-status-indicator,d2l-status-indicator,BrightspaceUI/status-indicator#semver:^3
 d2l-table,d2l-table,BrightspaceUI/table#semver:^2
 d2l-tabs,d2l-tabs,BrightspaceUI/tabs#semver:^1
+d2l-time-picker,d2l-time-picker,BrightspaceUI/time-picker#semver:^2
 d2l-tooltip,d2l-tooltip,BrightspaceUI/tooltip#semver:^3
 d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
@@ -47,5 +48,3 @@ lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
 siren-parser-import,siren-parser,^8.0.0
 stickyfill,stickyfilljs,^2.1.0
-d2l-time-picker,d2l-time-picker,BrightspaceUI/time-picker#semver:^2.0.0
-
