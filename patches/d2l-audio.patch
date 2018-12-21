@@ -1,0 +1,102 @@
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index c20b096..fd75f58 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -9,18 +9,13 @@ jobs:
+       - checkout
+       - restore_cache:
+           key: v1-package-{{ checksum "package.json" }}
+-      - restore_cache:
+-          key: v1-bower-{{ checksum "bower.json" }}
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
+       - run: npm install
+       - run: npm test
+       - save_cache:
+           paths:
+             - node_modules
+           key: v1-package-{{ checksum "package.json" }}
+-      - save_cache:
+-          paths:
+-            - bower_components
+-          key: v1-bower-{{ checksum "bower.json" }}
+ 
+   publish:
+     docker:
+@@ -28,15 +23,17 @@ jobs:
+ 
+     steps:
+       - checkout
+-      - run: npm install artifactory-bower-publisher
+-      - run: ./node_modules/.bin/artifactory-bower-publisher -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASS -a https://d2lartifacts.artifactoryonline.com/d2lartifacts/simple/bower-local/polymer -n d2l-audio
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
++      - run: sudo npm install -g publish
++      - run: publish
+ 
+ workflows:
+   version: 2
+ 
+   build-and-publish:
+     jobs:
+-      - build
++      - build:
++          context: ci-read
+       - publish:
+           context: ci-write
+           requires:
+diff --git a/.eslintrc b/.eslintrc
+index 0aea090..33029dc 100644
+--- a/.eslintrc
++++ b/.eslintrc
+@@ -1,5 +1,5 @@
+ {
+-  "extends": "brightspace/polymer-config",
++  "extends": "brightspace/polymer-3-config",
+ 	"globals": {
+     "D2LMediaBehavior": true
+   }
+diff --git a/package.json b/package.json
+index d3ca413..1113321 100644
+--- a/package.json
++++ b/package.json
+@@ -6,11 +6,11 @@
+   },
+   "homepage": "https://github.com/Brightspace/d2l-audio",
+   "name": "@d2l/audio",
+-  "version": "0.0.1",
++  "version": "3.0.0",
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+     "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "lint:wc": "polymer lint",
++    "lint:wc": "polymer lint *.js",
+     "start": "polymer serve",
+     "test": "polymer test -l chrome",
+     "posttest": "npm run lint"
+@@ -32,10 +32,9 @@
+     "@polymer/iron-component-page": "^4.0.0",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
+     "babel-eslint": "^10.0.1",
+-    "bower-art-resolver": "^2.0.6",
+-    "eslint": "^3.19.0",
+-    "eslint-config-brightspace": "^0.2.4",
+-    "eslint-plugin-html": "^1.7.0",
++    "eslint": "^4.15.0",
++    "eslint-config-brightspace": "^0.4.0",
++    "eslint-plugin-html": "^4.0.1",
+     "polymer-cli": "^1.9.3",
+     "wct-browser-legacy": "^1.0.1"
+   },
+diff --git a/test/.eslintrc b/test/.eslintrc
+new file mode 100644
+index 0000000..31b3d50
+--- /dev/null
++++ b/test/.eslintrc
+@@ -0,0 +1,8 @@
++{
++  "globals": {
++    "fixture": true,
++    "suite": true,
++    "test": true,
++    "assert": true
++  }
++}
