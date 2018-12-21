@@ -5,6 +5,7 @@ d2l-button,d2l-button,BrightspaceUI/button#semver:^5
 d2l-button-group,d2l-button-group,BrightspaceUI/button-group#semver:^3
 d2l-card,d2l-card,BrightspaceUI/card#semver:^6
 d2l-colors,d2l-colors,BrightspaceUI/colors#semver:^4
+d2l-content-icons,@d2l/content-icons,^3.0.0
 d2l-course-image,d2l-course-image,Brightspace/course-image#semver:^3
 d2l-cs-video-ui,d2l-cs-video-ui,Brightspace/d2l-class-stream-video-ui#semver:^3
 d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7
