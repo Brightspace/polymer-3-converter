@@ -1,0 +1,61 @@
+diff --git a/internal/opt-out-reason-selector.js b/internal/opt-out-reason-selector.js
+index 489d7cd..966d8bb 100644
+--- a/internal/opt-out-reason-selector.js
++++ b/internal/opt-out-reason-selector.js
+@@ -3,7 +3,6 @@ import 'd2l-inputs/d2l-input-shared-styles.js';
+ import '../d2l-opt-out-reason.js';
+ import './translate-behaviour.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+-import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ const $_documentContainer = document.createElement('template');
+
+ $_documentContainer.innerHTML = `<dom-module id="opt-out-reason-selector">
+@@ -61,7 +60,7 @@ $_documentContainer.innerHTML = `<dom-module id="opt-out-reason-selector">
+ 			<slot id="options-slot" on-slotchange="_onSlotChanged"></slot>
+ 		</div>
+ 	</template>
+-
++
+ </dom-module>`;
+
+ document.head.appendChild($_documentContainer.content);
+@@ -89,21 +88,7 @@ Polymer({
+ 	],
+
+ 	attached: function() {
+-		// Polymer 1 compatability
+-		if (this.$['options-slot'].tagName !== 'SLOT') {
+-			this._observer = dom(this.$.options).observeNodes(this._onSlotChanged.bind(this));
+-			this._onSlotChanged();
+-		} else {
+-			// This is required for Safari to work correctly.
+-			this._onSlotChanged();
+-		}
+-	},
+-
+-	detached: function() {
+-		// Polymer 1 compatability
+-		if (this._observer && this.$['options-slot'].tagName !== 'SLOT') {
+-			dom(this.$.options).unobserveNodes(this._observer);
+-		}
++		this._onSlotChanged();
+ 	},
+
+ 	_onSlotChanged: function() {
+@@ -113,15 +98,7 @@ Polymer({
+ 		 */
+
+ 		this.$.selector.selectedIndex = 0;
+-		var children = [];
+-
+-		if (this.$['options-slot'].tagName === 'SLOT') {
+-			// Polymer 2
+-			children = this.$['options-slot'].assignedNodes({ flatten: true });
+-		} else {
+-			// Polymer 1
+-			children = dom(this.$.options).getEffectiveChildNodes();
+-		}
++		var children = this.$['options-slot'].assignedNodes({ flatten: true });
+
+ 		children = children.filter(function(child) {
+ 			return child && child.tagName === 'D2L-OPT-OUT-REASON' && child.key && child.text;
