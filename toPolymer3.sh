@@ -120,19 +120,6 @@ npm i --save-dev --package-lock-only --no-package-lock polymer-cli@latest
 echo "*** Add babel-eslint to package.json ***"
 npm i --save-dev --package-lock-only --no-package-lock babel-eslint
 
-echo "*** Add @babel/polyfill to package.json (for IE11 test fix) ***"
-npm i --save-dev --package-lock-only --no-package-lock @babel/polyfill
-
-echo "*** Add babel polyfill to test files (for IE11 test fix) ***"
-array=(`find . -path "./test/*.html" -not \( -path "./test/acceptance/*" -o -path "./test/index.html" \)`)
-for line in "${array[@]}"
-do
-	sed -i.original '/webcomponents-bundle.js/i\
-\        <script src=\"..\/..\/@babel\/polyfill\/browser.js\"><\/script>
-' $line
-	rm -f $line.original
-done
-
 echo "*** Remove postinstall from package.json ***"
 sed -i.original "/\"postinstall\":/d" package.json
 
