@@ -1,0 +1,9 @@
+diff --git a/.eslintrc.json b/.eslintrc.json
+index 10677a2..3dacc9b 100644
+--- a/.eslintrc.json
++++ b/.eslintrc.json
+@@ -1,3 +1,3 @@
+ {
+-  "extends": "brightspace/polymer-3-config"
++  "extends": "brightspace/wct-polymer-3-config"
+ }
