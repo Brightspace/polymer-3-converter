@@ -1,0 +1,1194 @@
+From a8957e9e10e706f1f16c4a14f3b53b0c5af092b5 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Mon, 31 Dec 2018 11:29:00 -0800
+Subject: [PATCH] remove unneeded function, and fix whitespace.
+
+---
+ d2l-date-picker-behavior.js    |  10 ---
+ test/d2l-date-picker_test.html | 174 ++++++++++++++++++++---------------------
+ 2 files changed, 87 insertions(+), 97 deletions(-)
+
+diff --git a/d2l-date-picker-behavior.js b/d2l-date-picker-behavior.js
+index 4f78f7b..9fd182d 100644
+--- a/d2l-date-picker-behavior.js
++++ b/d2l-date-picker-behavior.js
+@@ -67,16 +67,6 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 		this._setUpChangeEventListener();
+ 	},
+ 
+-	attached: function() {
+-		var buttons = document.getElementsByClassName('vaadin-date-picker-overlay paper-button-0');
+-
+-		fastdom.mutate(function() {
+-			for (var i = 0; i < buttons.length; i++) {
+-				buttons[i].style.fontFamily = 'inherit';
+-			}
+-		});
+-	},
+-
+ 	detached: function() {
+ 		this._changeListener = null;
+ 	},
+diff --git a/test/d2l-date-picker_test.html b/test/d2l-date-picker_test.html
+index f655bac..081066d 100644
+--- a/test/d2l-date-picker_test.html
++++ b/test/d2l-date-picker_test.html
+@@ -21,102 +21,102 @@
+ 		</test-fixture>
+ 
+ 		<script type="module">
+-import '@polymer/iron-test-helpers/mock-interactions.js';
+-import '../d2l-date-picker.js';
+-import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
+-describe('d2l-date-picker', function() {
+-	var elem;
+-	describe('basic', function() {
+-		it('should instantiate the element', function() {
+-			elem = fixture('basic');
+-			expect(elem.is).to.equal('d2l-date-picker');
+-		});
+-	});
+-	describe('value', function() {
+-		describe('value tests', function() {
+-			beforeEach(function() {
+-				elem = fixture('basic');
+-			});
++			import '@polymer/iron-test-helpers/mock-interactions.js';
++			import '../d2l-date-picker.js';
++			import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
++			describe('d2l-date-picker', function() {
++				var elem;
++				describe('basic', function() {
++					it('should instantiate the element', function() {
++						elem = fixture('basic');
++						expect(elem.is).to.equal('d2l-date-picker');
++					});
++				});
++				describe('value', function() {
++					describe('value tests', function() {
++						beforeEach(function() {
++							elem = fixture('basic');
++						});
+ 
+-			it('should default value to empty', function() {
+-				expect(elem.value).to.be.empty;
+-				expect(elem.hasAttribute('value')).to.be.true;
+-				expect(elem.$$('input').value).to.be.empty;
+-			});
++						it('should default value to empty', function() {
++							expect(elem.value).to.be.empty;
++							expect(elem.hasAttribute('value')).to.be.true;
++							expect(elem.$$('input').value).to.be.empty;
++						});
+ 
+-			it('should set property when setting attribute', function() {
+-				elem.setAttribute('value', '2017-07-01');
+-				expect(elem.value).to.equal('2017-07-01');
+-			});
++						it('should set property when setting attribute', function() {
++							elem.setAttribute('value', '2017-07-01');
++							expect(elem.value).to.equal('2017-07-01');
++						});
+ 
+-			it('should set attribute when setting value', function() {
+-				elem.value = '2017-07-01';
+-				expect(elem.getAttribute('value')).to.equal('2017-07-01');
+-			});
++						it('should set attribute when setting value', function() {
++							elem.value = '2017-07-01';
++							expect(elem.getAttribute('value')).to.equal('2017-07-01');
++						});
+ 
+-			it('should set input when element value set', function(done) {
+-				elem.value = '2017-06-01';
+-				afterNextRender(elem.$$('input'), () => {
+-					expect(elem.$$('input').value).to.equal('6/1/2017');
+-					done();
+-				});
+-			});
++						it('should set input when element value set', function(done) {
++							elem.value = '2017-06-01';
++							afterNextRender(elem.$$('input'), () => {
++								expect(elem.$$('input').value).to.equal('6/1/2017');
++								done();
++							});
++						});
+ 
+-			it('should set vaadin picker when element value set', function() {
+-				elem.value = '2017-06-01';
+-				expect(elem.$$('vaadin-date-picker-light').value).to.equal('2017-06-01');
+-			});
++						it('should set vaadin picker when element value set', function() {
++							elem.value = '2017-06-01';
++							expect(elem.$$('vaadin-date-picker-light').value).to.equal('2017-06-01');
++						});
+ 
+-			it('should set element value when vaadin picker value set', function() {
+-				elem.$$('vaadin-date-picker-light').value = '2017-07-01';
+-				expect(elem.value).to.equal('2017-07-01');
+-			});
+-		});
+-		describe('value-change-event', function() {
+-			beforeEach(function() {
+-				elem = fixture('basic');
+-			});
+-			it('should fire d2l-date-picker-value-changed event when vaadin element is changed', function(done) {
+-				var input = elem.$$('vaadin-date-picker-light');
+-				elem.addEventListener('d2l-date-picker-value-changed', function(e) {
+-					expect(e.target).to.equal(elem);
+-					expect(e.detail.value).to.equal('2017-07-01');
+-					done();
+-				});
+-				input.value = '2017-07-01';
+-			});
++						it('should set element value when vaadin picker value set', function() {
++							elem.$$('vaadin-date-picker-light').value = '2017-07-01';
++							expect(elem.value).to.equal('2017-07-01');
++						});
++					});
++					describe('value-change-event', function() {
++						beforeEach(function() {
++							elem = fixture('basic');
++						});
++						it('should fire d2l-date-picker-value-changed event when vaadin element is changed', function(done) {
++							var input = elem.$$('vaadin-date-picker-light');
++							elem.addEventListener('d2l-date-picker-value-changed', function(e) {
++								expect(e.target).to.equal(elem);
++								expect(e.detail.value).to.equal('2017-07-01');
++								done();
++							});
++							input.value = '2017-07-01';
++						});
+ 
+-			it('should fire d2l-date-picker-value-changed event when element is changed', function(done) {
+-				elem.addEventListener('d2l-date-picker-value-changed', function(e) {
+-					expect(e.target).to.equal(elem);
+-					expect(e.detail.value).to.equal('2017-07-01');
+-					done();
++						it('should fire d2l-date-picker-value-changed event when element is changed', function(done) {
++							elem.addEventListener('d2l-date-picker-value-changed', function(e) {
++								expect(e.target).to.equal(elem);
++								expect(e.detail.value).to.equal('2017-07-01');
++								done();
++							});
++							elem.value = '2017-07-01';
++						});
++					});
+ 				});
+-				elem.value = '2017-07-01';
+-			});
+-		});
+-	});
+-	describe('focus management', function() {
+-		beforeEach(function() {
+-			elem = fixture('basic');
+-		});
+-		it('should fire focus event when custom element is focused', function(done) {
+-			elem.addEventListener('focus', function(e) {
+-				expect(e.target).to.equal(elem);
+-				done();
+-			});
+-			MockInteractions.focus(elem);
+-		});
++				describe('focus management', function() {
++					beforeEach(function() {
++						elem = fixture('basic');
++					});
++					it('should fire focus event when custom element is focused', function(done) {
++						elem.addEventListener('focus', function(e) {
++							expect(e.target).to.equal(elem);
++							done();
++						});
++						MockInteractions.focus(elem);
++					});
+ 
+-		it('should fire focus event when input element is focused', function(done) {
+-			elem.addEventListener('focus', function(e) {
+-				expect(e.target).to.equal(elem);
+-				done();
++					it('should fire focus event when input element is focused', function(done) {
++						elem.addEventListener('focus', function(e) {
++							expect(e.target).to.equal(elem);
++							done();
++						});
++						MockInteractions.focus(elem.$$('input'));
++					});
++				});
+ 			});
+-			MockInteractions.focus(elem.$$('input'));
+-		});
+-	});
+-});
+-</script>
++		</script>
+ 	</body>
+ </html>
+-- 
+2.15.1.windows.2
+
+From 25bb9db4f52823bd30894a2c1075663b36dc3083 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 17:58:02 -0800
+Subject: [PATCH] fix linting error
+
+---
+ .eslintignore   | 1 +
+ .gitignore      | 2 --
+ demo/index.html | 3 ++-
+ package.json    | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/.eslintignore b/.eslintignore
+index 58d9402..796973d 100644
+--- a/.eslintignore
++++ b/.eslintignore
+@@ -1,2 +1,3 @@
++node_modules
+ test/acceptance/*
+ reports
+diff --git a/.gitignore b/.gitignore
+index 2402785..d5f19d8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,2 @@
+ node_modules
+ package-lock.json
+-
+-node_modules
+diff --git a/demo/index.html b/demo/index.html
+index de492a6..f857363 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -14,7 +14,8 @@
+ 	<script type="module" src="./d2l-date-picker-button-demo.js"></script>
+ 
+ 	<custom-style>
+-		<style is="custom-style" include="demo-pages-shared-styles"></style>
++		<style is="custom-style" include="demo-pages-shared-styles">
++		</style>
+ 	</custom-style>
+   </head>
+   <body>
+diff --git a/package.json b/package.json
+index d0aa15f..15870f3 100644
+--- a/package.json
++++ b/package.json
+@@ -14,8 +14,8 @@
+   "main": "d2l-date-picker.js",
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "lint:wc": "polymer lint",
++    "lint:js": "eslint . --ext .js,.html test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:wc": "polymer lint -i *.js test/*.html demo/*",
+     "test": "npm run lint && npm run test:polymer:local",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local"
+-- 
+2.15.1.windows.2
+
+From 30b1391ffd9c418c6cac9e84856345ed075ed4b9 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 16:22:32 -0800
+Subject: [PATCH] remove unused file
+
+---
+ build/default/index.html | 15 ---------------
+ 1 file changed, 15 deletions(-)
+ delete mode 100644 build/default/index.html
+
+diff --git a/build/default/index.html b/build/default/index.html
+deleted file mode 100644
+index c981719..0000000
+--- a/build/default/index.html
++++ /dev/null
+@@ -1,15 +0,0 @@
+-<!DOCTYPE html><html><head>
+-	<meta charset="utf-8">
+-	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+-
+-	<title>d2l-date-picker</title>
+-
+-	<script src="../webcomponentsjs/webcomponents-lite.js"></script>
+-
+-	<link rel="import" href="../iron-component-page/iron-component-page.html">
+-  </head>
+-  <body>
+-	<iron-component-page src="d2l-date-picker.html"></iron-component-page>
+-  
+-
+-</body></html>
+\ No newline at end of file
+-- 
+2.15.1.windows.2
+
+From fd5fd2f562e62960b4ef51c4ab0c06aabab1bdea Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 16:14:36 -0800
+Subject: [PATCH] update dependencies
+
+---
+ package.json | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
+
+diff --git a/package.json b/package.json
+index 6041d36..d0aa15f 100644
+--- a/package.json
++++ b/package.json
+@@ -26,31 +26,25 @@
+     "url": "https://github.com/BrightspaceUI/date-picker/issues"
+   },
+   "devDependencies": {
+-    "@polymer/iron-component-page": "^3.0.0-pre.18",
+-    "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+-    "@polymer/iron-test-helpers": "^3.0.0-pre.18",
++    "@polymer/iron-component-page": "^4.0.1",
++    "@polymer/iron-demo-helpers": "^3.0.2",
++    "@polymer/iron-test-helpers": "^3.0.1",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
+     "async": "^1.5.2",
+     "babel-eslint": "^10.0.1",
+-    "eslint": "^4.15.0",
+-    "eslint-config-brightspace": "^0.4.0",
+-    "eslint-plugin-html": "^4.0.1",
++    "eslint": "^5.11.0",
++    "eslint-config-brightspace": "^0.4.1",
++    "eslint-plugin-html": "^5.0.0",
+     "lodash": "^3.10.1",
+-    "polymer-cli": "^1.9.2",
+-    "wct-browser-legacy": "^1.0.1"
++    "polymer-cli": "^1.9.4",
++    "wct-browser-legacy": "^1.0.2"
+   },
+   "version": "",
+-  "resolutions": {
+-    "inherits": "2.0.3",
+-    "samsam": "1.1.3",
+-    "supports-color": "3.1.2",
+-    "type-detect": "1.0.0"
+-  },
+   "dependencies": {
+-    "@polymer/iron-a11y-keys": "^3.0.0-pre.18",
++    "@polymer/iron-a11y-keys": "^3.0.1",
+     "@polymer/iron-dropdown": "^3.0.1",
+-    "@polymer/iron-input": "^3.0.0-pre.18",
+-    "@polymer/polymer": "^3.0.0",
++    "@polymer/iron-input": "^3.0.1",
++    "@polymer/polymer": "^3.1.0",
+     "@vaadin/vaadin-date-picker": "^3.3.2",
+     "d2l-colors": "BrightspaceUI/colors#semver:^4",
+     "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
+-- 
+2.15.1.windows.2
+
+From 6334e78a2b0d40aa67b8d2511111988fea67dda6 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 13:35:58 -0800
+Subject: [PATCH] make sure events are not duplicated for tests
+
+---
+ d2l-date-picker-behavior.js | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/d2l-date-picker-behavior.js b/d2l-date-picker-behavior.js
+index 5076e74..4f78f7b 100644
+--- a/d2l-date-picker-behavior.js
++++ b/d2l-date-picker-behavior.js
+@@ -88,10 +88,12 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 	},
+ 
+ 	_handleValueChanged: function(e) {
+-		this.dispatchEvent(new CustomEvent('d2l-date-picker-value-changed', {
+-			detail: e.detail,
+-			bubbles: true
+-		}));
++		if (e.target === this) {
++			this.dispatchEvent(new CustomEvent('d2l-date-picker-value-changed', {
++				detail: e.detail,
++				bubbles: true
++			}));
++		}
+ 	},
+ 
+ 	_handleTap: function() {
+@@ -121,10 +123,10 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 		}
+ 	},
+ 
+-	_handleFocus: function() {
++	_handleFocus: function(e) {
+ 		// in shady DOM the input's "focus" event does not bubble,
+ 		// so no need to fire it
+-		if (!useShadow) {
++		if (e.target === this && !useShadow) {
+ 			this.dispatchEvent(new CustomEvent(
+ 				'focus',
+ 				{ bubbles: true, composed: false }
+-- 
+2.15.1.windows.2
+
+From a5978d40e090486f129bcfa2b974e7a22e5f947e Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 13:06:00 -0800
+Subject: [PATCH] fix Edge and IE11 error
+
+---
+ d2l-date-picker-behavior.js | 2 ++
+ d2l-date-picker.js          | 4 +---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/d2l-date-picker-behavior.js b/d2l-date-picker-behavior.js
+index 7c7ec2a..5076e74 100644
+--- a/d2l-date-picker-behavior.js
++++ b/d2l-date-picker-behavior.js
+@@ -1,5 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'fastdom/fastdom.js';
++import './localize-behavior.js';
+ import d2lIntl from 'd2l-intl';
+ import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
+ window.D2L = window.D2L || {};
+@@ -178,5 +179,6 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 
+ /** @polymerBehavior D2L.PolymerBehaviors.DatePicker.DatePickerBehavior */
+ D2L.PolymerBehaviors.DatePicker.DatePickerBehavior = [
++	D2L.PolymerBehaviors.DatePicker.LocalizeBehavior,
+ 	D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl
+ ];
+diff --git a/d2l-date-picker.js b/d2l-date-picker.js
+index eb785cb..f92c6e5 100644
+--- a/d2l-date-picker.js
++++ b/d2l-date-picker.js
+@@ -16,7 +16,6 @@ import 'd2l-offscreen/d2l-offscreen-shared-styles.js';
+ import 'd2l-polymer-behaviors/d2l-id.js';
+ import 'd2l-time-picker/d2l-input-styles.js';
+ import 'fastdom/fastdom.js';
+-import './localize-behavior.js';
+ import './d2l-date-picker-behavior.js';
+ import './d2l-date-picker-style-modules.js';
+ 
+@@ -76,8 +75,7 @@ Polymer({
+ 	is: 'd2l-date-picker',
+ 
+ 	behaviors: [
+-		D2L.PolymerBehaviors.DatePicker.DatePickerBehavior,
+-		D2L.PolymerBehaviors.DatePicker.LocalizeBehavior
++		D2L.PolymerBehaviors.DatePicker.DatePickerBehavior
+ 	],
+ 
+ 	properties: {
+-- 
+2.15.1.windows.2
+
+From 7d4faff234a64f8e40986dbf37bd0ce9d255b545 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 12:34:50 -0800
+Subject: [PATCH] final style tweak to match old
+
+---
+ d2l-date-picker-style-modules.js | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/d2l-date-picker-style-modules.js b/d2l-date-picker-style-modules.js
+index f8cab28..8c8e855 100644
+--- a/d2l-date-picker-style-modules.js
++++ b/d2l-date-picker-style-modules.js
+@@ -35,6 +35,10 @@ var $_documentContainer = html`<dom-module id="d2l-vaadin-overlay-content-styles
+ 				-webkit-mask-image: none;
+ 			}
+ 
++			[part="year-number"], [part="year-separator"] {
++				opacity: 1;
++				transition: none;
++			}
+ 			[part="years"] [part="year-number"][current] {
+ 				color: white;
+ 			}
+-- 
+2.15.1.windows.2
+
+From 84b892be088af479361e8ee98245c792f8fab440 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 26 Dec 2018 12:17:30 -0800
+Subject: [PATCH] tweak styles to match old
+
+---
+ d2l-date-picker-style-modules.js | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/d2l-date-picker-style-modules.js b/d2l-date-picker-style-modules.js
+index 9acc010..f8cab28 100644
+--- a/d2l-date-picker-style-modules.js
++++ b/d2l-date-picker-style-modules.js
+@@ -7,15 +7,11 @@ var $_documentContainer = html`<dom-module id="d2l-vaadin-overlay-content-styles
+ 	<template>
+ 		<style>
+ 			:host {
+-				/*box-sizing: border-box;
+-				max-width: 420px;
+-				max-height: 355px;
+-				*/
+ 				box-shadow: none;
+ 				font-family: inherit;
+ 			}
+ 			[part="overlay"] {
+-				height: 100vh;
++				max-height: 355px;
+ 				width: 420px;
+ 			}
+ 			[part~="overlay-header"] {
+@@ -39,6 +35,10 @@ var $_documentContainer = html`<dom-module id="d2l-vaadin-overlay-content-styles
+ 				-webkit-mask-image: none;
+ 			}
+ 
++			[part="years"] [part="year-number"][current] {
++				color: white;
++			}
++
+ 			[part="years"] [part="year-separator"]::after {
+ 				color: var(--d2l-color-tungsten);
+ 				font-size: 20px;
+-- 
+2.15.1.windows.2
+
+From a229a4cae0e0a7264f8a977f237daf2e6f731760 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Fri, 21 Dec 2018 17:30:46 -0800
+Subject: [PATCH] make iron-input parent of slot to allow for slotted content.
+
+---
+ d2l-date-picker.js                  | 8 ++++----
+ demo/d2l-date-picker-button-demo.js | 4 +---
+ 2 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/d2l-date-picker.js b/d2l-date-picker.js
+index ea4015d..eb785cb 100644
+--- a/d2l-date-picker.js
++++ b/d2l-date-picker.js
+@@ -64,12 +64,12 @@ Polymer({
+ 			<iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
+ 			<iron-a11y-keys target="[[_target]]" keys="up down" on-keys-pressed="onUpDown"></iron-a11y-keys>
+ 
+-			<slot>
+-				<iron-input>
++			<iron-input>
++				<slot>
+ 					<input on-tap="_handleTap" placeholder="{{placeholder}}" class="d2l-input" type="text" on-focus="_handleFocus" aria-describedby$="[[_descriptionId]]" aria-label$="[[label]]" aria-invalid$="[[_computedAriaInvalid(invalid)]]">
+ 					<div id="[[_descriptionId]]" class="d2l-date-picker-description">{{description}}</div>
+-				</iron-input>
+-			</slot>
++				</slot>
++			</iron-input>
+ 		</vaadin-date-picker-light>
+ `,
+ 
+diff --git a/demo/d2l-date-picker-button-demo.js b/demo/d2l-date-picker-button-demo.js
+index a4ebdad..98247b1 100644
+--- a/demo/d2l-date-picker-button-demo.js
++++ b/demo/d2l-date-picker-button-demo.js
+@@ -9,9 +9,7 @@ Polymer({
+ 			}
+ 		</style>
+ 		<d2l-date-picker value="{{value}}">
+-			<iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="_onEnter"></iron-a11y-keys>
+-			<iron-a11y-keys target="[[_target]]" keys="up down" on-keys-pressed="_onUpDown"></iron-a11y-keys>
+-			<button>[[_getButtonText(value)]]</button>
++			<button >[[_getButtonText(value)]]</button>
+ 		</d2l-date-picker>
+ `,
+ 
+-- 
+2.15.1.windows.2
+
+From 1a567be2c90e976379ee03884619e399b63f014b Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Fri, 21 Dec 2018 11:20:23 -0800
+Subject: [PATCH] polymer 3: initial cleanup and styling
+
+---
+ d2l-date-picker-behavior.js         |  32 +++--------
+ d2l-date-picker-style-modules.js    |  86 +++++++++++------------------
+ d2l-date-picker.js                  |  92 +++++++++++++++----------------
+ demo/d2l-date-picker-button-demo.js |  40 ++++++++++++++
+ demo/index.html                     | 104 +++++++++---------------------------
+ package.json                        |  16 +++---
+ test/d2l-date-picker_test.html      |   3 +-
+ 7 files changed, 157 insertions(+), 216 deletions(-)
+ create mode 100644 demo/d2l-date-picker-button-demo.js
+
+diff --git a/d2l-date-picker-behavior.js b/d2l-date-picker-behavior.js
+index 3d1ffc4..7c7ec2a 100644
+--- a/d2l-date-picker-behavior.js
++++ b/d2l-date-picker-behavior.js
+@@ -1,8 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'fastdom/fastdom.js';
+-// WORKAROUND: polymer-modulizer grabs non-existing Element export from polymer-element
+-// TODO: Remove Element reference
+-import { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';
++import d2lIntl from 'd2l-intl';
+ import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
+ window.D2L = window.D2L || {};
+ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+@@ -65,9 +63,7 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 		this._descriptionId = D2L.Id.getUniqueId();
+ 		this._handleValueChanged = this._handleValueChanged.bind(this);
+ 
+-		if (this._isPolymer2()) {
+-			this._setUpChangeEventListenerPolymer2();
+-		}
++		this._setUpChangeEventListener();
+ 	},
+ 
+ 	attached: function() {
+@@ -81,32 +77,15 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 	},
+ 
+ 	detached: function() {
+-		if (this._isPolymer2()) {
+-			this.removeEventListener('value-changed', this._handleValueChanged);
+-		}
+ 		this._changeListener = null;
+ 	},
+ 
+-	_setUpChangeEventListenerPolymer2: function() {
++	_setUpChangeEventListener: function() {
+ 		// on-value-changed got removed for the Polymer2 version of vaadin-date-picker,
+ 		// so for Polymer2 we'll set our own event
+ 		this.addEventListener('value-changed', this._handleValueChanged);
+ 	},
+ 
+-	_isPolymer2: function() {
+-		return !!Element;
+-	},
+-
+-	_handleValueChangedPolymer1: function(e) {
+-		// using the `value-changed` listener sometimes sends 2 events in the
+-		// Polymer 1 vaadin-date-picker when in shadyDom, so this function listens to
+-		// on-value-changed from the vaadin-date-picker (removed in Polymer 2)
+-		if (this._isPolymer2()) {
+-			return;
+-		}
+-		this._handleValueChanged(e);
+-	},
+-
+ 	_handleValueChanged: function(e) {
+ 		this.dispatchEvent(new CustomEvent('d2l-date-picker-value-changed', {
+ 			detail: e.detail,
+@@ -164,11 +143,12 @@ D2L.PolymerBehaviors.DatePicker.DatePickerBehaviorImpl = {
+ 			today: this.localize('today'),
+ 			cancel: this.localize('cancel'),
+ 			formatDate: function(date) {
+-				return this.formatDate(date);
++				return this.formatDate(new Date(date.year, date.month, date.day));
+ 			}.bind(this),
+ 			parseDate: function(dateString) {
+ 				try {
+-					return this.parseDate(dateString);
++					var parsed = this.parseDate(dateString);
++					return { day: parsed.getDate(), month: parsed.getMonth(), year: parsed.getFullYear() };
+ 				} catch (exception) {
+ 					return null;
+ 				}
+diff --git a/d2l-date-picker-style-modules.js b/d2l-date-picker-style-modules.js
+index 80441cc..9acc010 100644
+--- a/d2l-date-picker-style-modules.js
++++ b/d2l-date-picker-style-modules.js
+@@ -1,56 +1,23 @@
++
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-colors/d2l-colors.js';
+-import 'vaadin-date-picker/vaadin-date-picker-styles.js';
+-const $_documentContainer = document.createElement('template');
++import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+ 
+-$_documentContainer.innerHTML = `<dom-module id="d2l-vaadin-date-picker-polymer1-styles">
++var $_documentContainer = html`<dom-module id="d2l-vaadin-overlay-content-styles" theme-for="vaadin-date-picker-overlay vaadin-date-picker-overlay-content">
+ 	<template>
+ 		<style>
+-			:host(:not([custom-overlay-style])) vaadin-date-picker-light {
+-				--vaadin-date-picker-overlay: {
+-					font-family: inherit;
+-					max-height: 355px;
+-				};
+-			}
+-
+-			vaadin-date-picker-light {
+-				--primary-color: var(--d2l-color-celestine);
+-				--light-primary-color: var(--d2l-color-celestine-plus-1);
+-				--dark-theme-background-color: var(--d2l-color-ferrite);
+-				--dark-theme-secondary-color: #ffffff;
+-				--primary-text-color: var(--d2l-color-ferrite);
+-				--secondary-text-color: var(--d2l-color-tungsten);
+-
+-				--vaadin-date-picker-yearscroller: {
+-					font-family: inherit;
+-				};
+-				--vaadin-date-picker-header: {
+-					font-family: inherit;
+-				};
+-				--vaadin-date-picker-calendar-title: {
+-					font-family: inherit;
+-				};
+-				--vaadin-date-picker-calendar-cell: {
+-					font-family: inherit;
+-				};
+-				--vaadin-date-picker-footer: {
+-					font-family: inherit;
+-				};
+-				--vaadin-date-picker-calendar: {
+-					font-family: inherit;
+-				};
+-			}
+-		</style>
+-	</template>
+-</dom-module><dom-module id="d2l-vaadin-overlay-styles" theme-for="vaadin-date-picker-overlay">
+-	<template>
+-		<style include="vaadin-date-picker-overlay-default-theme">
+ 			:host {
++				/*box-sizing: border-box;
++				max-width: 420px;
+ 				max-height: 355px;
+-				@apply --vaadin-date-picker-overlay;
++				*/
++				box-shadow: none;
+ 				font-family: inherit;
+ 			}
+-
++			[part="overlay"] {
++				height: 100vh;
++				width: 420px;
++			}
+ 			[part~="overlay-header"] {
+ 				background-color: var(--d2l-color-celestine);
+ 				color: white;
+@@ -59,19 +26,22 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-vaadin-date-picker-polymer1
+ 			[part~="toolbar"] {
+ 				background: white;
+ 				box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.5);
++				margin-right: 0;
++			}
++
++			[part~="months"] {
++				-webkit-mask-image: none;
+ 			}
+ 
+ 			[part~="years"] {
+ 				color: white;
+ 				background-color: var(--d2l-color-ferrite);
++				-webkit-mask-image: none;
+ 			}
+ 
+-			[part~="year-separator"] {
++			[part="years"] [part="year-separator"]::after {
+ 				color: var(--d2l-color-tungsten);
+-			}
+-
+-			[part~="year-separator"]::after {
+-				font-size: 5px;
++				font-size: 20px;
+ 			}
+ 
+ 			[part~="years-toggle-button"] {
+@@ -80,7 +50,11 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-vaadin-date-picker-polymer1
+ 			}
+ 		</style>
+ 	</template>
+-</dom-module><dom-module id="d2l-vaadin-month-calendar-styles" theme-for="vaadin-month-calendar">
++</dom-module>`;
++
++document.head.appendChild($_documentContainer.content);
++
++$_documentContainer = html`<dom-module id="d2l-vaadin-month-calendar-styles" theme-for="vaadin-month-calendar">
+ 	<template>
+ 		<style include="vaadin-month-calendar-default-theme">
+ 			:host {
+@@ -117,19 +91,19 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-vaadin-date-picker-polymer1
+ 			}
+ 		</style>
+ 	</template>
+-</dom-module><dom-module id="d2l-vaadin-button-styles" theme-for="vaadin-button">
++</dom-module>`;
++
++document.head.appendChild($_documentContainer.content);
++
++$_documentContainer = html`<dom-module id="d2l-vaadin-button-styles" theme-for="vaadin-button">
+ 	<template>
+ 		<style>
+ 			:host {
+-				font-family: inherit;
+-			}
+-
+-			[part~="button"] {
+ 				background: none;
+ 				font-family: inherit;
++				text-transform: uppercase;
+ 				color: var(--d2l-color-celestine);
+ 				font-size: 14px;
+-				text-transform: uppercase;
+ 				border: none;
+ 				cursor: pointer;
+ 				font-weight: 500;
+diff --git a/d2l-date-picker.js b/d2l-date-picker.js
+index 513801a..ea4015d 100644
+--- a/d2l-date-picker.js
++++ b/d2l-date-picker.js
+@@ -4,16 +4,13 @@ A Date Picker for D2L Brightspace
+ 
+ @demo demo/index.html
+ */
+-/*
+-  FIXME(polymer-modulizer): the above comments were extracted
+-  from HTML and may be out of place here. Review them and
+-  then delete this comment!
+-*/
+-import '@polymer/polymer/polymer-legacy.js';
+ 
+-import 'vaadin-date-picker/vaadin-date-picker-light.js';
++import '@polymer/polymer/polymer-legacy.js';
+ import '@polymer/iron-input/iron-input.js';
+ import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
++import '@polymer/iron-dropdown/iron-dropdown.js';
++import '@vaadin/vaadin-date-picker/vaadin-date-picker-light.js';
++
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-offscreen/d2l-offscreen-shared-styles.js';
+ import 'd2l-polymer-behaviors/d2l-id.js';
+@@ -22,11 +19,13 @@ import 'fastdom/fastdom.js';
+ import './localize-behavior.js';
+ import './d2l-date-picker-behavior.js';
+ import './d2l-date-picker-style-modules.js';
++
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
++
+ Polymer({
+-  _template: html`
+-		<style is="custom-style" include="d2l-input-styles d2l-offscreen-shared-styles d2l-vaadin-date-picker-polymer1-styles">
++	_template: html`
++		<style is="custom-style" include="d2l-input-styles d2l-offscreen-shared-styles">
+ 			:host {
+ 				display: block;
+ 			}
+@@ -60,12 +59,13 @@ Polymer({
+ 		</style>
+ 
+ 		<label>[[label]]</label>
+-		<vaadin-date-picker-light min="[[min]]" max="[[max]]" value="{{value}}" on-value-changed="_handleValueChangedPolymer1">
++
++		<vaadin-date-picker-light min="[[min]]" max="[[max]]" value="{{value}}" on-value-changed="_handleValueChanged">
+ 			<iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
+ 			<iron-a11y-keys target="[[_target]]" keys="up down" on-keys-pressed="onUpDown"></iron-a11y-keys>
++
+ 			<slot>
+-				<!-- .input class needed for polymer 1 version of vaadin-date-picker-light -->
+-				<iron-input class="input">
++				<iron-input>
+ 					<input on-tap="_handleTap" placeholder="{{placeholder}}" class="d2l-input" type="text" on-focus="_handleFocus" aria-describedby$="[[_descriptionId]]" aria-label$="[[label]]" aria-invalid$="[[_computedAriaInvalid(invalid)]]">
+ 					<div id="[[_descriptionId]]" class="d2l-date-picker-description">{{description}}</div>
+ 				</iron-input>
+@@ -73,38 +73,38 @@ Polymer({
+ 		</vaadin-date-picker-light>
+ `,
+ 
+-  is: 'd2l-date-picker',
+-
+-  behaviors: [
+-	  D2L.PolymerBehaviors.DatePicker.DatePickerBehavior,
+-	  D2L.PolymerBehaviors.DatePicker.LocalizeBehavior
+-  ],
+-
+-  properties: {
+-	  invalid: {
+-		  type: Boolean,
+-		  value: false,
+-		  reflectToAttribute: true
+-	  }
+-  },
+-
+-  ready: function() {
+-	  var input = this.$$('input');
+-	  if (input) {
+-		  this._target = this.$$('input');
+-	  }
+-  },
+-
+-  focus: function() {
+-	  var input = this.$$('input');
+-	  if (input) {
+-		  fastdom.mutate(function() {
+-			  input.focus();
+-		  });
+-	  }
+-  },
+-
+-  _computedAriaInvalid: function(invalid) {
+-	  return invalid ? 'true' : 'false';
+-  }
++	is: 'd2l-date-picker',
++
++	behaviors: [
++		D2L.PolymerBehaviors.DatePicker.DatePickerBehavior,
++		D2L.PolymerBehaviors.DatePicker.LocalizeBehavior
++	],
++
++	properties: {
++		invalid: {
++			type: Boolean,
++			value: false,
++			reflectToAttribute: true
++		}
++	},
++
++	ready: function() {
++		var input = this.$$('input');
++		if (input) {
++			this._target = this.$$('input');
++		}
++	},
++
++	focus: function() {
++		var input = this.$$('input');
++		if (input) {
++			fastdom.mutate(function() {
++				input.focus();
++			});
++		}
++	},
++
++	_computedAriaInvalid: function(invalid) {
++		return invalid ? 'true' : 'false';
++	}
+ });
+diff --git a/demo/d2l-date-picker-button-demo.js b/demo/d2l-date-picker-button-demo.js
+new file mode 100644
+index 0000000..a4ebdad
+--- /dev/null
++++ b/demo/d2l-date-picker-button-demo.js
+@@ -0,0 +1,40 @@
++
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
++import { html } from '@polymer/polymer/lib/utils/html-tag.js';
++Polymer({
++	_template: html`
++		<style>
++			button {
++				width: 100%;
++			}
++		</style>
++		<d2l-date-picker value="{{value}}">
++			<iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="_onEnter"></iron-a11y-keys>
++			<iron-a11y-keys target="[[_target]]" keys="up down" on-keys-pressed="_onUpDown"></iron-a11y-keys>
++			<button>[[_getButtonText(value)]]</button>
++		</d2l-date-picker>
++`,
++
++	is: 'd2l-date-picker-button-demo',
++
++	properties: {
++		value: {
++			type: String,
++			value: null
++		},
++		_target: Object
++	},
++	ready: function() {
++		this._target = this.$$('button');
++	},
++	_getButtonText: function(value) {
++		return value || 'Click Me!';
++	},
++	_onEnter: function(e) {
++		this.$$('d2l-date-picker').onEnter(e);
++	},
++	_onUpDown: function(e) {
++		this.$$('d2l-date-picker').onUpDown(e);
++	}
++});
++
+diff --git a/demo/index.html b/demo/index.html
+index b7a87d7..de492a6 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -11,89 +11,33 @@
+ 	<script type="module" src="../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+ 	<script type="module" src="../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+ 	<script type="module" src="../d2l-date-picker.js"></script>
++	<script type="module" src="./d2l-date-picker-button-demo.js"></script>
+ 
+-	<!-- FIXME(polymer-modulizer):
+-		These imperative modules that innerHTML your HTML are
+-		a hacky way to be sure that any mixins in included style
+-		modules are ready before any elements that reference them are
+-		instantiated, otherwise the CSS @apply mixin polyfill won't be
+-		able to expand the underlying CSS custom properties.
+-		See: https://github.com/Polymer/polymer-modulizer/issues/154
+-		-->
+-	<script type="module">
+-const $_documentContainer = document.createElement('template');
+-
+-$_documentContainer.innerHTML = `<custom-style>
+-	  <style is="custom-style" include="demo-pages-shared-styles"></style>
+-	</custom-style>`;
+-
+-document.body.appendChild($_documentContainer.content);
+-</script>
++	<custom-style>
++		<style is="custom-style" include="demo-pages-shared-styles"></style>
++	</custom-style>
+   </head>
+   <body>
+ 	<script type="module">
+-const $_documentContainer = document.createElement('template');
+-
+-$_documentContainer.innerHTML = `<dom-module id="d2l-date-picker-button-demo">
+-		<template>
+-			<style>
+-				button {
+-					width: 100%;
+-				}
+-			</style>
+-			<d2l-date-picker value="{{value}}">
+-				<iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="_onEnter"></iron-a11y-keys>
+-				<iron-a11y-keys target="[[_target]]" keys="up down" on-keys-pressed="_onUpDown"></iron-a11y-keys>
+-				<button>[[_getButtonText(value)]]</button>
+-			</d2l-date-picker>
+-		</template>
+-		<script>
+-			Polymer({
+-				is: 'd2l-date-picker-button-demo',
+-				properties: {
+-					value: {
+-						type: String,
+-						value: null
+-					},
+-					_target: Object
+-				},
+-				ready: function() {
+-					this._target = this.\$\$('button');
+-				},
+-				_getButtonText: function(value) {
+-					return value || 'Click Me!';
+-				},
+-				_onEnter: function(e) {
+-					this.\$\$('d2l-date-picker').onEnter(e);
+-				},
+-				_onUpDown: function(e) {
+-					this.\$\$('d2l-date-picker').onUpDown(e);
+-				}
+-			});
+-		&lt;/script>
+-	</dom-module>`;
+-
+-document.body.appendChild($_documentContainer.content);
+-</script> type="module">
+-const $_documentContainer = document.createElement('template');
+-
+-$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
+-		<h3>Basic d2l-date-picker demo</h3>
+-		<demo-snippet>
+-			<template>
+-				<d2l-date-picker></d2l-date-picker>
+-			</template>
+-		</demo-snippet>
+-
+-		<h3>d2l-date-picker with slotted content</h3>
+-		<demo-snippet>
+-			<template>
+-				<d2l-date-picker-button-demo></d2l-date-picker-button-demo>
+-			</template>
+-		</demo-snippet>
+-	</div>`;
+-
+-document.body.appendChild($_documentContainer.content);
+-</script>
++		const $_documentContainer = document.createElement('template');
++
++		$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
++				<h3>Basic d2l-date-picker demo</h3>
++				<demo-snippet>
++					<template strip-whitespace>
++						<d2l-date-picker></d2l-date-picker>
++					</template>
++				</demo-snippet>
++
++				<h3>d2l-date-picker with slotted content</h3>
++				<demo-snippet>
++					<template strip-whitespace>
++						<d2l-date-picker-button-demo></d2l-date-picker-button-demo>
++					</template>
++				</demo-snippet>
++			</div>`;
++
++		document.body.appendChild($_documentContainer.content);
++	</script>
+   </body>
+ </html>
+diff --git a/package.json b/package.json
+index d213621..6041d36 100644
+--- a/package.json
++++ b/package.json
+@@ -26,15 +26,16 @@
+     "url": "https://github.com/BrightspaceUI/date-picker/issues"
+   },
+   "devDependencies": {
+-    "@babel/polyfill": "^7.0.0",
+     "@polymer/iron-component-page": "^3.0.0-pre.18",
+     "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+     "@polymer/iron-test-helpers": "^3.0.0-pre.18",
+     "@webcomponents/webcomponentsjs": "^2.2.1",
++    "async": "^1.5.2",
+     "babel-eslint": "^10.0.1",
+     "eslint": "^4.15.0",
+     "eslint-config-brightspace": "^0.4.0",
+     "eslint-plugin-html": "^4.0.1",
++    "lodash": "^3.10.1",
+     "polymer-cli": "^1.9.2",
+     "wct-browser-legacy": "^1.0.1"
+   },
+@@ -46,13 +47,16 @@
+     "type-detect": "1.0.0"
+   },
+   "dependencies": {
+-    "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
++    "@polymer/iron-a11y-keys": "^3.0.0-pre.18",
++    "@polymer/iron-dropdown": "^3.0.1",
++    "@polymer/iron-input": "^3.0.0-pre.18",
++    "@polymer/polymer": "^3.0.0",
++    "@vaadin/vaadin-date-picker": "^3.3.2",
+     "d2l-colors": "BrightspaceUI/colors#semver:^4",
+-    "fastdom": "^1.0.8",
++    "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
+     "d2l-offscreen": "BrightspaceUI/offscreen#semver:^4",
+     "d2l-polymer-behaviors": "Brightspace/d2l-polymer-behaviors-ui#semver:^2",
+-    "@polymer/iron-a11y-keys": "^3.0.0-pre.18",
+-    "@polymer/iron-input": "^3.0.0-pre.18",
+-    "@polymer/polymer": "^3.0.0"
++    "d2l-time-picker": "BrightspaceUI/time-picker#semver:^2",
++    "fastdom": "^1.0.8"
+   }
+ }
+diff --git a/test/d2l-date-picker_test.html b/test/d2l-date-picker_test.html
+index 9953ebf..f655bac 100644
+--- a/test/d2l-date-picker_test.html
++++ b/test/d2l-date-picker_test.html
+@@ -6,7 +6,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+ 
+ 		<title>d2l-date-picker test</title>
+-		<script src="../../@babel/polyfill/browser.js"></script>
+ 		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../wct-browser-legacy/browser.js"></script>
+ 
+@@ -16,7 +15,7 @@
+ 
+ 	<body>
+ 		<test-fixture id="basic">
+-			<template>
++			<template strip-whitespace>
+ 				<d2l-date-picker label="basic"></d2l-date-picker>
+ 			</template>
+ 		</test-fixture>
+-- 
+2.15.1.windows.2
+
