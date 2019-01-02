@@ -18,6 +18,7 @@ d2l-fetch-siren-entity-behavior,d2l-fetch-siren-entity-behavior,Brightspace/d2l-
 d2l-hierarchical-view,d2l-hierarchical-view,BrightspaceUI/hierarchical-view#semver:^2
 d2l-hm-constants-behavior,d2l-hypermedia-constants,^6
 d2l-icons,d2l-icons,BrightspaceUI/icons#semver:^6
+d2l-image,d2l-image,Brightspace/d2l-image#semver:^3
 d2l-image-banner-overlay,d2l-image-banner-overlay,Brightspace/d2l-image-banner-overlay#semver:^4
 d2l-image-selector,d2l-image-selector,Brightspace/image-selector#semver:^4
 d2l-inputs,d2l-inputs,BrightspaceUI/inputs#semver:^2
