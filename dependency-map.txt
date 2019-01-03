@@ -12,6 +12,7 @@ d2l-cs-video-ui,d2l-cs-video-ui,Brightspace/d2l-class-stream-video-ui#semver:^3
 d2l-date-picker,d2l-date-picker,BrightspaceUI/date-picker#semver:^2
 d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7
 d2l-enrollments,d2l-enrollments,BrightspaceHypermediaComponents/enrollments#semver:^1
+d2l-evidence-tile,d2l-evidence-tile,@d2l/evidence-tile:^6
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2
 d2l-fetch-siren-entity-behavior,d2l-fetch-siren-entity-behavior,Brightspace/d2l-fetch-siren-entity-behavior.git#semver:^6
