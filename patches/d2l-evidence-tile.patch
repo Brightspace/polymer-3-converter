@@ -1,0 +1,134 @@
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index 218bd22..fd75f58 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -7,23 +7,15 @@ jobs:
+ 
+     steps:
+       - checkout
+-
+       - restore_cache:
+           key: v1-package-{{ checksum "package.json" }}
+-      - restore_cache:
+-          key: v1-bower-{{ checksum "bower.json" }}
+-
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
+       - run: npm install
+       - run: npm test
+-
+       - save_cache:
+           paths:
+             - node_modules
+           key: v1-package-{{ checksum "package.json" }}
+-      - save_cache:
+-          paths:
+-            - bower_components
+-          key: v1-bower-{{ checksum "bower.json" }}
+ 
+   publish:
+     docker:
+@@ -31,15 +23,17 @@ jobs:
+ 
+     steps:
+       - checkout
+-      - run: npm install artifactory-bower-publisher
+-      - run: ./node_modules/.bin/artifactory-bower-publisher -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASS -a https://d2lartifacts.artifactoryonline.com/d2lartifacts/simple/bower-local/polymer -n d2l-evidence-tile
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
++      - run: sudo npm install -g publish
++      - run: publish
+ 
+ workflows:
+   version: 2
+ 
+   build-and-publish:
+     jobs:
+-      - build
++      - build:
++          context: ci-read
+       - publish:
+           context: ci-write
+           requires:
+diff --git a/demo/index.html b/demo/index.html
+index e36ee50..0355b59 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -1,9 +1,11 @@
+ <!doctype html>
+ <html>
+   <head>
+-	<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-		<script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+-		<script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
++	<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
++	<script type="module">
++		import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
++		import '@polymer/iron-demo-helpers/demo-snippet.js';
++	</script>
+ 	<script type="module" src="../d2l-evidence-tile.js"></script>
+ 		<!-- FIXME(polymer-modulizer):
+ 		These imperative modules that innerHTML your HTML are
+@@ -22,16 +24,13 @@ $_documentContainer.innerHTML = `<custom-style include="d2l-typography">
+ 
+ document.body.appendChild($_documentContainer.content);
+ </script>
+-	<script type="module">
+-import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+-import '@polymer/iron-demo-helpers/demo-snippet.js';
+-import '../d2l-evidence-tile.js';
++	<script>
+ /*
+ window.Polymer = window.Polymer || {};
+ window.Polymer.dom = 'shadow';
+ */
+-function navigateToEvidence() {
+-	console.log('Navigating to evidence...');
++function navigateToEvidence() { // eslint-disable-line no-unused-vars
++	console.log('Navigating to evidence...'); // eslint-disable-line no-console
+ }
+ </script>
+   </head>
+diff --git a/package.json b/package.json
+index 69b5337..b79c339 100644
+--- a/package.json
++++ b/package.json
+@@ -6,10 +6,10 @@
+   },
+   "homepage": "https://github.com/Brightspace/d2l-evidence-tile",
+   "name": "@d2l/evidence-tile",
+-  "version": "0.0.1",
++  "version": "6.0.0",
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:js": "eslint . --ext .js,.html test/**/*.html demo/**/*.html",
+     "lint:wc": "polymer lint",
+     "start": "polymer serve",
+     "test": "polymer test",
+@@ -23,9 +23,9 @@
+     "@webcomponents/webcomponentsjs": "^2.2.1",
+     "babel-eslint": "^10.0.1",
+     "bower-art-resolver": "^2.0.6",
+-    "eslint": "^3.19.0",
+-    "eslint-config-brightspace": "^0.2.4",
+-    "eslint-plugin-html": "^1.7.0",
++    "eslint": "^5.11.1",
++    "eslint-config-brightspace": "^0.4.1",
++    "eslint-plugin-html": "^5.0.0",
+     "polymer-cli": "^1.9.4",
+     "wct-browser-legacy": "^1.0.1",
+     "web-component-tester": "^4.0.0"
+diff --git a/test/d2l-evidence-tile_test.html b/test/d2l-evidence-tile_test.html
+index f38e63b..6236972 100644
+--- a/test/d2l-evidence-tile_test.html
++++ b/test/d2l-evidence-tile_test.html
+@@ -6,8 +6,8 @@
+ 
+ 		<title>d2l-evidence-tile test</title>
+ 
+-		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-		<script src="../../../wct-browser-legacy/browser.js"></script>
++		<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
++		<script src="../node_modules/wct-browser-legacy/browser.js"></script>
+ 
+ 		<script type="module" src="../d2l-evidence-tile.js"></script>
+ 	</head>
