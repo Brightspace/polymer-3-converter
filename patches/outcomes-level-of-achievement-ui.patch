@@ -1,0 +1,280 @@
+commit b7d345eaecc927ad11cb0903c4916462fe0e11c0
+Author: Anthony Wikkerink <Anthony.Wikkerink@D2L.com>
+Date:   Mon Jan 7 14:19:32 2019 -0500
+
+    Polymer 3 conversion - patches
+    
+    * Remove components.html
+    * d2l-hypermedia-constants fixes
+    * demodulize unnecessary modulized demos
+    * Fix unconverted d2l-squishy-button-selector.js file
+
+diff --git a/components.html b/components.html
+deleted file mode 100644
+index 657066c..0000000
+--- a/components.html
++++ /dev/null
+@@ -1,3 +0,0 @@
+-<script type="module" src="./d2l-outcomes-level-of-achievements.js"></script>
+-<script type="module" src="./localize-behavior.js"></script>
+-<script type="module" src="./squishy-button-selector/d2l-squishy-button-selector.js"></script>
+diff --git a/d2l-outcomes-level-of-achievements.js b/d2l-outcomes-level-of-achievements.js
+index 4be9bec..2e8823a 100644
+--- a/d2l-outcomes-level-of-achievements.js
++++ b/d2l-outcomes-level-of-achievements.js
+@@ -14,7 +14,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-polymer-siren-behaviors/store/entity-store.js';
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Actions, Classes } from 'd2l-hypermedia-constants';
+ import './squishy-button-selector/d2l-squishy-button-selector.js';
+ import './squishy-button-selector/d2l-squishy-button.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+@@ -45,7 +45,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-outcomes-level-of-achieveme
+ 		</d2l-squishy-button-selector>
+ 
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -67,8 +67,7 @@ Polymer({
+ 
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+-		D2L.PolymerBehaviors.Siren.SirenActionBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
++		D2L.PolymerBehaviors.Siren.SirenActionBehavior
+ 	],
+ 
+ 	ready: function() {
+@@ -85,9 +84,9 @@ Polymer({
+ 			return null;
+ 		}
+ 
+-		Promise.all(entity.getSubEntitiesByClass(this.HypermediaClasses.outcomes.demonstratableLevel).map(function(e) {
+-			var selected = e.hasClass(this.HypermediaClasses.outcomes.selected);
+-			var action = e.getActionByName(this.HypermediaActions.outcomes.select) || e.getActionByName('deselect');
++		Promise.all(entity.getSubEntitiesByClass(Classes.outcomes.demonstratableLevel).map(function(e) {
++			var selected = e.hasClass(Classes.outcomes.selected);
++			var action = e.getActionByName(Actions.outcomes.select) || e.getActionByName('deselect');
+ 			var entityHref = e.getLinkByRel('https://achievements.api.brightspace.com/rels/level').href;
+ 
+ 			return window.D2L.Siren.EntityStore.fetch(entityHref, this.token, true).then(function(levelRequest) {
+diff --git a/demo/d2l-outcomes-level-of-achievements.html b/demo/d2l-outcomes-level-of-achievements.html
+index 4ca39fc..2685aab 100644
+--- a/demo/d2l-outcomes-level-of-achievements.html
++++ b/demo/d2l-outcomes-level-of-achievements.html
+@@ -7,14 +7,9 @@
+ 	<title>d2l-outcomes-level-of-achievements demo</title>
+ 
+ 	<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-	<script type="module">
+-import '@polymer/promise-polyfill/promise-polyfill.js';
+-import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+-import '@polymer/iron-demo-helpers/demo-snippet.js';
+-import '../d2l-outcomes-level-of-achievements.js';
+-import 'd2l-typography/d2l-typography.js';
++	<script>
+ window.d2lfetch = {
+-	fetch: function (req, opts) {
++	fetch: function(req, opts) {
+ 		return window.fetch(req, opts);
+ 	}
+ };
+diff --git a/demo/d2l-squishy-button-selector.html b/demo/d2l-squishy-button-selector.html
+index 2052249..a403f8e 100644
+--- a/demo/d2l-squishy-button-selector.html
++++ b/demo/d2l-squishy-button-selector.html
+@@ -8,16 +8,9 @@
+ 	<title>d2l-squishy-button-selector demo</title>
+ 
+ 	<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-	<script type="module">
+-import '@polymer/promise-polyfill/promise-polyfill.js';
+-import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+-import '@polymer/iron-demo-helpers/demo-snippet.js';
+-import '../squishy-button-selector/d2l-squishy-button-selector.js';
+-import '../squishy-button-selector/d2l-squishy-button.js';
+-import 'd2l-tooltip/d2l-tooltip.js';
+-import 'd2l-typography/d2l-typography.js';
++	<script>
+ window.d2lfetch = {
+-	fetch: function (req, opts) {
++	fetch: function(req, opts) {
+ 		return window.fetch(req, opts);
+ 	}
+ };
+diff --git a/squishy-button-selector/d2l-squishy-button-selector.js b/squishy-button-selector/d2l-squishy-button-selector.js
+index fdb5619..53eb342 100644
+--- a/squishy-button-selector/d2l-squishy-button-selector.js
++++ b/squishy-button-selector/d2l-squishy-button-selector.js
+@@ -167,7 +167,7 @@ Polymer({
+ 			return;
+ 		}
+ 
+-		for (var i=0; i < this._buttons.length; i++) {
++		for (var i = 0; i < this._buttons.length; i++) {
+ 			var button = this._buttons[i];
+ 			button.setAttribute('index', i);
+ 			if (this.disabled) {
+@@ -196,7 +196,7 @@ Polymer({
+ 			}
+ 		}
+ 
+-		for (var i=0; i < this._buttons.length; i++) {
++		for (var i = 0; i < this._buttons.length; i++) {
+ 			if (i === selectedIndex) {
+ 				this._buttons[i].setAttribute('selected', '');
+ 				this._buttons[i].setAttribute('aria-checked', 'true');
+@@ -229,7 +229,7 @@ Polymer({
+ 		var toSet = [];
+ 		var hasShortText = true;
+ 
+-		for(var i=0; i<this._buttons.length; i++) {
++		for (var i = 0; i < this._buttons.length; i++) {
+ 			var text = this._buttons[i].getAttribute('text');
+ 			var match = regex.exec(text || '');
+ 			if (!match) {
+@@ -261,11 +261,11 @@ Polymer({
+ 		} else {
+ 			this._buttons.forEach(function(button) {
+ 				button.removeAttribute('short-text');
+-			})
++			});
+ 		}
+ 	},
+ 
+-	_onFocus: function (event) {
++	_onFocus: function(event) {
+ 		if (this.disabled || this._focused) {
+ 			return;
+ 		}
+@@ -273,7 +273,7 @@ Polymer({
+ 		this._pushTabIndex('-1');
+ 
+ 		var focusIndex = (this.selectedIndex > -1 && this.selectedIndex) || 0;
+-		if ( (this._buttons || [])[focusIndex] && event.target.nodeName === 'D2L-SQUISHY-BUTTON-SELECTOR' ) {
++		if ((this._buttons || [])[focusIndex] && event.target.nodeName === 'D2L-SQUISHY-BUTTON-SELECTOR') {
+ 			this._buttons[focusIndex].focus();
+ 		}
+ 		this._focused = true;
+diff --git a/squishy-button-selector/d2l-squishy-button.js b/squishy-button-selector/d2l-squishy-button.js
+index edb85ca..b6c4cc3 100644
+--- a/squishy-button-selector/d2l-squishy-button.js
++++ b/squishy-button-selector/d2l-squishy-button.js
+@@ -216,7 +216,7 @@ Polymer({
+ 
+ 	_handleDomChanges: function() {
+ 		this.text = this.textContent;
+-		this.dispatchEvent(new CustomEvent('squishy-button-text-changed', { bubbles: true } ));
++		this.dispatchEvent(new CustomEvent('squishy-button-text-changed', { bubbles: true }));
+ 	},
+ 
+ 	_keyCodes: {
+@@ -251,7 +251,7 @@ Polymer({
+ 		}
+ 	},
+ 
+-	_onKeyDown: function (event) {
++	_onKeyDown: function(event) {
+ 		if (this.disabled) {
+ 			return;
+ 		}
+@@ -263,7 +263,7 @@ Polymer({
+ 		}
+ 	},
+ 
+-	_handleTap: function (event) {
++	_handleTap: function(event) {
+ 		if (this.disabled) {
+ 			return;
+ 		}
+@@ -281,7 +281,7 @@ Polymer({
+ 		this._dispatchItemSelectedEvent(false, newVal);
+ 	},
+ 
+-	_dispatchItemSelectedEvent: function (triggeredByUserAction, selected) {
++	_dispatchItemSelectedEvent: function(triggeredByUserAction, selected) {
+ 		var eventName = triggeredByUserAction ? 'd2l-squishy-button-selected' : 'd2l-squishy-button-selection-changed';
+ 		this.dispatchEvent(new CustomEvent(eventName, {
+ 			detail: {
+diff --git a/test/components/d2l-squishy-button-selector.html b/test/components/d2l-squishy-button-selector.html
+index 0a5078f..d0b9040 100644
+--- a/test/components/d2l-squishy-button-selector.html
++++ b/test/components/d2l-squishy-button-selector.html
+@@ -28,6 +28,6 @@
+ 			</template>
+ 		</test-fixture>
+ 
+-		<script src="./d2l-squishy-button-selector.js"></script>
++		<script type="module" src="./d2l-squishy-button-selector.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-squishy-button-selector.js b/test/components/d2l-squishy-button-selector.js
+index d1ba072..7bd6006 100644
+--- a/test/components/d2l-squishy-button-selector.js
++++ b/test/components/d2l-squishy-button-selector.js
+@@ -1,7 +1,7 @@
+-
+ /* global it, fixture, expect, beforeEach, afterEach, describe, sinon */
+ 
+-'use strict';
++import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
++import '../../squishy-button-selector/d2l-squishy-button-selector.js';
+ 
+ describe('<d2l-squishy-button-selector>', function() {
+ 
+@@ -10,7 +10,7 @@ describe('<d2l-squishy-button-selector>', function() {
+ 	beforeEach(function(done) {
+ 		sandbox = sinon.sandbox.create();
+ 		element = fixture('basic');
+-		Polymer.RenderStatus.afterNextRender(element, function() {
++		afterNextRender(element, function() {
+ 			done();
+ 		});
+ 	});
+@@ -29,7 +29,7 @@ describe('<d2l-squishy-button-selector>', function() {
+ 		it('Is an empty array if there are no buttons', function(done) {
+ 			element = fixture('empty');
+ 
+-			Polymer.RenderStatus.afterNextRender(element, function() {
++			afterNextRender(element, function() {
+ 				expect(element._buttons.length).to.equal(0);
+ 				done();
+ 			});
+@@ -53,7 +53,7 @@ describe('<d2l-squishy-button-selector>', function() {
+ 		it('selects the button which corresponds with the selectedIndex', function(done) {
+ 			element.setAttribute('selected-index', 1);
+ 			element._handleDomChanges();
+-			Polymer.RenderStatus.afterNextRender(element, function() {
++			afterNextRender(element, function() {
+ 				verifyButtonsSelected(false, true, false);
+ 				done();
+ 			});
+@@ -61,7 +61,7 @@ describe('<d2l-squishy-button-selector>', function() {
+ 
+ 		it('selects nothing if the selectedIndex is out of range', function(done) {
+ 			element.selectedIndex = 12;
+-			Polymer.RenderStatus.afterNextRender(element, function() {
++			afterNextRender(element, function() {
+ 				verifyButtonsSelected(false, false, false);
+ 				done();
+ 			});
+@@ -70,12 +70,12 @@ describe('<d2l-squishy-button-selector>', function() {
+ 		it('deselects everything if selectedIndex is null', function(done) {
+ 			element.selectedIndex = 1;
+ 
+-			Polymer.RenderStatus.afterNextRender(element, function() {
++			afterNextRender(element, function() {
+ 				verifyButtonsSelected(false, true, false);
+ 
+ 				element.selectedIndex = null;
+ 
+-				Polymer.RenderStatus.afterNextRender(element, function() {
++				afterNextRender(element, function() {
+ 					verifyButtonsSelected(false, false, false);
+ 					done();
+ 				});
