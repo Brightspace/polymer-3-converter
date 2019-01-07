@@ -1,14 +1,3 @@
-commit b7d345eaecc927ad11cb0903c4916462fe0e11c0
-Author: Anthony Wikkerink <Anthony.Wikkerink@D2L.com>
-Date:   Mon Jan 7 14:19:32 2019 -0500
-
-    Polymer 3 conversion - patches
-    
-    * Remove components.html
-    * d2l-hypermedia-constants fixes
-    * demodulize unnecessary modulized demos
-    * Fix unconverted d2l-squishy-button-selector.js file
-
 diff --git a/components.html b/components.html
 deleted file mode 100644
 index 657066c..0000000
