@@ -18,6 +18,7 @@ d2l-evidence-tile,d2l-evidence-tile,@d2l/evidence-tile:^6
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2
 d2l-fetch-dedupe,d2l-fetch-dedupe,^1
+d2l-fetch-simple-cache,d2l-fetch-simple-cache,^1
 d2l-fetch-siren-entity-behavior,d2l-fetch-siren-entity-behavior,Brightspace/d2l-fetch-siren-entity-behavior.git#semver:^6
 d2l-hierarchical-view,d2l-hierarchical-view,BrightspaceUI/hierarchical-view#semver:^2
 d2l-hm-constants-behavior,d2l-hypermedia-constants,^6
