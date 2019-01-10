@@ -123,6 +123,43 @@ index bf9086b..5f52979 100644
  			return [{
  				href: ''
  			}];
+diff --git a/d2l-attachment-list.js b/d2l-attachment-list.js
+index c2e8cdd..c5da854 100644
+--- a/d2l-attachment-list.js
++++ b/d2l-attachment-list.js
+@@ -1,4 +1,5 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ import './d2l-attachment.js';
+ import './localize-behavior.js';
+ const $_documentContainer = document.createElement('template');
+@@ -33,7 +34,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-attachment-list">
+ 		</ul>
+ 	</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -61,14 +62,14 @@ Polymer({
+ 	attached: function() {
+ 		if (this.isEditMode) {
+ 			this._observer =
+-			Polymer.dom(this.$.attachments).observeNodes(function() {
++			dom(this.$.attachments).observeNodes(function() {
+ 				this._isAnyAttachments = this.getContentChildren('#attachments').length > 0;
+ 			}.bind(this));
+ 		}
+ 	},
+ 	detached: function() {
+ 		if (this._observer) {
+-			Polymer.dom(this.$.attachments).unobserveNodes(this._observer);
++			dom(this.$.attachments).unobserveNodes(this._observer);
+ 		}
+ 	},
+ 	_showTitle: function(isEditMode, showTitle, _isAnyAttachments) {
 diff --git a/d2l-attachment.js b/d2l-attachment.js
 index cdf3a7e..919895c 100644
 --- a/d2l-attachment.js
@@ -314,6 +351,37 @@ index 2d01b27..d4331d7 100644
 +		this.$$('d2l-attachment').isEditMode = false;
 +	}
  });
+diff --git a/demo/d2l-attachment-list.html b/demo/d2l-attachment-list.html
+index 892a33d..b028d0b 100644
+--- a/demo/d2l-attachment-list.html
++++ b/demo/d2l-attachment-list.html
+@@ -39,22 +39,22 @@ import '@polymer/iron-demo-helpers/demo-snippet.js';
+ import 'd2l-button/d2l-button.js';
+ import '../d2l-attachment-list.js';
+ import './d2l-attachment-demo.js';
+-var small = function () {
++window.small = function () {
+ 	document.querySelectorAll('d2l-attachment-demo').forEach(function (element) {
+ 		element.small();
+ 	});
+ };
+-var large = function () {
++window.large = function () {
+ 	document.querySelectorAll('d2l-attachment-demo').forEach(function (element) {
+ 		element.large();
+ 	});
+ };
+-var editable = function () {
++window.editable = function () {
+ 	document.querySelectorAll('d2l-attachment-demo').forEach(function (element) {
+ 		element.editable();
+ 	});
+ };
+-var readOnly = function () {
++window.readOnly = function () {
+ 	document.querySelectorAll('d2l-attachment-demo').forEach(function (element) {
+ 		element.readOnly();
+ 	});
 diff --git a/demo/d2l-attachment.html b/demo/d2l-attachment.html
 index a38837f..1b3cc0d 100644
 --- a/demo/d2l-attachment.html
