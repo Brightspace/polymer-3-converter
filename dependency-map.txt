@@ -59,5 +59,6 @@ d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
 lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
+siren-entity,siren-entity,BrightspaceHypermediaComponents/siren-entity#semver:^1
 siren-parser-import,siren-parser,^8.0.0
 stickyfill,stickyfilljs,^2.1.0
