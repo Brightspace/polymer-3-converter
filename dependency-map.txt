@@ -61,3 +61,4 @@ lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
 siren-parser-import,siren-parser,^8.0.0
 stickyfill,stickyfilljs,^2.1.0
+d2l-dnd-sortable,d2l-dnd-sortable,Brightspace/dnd-sortable#semver:^3

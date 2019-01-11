@@ -1,0 +1,83 @@
+From 91ba2a45e3a001f013af6d9785348fc749732ea4 Mon Sep 17 00:00:00 2001
+From: Steven Ao <Steven.Ao@D2L.com>
+Date: Thu, 10 Jan 2019 16:21:52 -0800
+Subject: [PATCH] patch
+
+---
+ .gitignore          | 2 --
+ d2l-dnd-sortable.js | 4 ++--
+ package.json        | 5 +++--
+ polymer.json        | 4 ++++
+ 4 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 2402785..d5f19d8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,2 @@
+ node_modules
+ package-lock.json
+-
+-node_modules
+diff --git a/d2l-dnd-sortable.js b/d2l-dnd-sortable.js
+index 894d459..44ae750 100644
+--- a/d2l-dnd-sortable.js
++++ b/d2l-dnd-sortable.js
+@@ -11,7 +11,7 @@ Reorderable drag-and-drop lists
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+-import 'Sortable/Sortable.min.js';
++import 'sortablejs';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-dnd-sortable">
+@@ -29,7 +29,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-dnd-sortable">
+ 		-->
+ 		<slot></slot>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/package.json b/package.json
+index 58d8958..ed22f1f 100644
+--- a/package.json
++++ b/package.json
+@@ -8,7 +8,7 @@
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+     "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "lint:wc": "polymer lint",
++    "lint:wc": "polymer lint --npm --input d2l-dnd-sortable.js demo/**/* test/**/*",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local",
+     "test": "npm run lint && npm run test:polymer:local"
+@@ -40,6 +40,7 @@
+   },
+   "main": "d2l-dnd-sortable.js",
+   "dependencies": {
+-    "@polymer/polymer": "^3.0.0"
++    "@polymer/polymer": "^3.0.0",
++    "sortablejs": "^1.8.0-rc1"
+   }
+ }
+diff --git a/polymer.json b/polymer.json
+index 6111e49..84ac8ab 100644
+--- a/polymer.json
++++ b/polymer.json
+@@ -3,6 +3,10 @@
+   "lint": {
+     "rules": [
+       "polymer-3"
++    ],
++    "ignoreWarnings": [
++      "not-loadable",
++      "non-literal-import"
+     ]
+   }
+ }
+-- 
+2.20.0.windows.1
+
