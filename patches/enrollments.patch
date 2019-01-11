@@ -163,10 +163,17 @@ index 6c32688..c06e748 100644
  	_hideDefaultSlot: function(date, overrideToDefault) {
  		return date && !overrideToDefault;
 diff --git a/package.json b/package.json
-index a05e7d9..e33671e 100644
+index d2c0bb1..5e014f0 100644
 --- a/package.json
 +++ b/package.json
-@@ -10,7 +10,7 @@
+@@ -4,13 +4,13 @@
+     "url": "https://github.com/BrightspaceHypermediaComponents/enrollments.git"
+   },
+   "homepage": "https://github.com/BrightspaceHypermediaComponents/enrollments",
+-  "name": "enrollments",
++  "name": "d2l-enrollments",
+   "scripts": {
+     "build": "gulp build",
      "gulp": "gulp build",
      "test": "npm run lint && npm run test:polymer:local",
      "lint": "npm run lint:wc && npm run lint:js",
@@ -190,14 +197,13 @@ index 6b882ff..864a60e 100644
 +  }
  }
 diff --git a/test/d2l-enrollment-card/d2l-enrollment-card.html b/test/d2l-enrollment-card/d2l-enrollment-card.html
-index 37c33d3..9e3b301 100644
+index 8146d87..9e3b301 100644
 --- a/test/d2l-enrollment-card/d2l-enrollment-card.html
 +++ b/test/d2l-enrollment-card/d2l-enrollment-card.html
-@@ -2,11 +2,11 @@
+@@ -2,10 +2,11 @@
  	<head>
  		<meta charset="utf-8">
  		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
--		<script src="../../@babel/polyfill/browser.js"></script>
 +		<script src="../../../@babel/polyfill/browser.js"></script>
  		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../../wct-browser-legacy/browser.js"></script>
@@ -238,14 +244,13 @@ index f5ece2f..b513bbb 100644
  
  			});
 diff --git a/test/d2l-user-activity-usage/d2l-user-activity-usage.html b/test/d2l-user-activity-usage/d2l-user-activity-usage.html
-index 24b32d2..5912c30 100644
+index 1e8fde6..5912c30 100644
 --- a/test/d2l-user-activity-usage/d2l-user-activity-usage.html
 +++ b/test/d2l-user-activity-usage/d2l-user-activity-usage.html
-@@ -2,11 +2,11 @@
+@@ -2,10 +2,11 @@
  	<head>
  		<meta charset="utf-8">
  		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
--		<script src="../../@babel/polyfill/browser.js"></script>
 +		<script src="../../../@babel/polyfill/browser.js"></script>
  		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../../wct-browser-legacy/browser.js"></script>
