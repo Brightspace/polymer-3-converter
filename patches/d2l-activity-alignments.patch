@@ -1,0 +1,655 @@
+commit b5809442a12b326b155bf7c496e679cc46c68dea
+Author: Anthony Wikkerink <Anthony.Wikkerink@D2L.com>
+Date:   Fri Jan 11 13:16:48 2019 -0500
+
+    Polymer 3 Conversion - Patches
+
+diff --git a/d2l-activity-alignments.js b/d2l-activity-alignments.js
+index 9e954ff..2cc0026 100644
+--- a/d2l-activity-alignments.js
++++ b/d2l-activity-alignments.js
+@@ -1,7 +1,6 @@
+ /**
+ `d2l-select-outcomes`
+ 
+-
+ @demo demo/index.html
+ */
+ /*
+@@ -12,10 +11,11 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels } from 'd2l-hypermedia-constants';
+ import 'd2l-alert/d2l-alert.js';
+ import './d2l-alignment-list.js';
+ import './localize-behavior.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-activity-alignments">
+@@ -45,7 +45,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-activity-alignments">
+ 		</div>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -65,7 +65,6 @@ Polymer({
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+ 		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
+ 	],
+ 
+ 	ready: function() {
+@@ -86,7 +85,7 @@ Polymer({
+ 	},
+ 
+ 	_getAlignments: function(entity) {
+-		return entity && entity.hasLinkByRel(this.HypermediaRels.Alignments.alignments) && entity.getLinkByRel(this.HypermediaRels.Alignments.alignments).href;
++		return entity && entity.hasLinkByRel(Rels.Alignments.alignments) && entity.getLinkByRel(Rels.Alignments.alignments).href;
+ 	}
+ 
+ });
+diff --git a/d2l-alignment-intent.js b/d2l-alignment-intent.js
+index 7fd211f..d04a546 100644
+--- a/d2l-alignment-intent.js
++++ b/d2l-alignment-intent.js
+@@ -1,7 +1,6 @@
+ /**
+ `d2l-select-outcomes`
+ 
+-
+ @demo demo/index.html
+ */
+ /*
+@@ -12,8 +11,9 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels } from 'd2l-hypermedia-constants';
+ import './d2l-outcome.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-intent">
+@@ -26,7 +26,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-intent">
+ 		<d2l-outcome href="[[_getOutcome(entity)]]" token="[[token]]"></d2l-outcome>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -36,11 +36,10 @@ Polymer({
+ 
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
+ 	],
+ 
+ 	_getOutcome: function(entity) {
+-		return entity && entity.hasLinkByRel(this.HypermediaRels.Outcomes.outcome) && entity.getLinkByRel(this.HypermediaRels.Outcomes.outcome).href;
++		return entity && entity.hasLinkByRel(Rels.Outcomes.outcome) && entity.getLinkByRel(Rels.Outcomes.outcome).href;
+ 	}
+ 
+ });
+diff --git a/d2l-alignment-list.js b/d2l-alignment-list.js
+index 31cc486..86e64e7 100644
+--- a/d2l-alignment-list.js
++++ b/d2l-alignment-list.js
+@@ -1,7 +1,6 @@
+ /**
+ `d2l-select-outcomes`
+ 
+-
+ @demo demo/index.html
+ */
+ /*
+@@ -13,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Actions } from 'd2l-hypermedia-constants';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-alert/d2l-alert.js';
+ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+@@ -21,6 +20,7 @@ import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
+ import 'd2l-offscreen/d2l-offscreen.js';
+ import './d2l-alignment.js';
+ import './localize-behavior.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-list">
+@@ -130,7 +130,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-list">
+ 		</siren-entity-loading>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -142,7 +142,6 @@ Polymer({
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+ 		D2L.PolymerBehaviors.Siren.SirenActionBehavior,
+ 		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
+ 	],
+ 
+ 	properties: {
+@@ -174,7 +173,7 @@ Polymer({
+ 	},
+ 
+ 	_onAlignmentRemove: function(e) {
+-		var index = +Polymer.dom(e).localTarget.dataset.index;
++		var index = +e.target.dataset.index;
+ 		this.splice('entities', index, 1);
+ 
+ 		// Notify screen readers that an alignment has been removed
+@@ -196,7 +195,7 @@ Polymer({
+ 			return false;
+ 		}
+ 
+-		if (!entity.hasActionByName(this.HypermediaActions.alignments.startUpdateAlignments)) {
++		if (!entity.hasActionByName(Actions.alignments.startUpdateAlignments)) {
+ 			return false;
+ 		}
+ 
+diff --git a/d2l-alignment-update.js b/d2l-alignment-update.js
+index c7abd46..cf4c041 100644
+--- a/d2l-alignment-update.js
++++ b/d2l-alignment-update.js
+@@ -1,7 +1,6 @@
+ /**
+ `d2l-select-outcomes`
+ 
+-
+ @demo demo/index.html
+ */
+ /*
+@@ -13,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Actions, Classes, Rels } from 'd2l-hypermedia-constants';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-button/d2l-button.js';
+ import 'd2l-inputs/d2l-input-checkbox.js';
+@@ -22,6 +21,7 @@ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+ import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
+ import './d2l-alignment-intent.js';
+ import './localize-behavior.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-update">
+@@ -148,7 +148,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-update">
+ 		</siren-entity-loading>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -160,7 +160,6 @@ Polymer({
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+ 		D2L.PolymerBehaviors.Siren.SirenActionBehavior,
+ 		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
+ 	],
+ 
+ 	properties: {
+@@ -199,7 +198,7 @@ Polymer({
+ 	},
+ 
+ 	_onKeyDown: function(e) {
+-		var target = Polymer.dom(e).localTarget;
++		var target = e.target;
+ 		if (e.keyCode === this._keyCodes.DOWN || e.keyCode === this._keyCodes.UP) {
+ 			// prevent scrolling when up/down arrows pressed
+ 			e.preventDefault();
+@@ -288,29 +287,29 @@ Polymer({
+ 			return;
+ 		}
+ 		this._performActionAndUpdate(function() {
+-			return entity.getActionByName(this.HypermediaActions.alignments.startUpdateAlignments);
++			return entity.getActionByName(Actions.alignments.startUpdateAlignments);
+ 		});
+ 	},
+ 
+ 	_getChecked: function(candidate) {
+-		return candidate.hasClass(this.HypermediaClasses.alignments.selected);
++		return candidate.hasClass(Classes.alignments.selected);
+ 	},
+ 
+ 	_getIntent: function(entity) {
+-		return entity && entity.hasLinkByRel(this.HypermediaRels.Outcomes.intent) && entity.getLinkByRel(this.HypermediaRels.Outcomes.intent).href;
++		return entity && entity.hasLinkByRel(Rels.Outcomes.intent) && entity.getLinkByRel(Rels.Outcomes.intent).href;
+ 	},
+ 
+ 	_onOutcomeSelectChange: function(e) {
+ 		var self = this;
+-		var target = Polymer.dom(e).localTarget;
++		var target = e.target;
+ 		var index = +target.dataset.index;
+-		this._performActionAndUpdate(function() {
++		this._performActionAndUpdate(/* @this */ function() {
+ 			var candidate = this.candidates.entities[index];
+ 			if (candidate) {
+-				if (target.checked && candidate.getActionByName(this.HypermediaActions.alignments.select)) {
+-					return candidate.getActionByName(this.HypermediaActions.alignments.select);
+-				} else if (!target.checked && candidate.getActionByName(this.HypermediaActions.alignments.deselect)) {
+-					return candidate.getActionByName(this.HypermediaActions.alignments.deselect);
++				if (target.checked && candidate.getActionByName(Actions.alignments.select)) {
++					return candidate.getActionByName(Actions.alignments.select);
++				} else if (!target.checked && candidate.getActionByName(Actions.alignments.deselect)) {
++					return candidate.getActionByName(Actions.alignments.deselect);
+ 				}
+ 			}
+ 		})
+@@ -321,8 +320,8 @@ Polymer({
+ 
+ 	_add: function() {
+ 		this._buttonsDisabled = true;
+-		this._performActionAndUpdate(function() {
+-			return this.candidates.getActionByName(this.HypermediaActions.alignments.submit);
++		this._performActionAndUpdate(/* @this */ function() {
++			return this.candidates.getActionByName(Actions.alignments.submit);
+ 		})
+ 			.then(function() {
+ 				window.D2L.Siren.EntityStore.fetch(this.href, this.token, true);
+@@ -346,7 +345,7 @@ Polymer({
+ 
+ 	_updateLoading: function(promises) {
+ 		if (promises > 0) {
+-			this.debounce('loading', function() {
++			this.debounce('loading', /* @this */ function() {
+ 				this._loading = this.__promises > 0;
+ 			}, 1000);
+ 		} else {
+diff --git a/d2l-alignment.js b/d2l-alignment.js
+index ab99cd8..42ac285 100644
+--- a/d2l-alignment.js
++++ b/d2l-alignment.js
+@@ -15,10 +15,11 @@ import 'd2l-icons/tier1-icons.js';
+ import 'd2l-polymer-siren-behaviors/store/entity-store.js';
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Actions, Rels } from 'd2l-hypermedia-constants';
+ import 'd2l-outcomes-level-of-achievements/d2l-outcomes-level-of-achievements.js';
+ import './d2l-alignment-intent.js';
+ import './localize-behavior.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment">
+@@ -58,7 +59,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment">
+ 		</template>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -74,11 +75,10 @@ Polymer({
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+ 		D2L.PolymerBehaviors.Siren.SirenActionBehavior,
+ 		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
+ 	],
+ 
+ 	_getIntent: function(entity) {
+-		return entity && entity.hasLinkByRel(this.HypermediaRels.Outcomes.intent) && entity.getLinkByRel(this.HypermediaRels.Outcomes.intent).href;
++		return entity && entity.hasLinkByRel(Rels.Outcomes.intent) && entity.getLinkByRel(Rels.Outcomes.intent).href;
+ 	},
+ 
+ 	_hasDemonstrations: function(entity) {
+@@ -100,7 +100,7 @@ Polymer({
+ 			return false;
+ 		}
+ 
+-		if (!entity.hasActionByName(this.HypermediaActions.alignments.removeAlignment)) {
++		if (!entity.hasActionByName(Actions.alignments.removeAlignment)) {
+ 			return false;
+ 		}
+ 
+@@ -108,7 +108,7 @@ Polymer({
+ 	},
+ 
+ 	_remove: function() {
+-		var action = this.entity && this.entity.getActionByName(this.HypermediaActions.alignments.removeAlignment);
++		var action = this.entity && this.entity.getActionByName(Actions.alignments.removeAlignment);
+ 		if (action) {
+ 			this.dispatchEvent(new CustomEvent('d2l-alignment-remove', {
+ 				bubbles: true,
+diff --git a/d2l-outcome.js b/d2l-outcome.js
+index d0adb63..6c10029 100644
+--- a/d2l-outcome.js
++++ b/d2l-outcome.js
+@@ -1,7 +1,6 @@
+ /**
+ `d2l-select-outcomes`
+ 
+-
+ @demo demo/index.html
+ */
+ /*
+@@ -15,6 +14,7 @@ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+ import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import 's-html/s-html.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
+@@ -47,7 +47,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
+ 			d2l-loading-spinner {
+ 				--d2l-loading-spinner-size: 1.2rem;
+ 			}
+-			
++
+ 			.d2l-outcome-wrap, .d2l-outcome-text {
+ 				width: 100%;
+ 			}
+@@ -67,7 +67,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
+ 		</siren-entity-loading>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/d2l-select-outcomes.js b/d2l-select-outcomes.js
+index fdd4c7c..0449d28 100644
+--- a/d2l-select-outcomes.js
++++ b/d2l-select-outcomes.js
+@@ -1,7 +1,6 @@
+ /**
+ `d2l-select-outcomes`
+ 
+-
+ @demo demo/index.html
+ */
+ /*
+@@ -12,10 +11,11 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels } from 'd2l-hypermedia-constants';
+ import 'd2l-alert/d2l-alert.js';
+ import './d2l-alignment-update.js';
+ import './localize-behavior.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+ $_documentContainer.innerHTML = `<dom-module id="d2l-select-outcomes">
+@@ -40,7 +40,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-select-outcomes">
+ 		</div>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -58,7 +58,6 @@ Polymer({
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.Siren.EntityBehavior,
+ 		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
+ 	],
+ 
+ 	ready: function() {
+@@ -79,7 +78,7 @@ Polymer({
+ 	},
+ 
+ 	_getAlignments: function(entity) {
+-		return entity && entity.hasLinkByRel(this.HypermediaRels.Alignments.alignments) && entity.getLinkByRel(this.HypermediaRels.Alignments.alignments).href;
++		return entity && entity.hasLinkByRel(Rels.Alignments.alignments) && entity.getLinkByRel(Rels.Alignments.alignments).href;
+ 	}
+ 
+ });
+diff --git a/demo/index.html b/demo/index.html
+index 220baa4..8fefc94 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -41,14 +41,14 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
+ 	  <h3>Basic d2l-select-outcomes demo</h3>
+ 	  <demo-snippet>
+ 		<template>
+-		  <d2l-select-outcomes href="https://15215d45-f7e9-4967-bf9b-13a685538829.activities.api.proddev.d2l/activities/6606_3000_1/usages/6609" token="1234"></d2l-select-outcomes>
++		  <d2l-select-outcomes href="https://15215d45-f7e9-4967-bf9b-13a685538829.activities.api.proddev.d2l/activities/6606_3000_1/usages/6609" token="1234a"></d2l-select-outcomes>
+ 		</template>
+ 	  </demo-snippet>
+ 
+ 	  <h3>Basic d2l-outcome demo</h3>
+ 	  <demo-snippet>
+ 		<template>
+-		  <d2l-outcome href="https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/outcomes/d31d0671-bdad-4f08-9da9-65351e3b250a" token="1234"></d2l-outcome>
++		  <d2l-outcome href="https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/outcomes/d31d0671-bdad-4f08-9da9-65351e3b250a" token="1234a"></d2l-outcome>
+ 		</template>
+ 	  </demo-snippet>
+ 	</div>`;
+diff --git a/demo/request-mock.js b/demo/request-mock.js
+index 8ef2cf4..c6bbcfd 100644
+--- a/demo/request-mock.js
++++ b/demo/request-mock.js
+@@ -1,3 +1,5 @@
++import SirenParse from 'siren-parser';
++
+ window.d2lfetch.fetch = function(href) {
+ 	return D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest({ url: href, formData: function() { return Promise.resolve(); } })
+ 		.then(function(body) {
+@@ -21,7 +23,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 	var href = request.url && request.url.href || request.url;
+ 	switch (href) {
+ 		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.activities.api.proddev.d2l/activities/6606_3000_1/usages/6609':
+-			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
++			return Promise.resolve(SirenParse({
+ 				'class': [
+ 					'activity',
+ 					'discussion-activity'
+@@ -84,7 +86,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 			}));
+ 
+ 		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.alignments.api.proddev.d2l/activity/6606_3000_1/6609':
+-			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
++			return Promise.resolve(SirenParse({
+ 				'class': [
+ 					'collection'
+ 				],
+@@ -112,7 +114,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 			}));
+ 
+ 		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/registries/697a50cf-9c30-4a8c-970a-b67fa0807ef8/d31d0671-bdad-4f08-9da9-65351e3b250a':
+-			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
++			return Promise.resolve(SirenParse({
+ 				'class': [
+ 					'intent'
+ 				],
+@@ -133,7 +135,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 			}));
+ 
+ 		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/registries/697a50cf-9c30-4a8c-970a-b67fa0807ef8/edcdd008-20f2-4934-9017-e53650505eae':
+-			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
++			return Promise.resolve(SirenParse({
+ 				'class': [
+ 					'intent'
+ 				],
+@@ -153,9 +155,8 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 				]
+ 			}));
+ 
+-
+ 		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/outcomes/d31d0671-bdad-4f08-9da9-65351e3b250a':
+-			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
++			return Promise.resolve(SirenParse({
+ 				'class': [
+ 					'outcome'
+ 				],
+@@ -181,7 +182,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 			}));
+ 
+ 		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/outcomes/edcdd008-20f2-4934-9017-e53650505eae':
+-			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
++			return Promise.resolve(SirenParse({
+ 				'class': [
+ 					'outcome'
+ 				],
+@@ -244,7 +245,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+ 						}
+ 					];
+ 				}
+-				return window.D2L.Hypermedia.Siren.Parse({
++				return SirenParse({
+ 					'class': [
+ 						'collection'
+ 					],
+diff --git a/package.json b/package.json
+index 520f67c..c9f59bf 100644
+--- a/package.json
++++ b/package.json
+@@ -8,7 +8,7 @@
+     "test": "npm run test:lint && polymer test --skip-plugin sauce",
+     "test:lint": "npm run test:lint:wc && npm run test:lint:js",
+     "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "test:lint:wc": "polymer lint",
++    "test:lint:wc": "polymer lint"
+   },
+   "author": "D2L Corporation",
+   "license": "Apache-2.0",
+diff --git a/test/.eslintrc.json b/test/.eslintrc.json
+new file mode 100644
+index 0000000..3dacc9b
+--- /dev/null
++++ b/test/.eslintrc.json
+@@ -0,0 +1,3 @@
++{
++  "extends": "brightspace/wct-polymer-3-config"
++}
+diff --git a/test/a11y.html b/test/a11y.html
+index 826938a..4c698d5 100644
+--- a/test/a11y.html
++++ b/test/a11y.html
+@@ -203,9 +203,10 @@ suite('d2l-select-outcomes', function() {
+ 			);
+ 			function waitForFetch() {
+ 				window.D2L.Siren.EntityStore.removeListener('https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.dev.brightspace.com/outcomes/73292f97-ebe5-43d5-b1df-299d98f1e0c4/84f0b418-2f25-4184-87e5-9ab7f86fbc34', '', waitForFetch);
+-				Polymer.dom.flush();
+-				// Wait for animations to complete
+-				setTimeout(done, 500);
++				flush(function() {
++					// Wait for animations to complete
++					setTimeout(done, 500);
++				});
+ 			}
+ 			window.D2L.Siren.EntityStore.addListener('https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.dev.brightspace.com/outcomes/73292f97-ebe5-43d5-b1df-299d98f1e0c4/84f0b418-2f25-4184-87e5-9ab7f86fbc34', '', waitForFetch);
+ 			fixtureElement.href = 'https://15215d45-f7e9-4967-bf9b-13a685538829.activities.api.dev.brightspace.com/activities/6606_3000_1/usages/6609';
+diff --git a/test/d2l-outcome.html b/test/d2l-outcome.html
+index 24ce6cd..bfb2a48 100644
+--- a/test/d2l-outcome.html
++++ b/test/d2l-outcome.html
+@@ -21,6 +21,7 @@
+ 
+ 	<script type="module">
+ import '../d2l-outcome.js';
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ /* global suite, test, assert, fixture, setup, stubWhitelist */
+ var runTest = function(testName, href, testFunction) {
+ 	var element;
+@@ -50,7 +51,7 @@ var runTest = function(testName, href, testFunction) {
+ 		element.token = '';
+ 	});
+ 
+-	test(testName, function(){
++	test(testName, function() {
+ 		testFunction(element);
+ 	});
+ };
+@@ -66,7 +67,7 @@ suite('d2l-outcome', function() {
+ 			'renders outcome',
+ 			'static-data/outcomes/c297b02c-19b1-485a-92db-e598316271c8/5f4d6901-7c10-4edc-b2e1-821efc5c3708.json',
+ 			function(element) {
+-				var content = Polymer.dom(element.$$('siren-entity-loading')).textContent.trim();
++				var content = dom(element.$$('siren-entity-loading')).textContent.trim();
+ 				assert.equal(content, 'Interpret words and phrases as they are used in a text, including determining technical, connotative, and figurative meanings, and analyze how specific word choices shape meaning or tone.');
+ 			}
+ 		);
+@@ -82,7 +83,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ 	suite('asn multiple lists', function() {
+ 		runTest(
+ 			'flattens multiple lists in ASN outcomes',
+@@ -93,7 +94,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ 	suite('asn malformed list', function() {
+ 		runTest(
+ 			'flattens lists in ASN outcomes that are missing closing tags',
+@@ -104,7 +105,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ 	suite('outcome with notation and label', function() {
+ 		runTest(
+ 			'shows the outcome notation, primary subject, label, and listId',
+@@ -115,7 +116,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ 	suite('outcome with altNotation but no notation', function() {
+ 		runTest(
+ 			'use altNotation if notation is null, empty, or only whitespace',
+@@ -126,7 +127,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ 	suite('outcome with notation only', function() {
+ 		runTest(
+ 			'correctly render outcome identifier for outcomes with a notation, but no subject, label, or listId',
+@@ -137,7 +138,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ 	suite('outcome without notation', function() {
+ 		runTest(
+ 			'correctly render outcome identifier for outcomes with a subject, label, or listId, but no notation',
+@@ -148,7 +149,7 @@ suite('d2l-outcome', function() {
+ 			}
+ 		);
+ 	});
+-	
++
+ });
+ </script>
+   </body>
