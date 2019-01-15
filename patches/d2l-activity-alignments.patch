@@ -1,22 +1,8 @@
-commit b5809442a12b326b155bf7c496e679cc46c68dea
-Author: Anthony Wikkerink <Anthony.Wikkerink@D2L.com>
-Date:   Fri Jan 11 13:16:48 2019 -0500
-
-    Polymer 3 Conversion - Patches
-
 diff --git a/d2l-activity-alignments.js b/d2l-activity-alignments.js
-index 9e954ff..2cc0026 100644
+index 13a58db..2cc0026 100644
 --- a/d2l-activity-alignments.js
 +++ b/d2l-activity-alignments.js
-@@ -1,7 +1,6 @@
- /**
- `d2l-select-outcomes`
- 
--
- @demo demo/index.html
- */
- /*
-@@ -12,10 +11,11 @@
+@@ -11,10 +11,11 @@
  import '@polymer/polymer/polymer-legacy.js';
  
  import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
@@ -29,7 +15,7 @@ index 9e954ff..2cc0026 100644
  const $_documentContainer = document.createElement('template');
  
  $_documentContainer.innerHTML = `<dom-module id="d2l-activity-alignments">
-@@ -45,7 +45,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-activity-alignments">
+@@ -44,7 +45,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-activity-alignments">
  		</div>
  	</template>
  
@@ -38,7 +24,7 @@ index 9e954ff..2cc0026 100644
  </dom-module>`;
  
  document.head.appendChild($_documentContainer.content);
-@@ -65,7 +65,6 @@ Polymer({
+@@ -64,7 +65,6 @@ Polymer({
  	behaviors: [
  		D2L.PolymerBehaviors.Siren.EntityBehavior,
  		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
@@ -46,7 +32,7 @@ index 9e954ff..2cc0026 100644
  	],
  
  	ready: function() {
-@@ -86,7 +85,7 @@ Polymer({
+@@ -85,7 +85,7 @@ Polymer({
  	},
  
  	_getAlignments: function(entity) {
@@ -56,18 +42,10 @@ index 9e954ff..2cc0026 100644
  
  });
 diff --git a/d2l-alignment-intent.js b/d2l-alignment-intent.js
-index 7fd211f..d04a546 100644
+index e347a71..d04a546 100644
 --- a/d2l-alignment-intent.js
 +++ b/d2l-alignment-intent.js
-@@ -1,7 +1,6 @@
- /**
- `d2l-select-outcomes`
- 
--
- @demo demo/index.html
- */
- /*
-@@ -12,8 +11,9 @@
+@@ -11,8 +11,9 @@
  import '@polymer/polymer/polymer-legacy.js';
  
  import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
@@ -78,7 +56,7 @@ index 7fd211f..d04a546 100644
  const $_documentContainer = document.createElement('template');
  
  $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-intent">
-@@ -26,7 +26,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-intent">
+@@ -25,7 +26,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-intent">
  		<d2l-outcome href="[[_getOutcome(entity)]]" token="[[token]]"></d2l-outcome>
  	</template>
  
@@ -87,7 +65,7 @@ index 7fd211f..d04a546 100644
  </dom-module>`;
  
  document.head.appendChild($_documentContainer.content);
-@@ -36,11 +36,10 @@ Polymer({
+@@ -35,11 +36,10 @@ Polymer({
  
  	behaviors: [
  		D2L.PolymerBehaviors.Siren.EntityBehavior,
@@ -101,18 +79,10 @@ index 7fd211f..d04a546 100644
  
  });
 diff --git a/d2l-alignment-list.js b/d2l-alignment-list.js
-index 31cc486..86e64e7 100644
+index d44f42a..86e64e7 100644
 --- a/d2l-alignment-list.js
 +++ b/d2l-alignment-list.js
-@@ -1,7 +1,6 @@
- /**
- `d2l-select-outcomes`
- 
--
- @demo demo/index.html
- */
- /*
-@@ -13,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
+@@ -12,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
  
  import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
  import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
@@ -121,7 +91,7 @@ index 31cc486..86e64e7 100644
  import 'd2l-colors/d2l-colors.js';
  import 'd2l-alert/d2l-alert.js';
  import 'd2l-loading-spinner/d2l-loading-spinner.js';
-@@ -21,6 +20,7 @@ import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
+@@ -20,6 +20,7 @@ import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
  import 'd2l-offscreen/d2l-offscreen.js';
  import './d2l-alignment.js';
  import './localize-behavior.js';
@@ -129,7 +99,7 @@ index 31cc486..86e64e7 100644
  const $_documentContainer = document.createElement('template');
  
  $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-list">
-@@ -130,7 +130,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-list">
+@@ -129,7 +130,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-list">
  		</siren-entity-loading>
  	</template>
  
@@ -138,7 +108,7 @@ index 31cc486..86e64e7 100644
  </dom-module>`;
  
  document.head.appendChild($_documentContainer.content);
-@@ -142,7 +142,6 @@ Polymer({
+@@ -141,7 +142,6 @@ Polymer({
  		D2L.PolymerBehaviors.Siren.EntityBehavior,
  		D2L.PolymerBehaviors.Siren.SirenActionBehavior,
  		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
@@ -146,7 +116,7 @@ index 31cc486..86e64e7 100644
  	],
  
  	properties: {
-@@ -174,7 +173,7 @@ Polymer({
+@@ -173,7 +173,7 @@ Polymer({
  	},
  
  	_onAlignmentRemove: function(e) {
@@ -155,7 +125,7 @@ index 31cc486..86e64e7 100644
  		this.splice('entities', index, 1);
  
  		// Notify screen readers that an alignment has been removed
-@@ -196,7 +195,7 @@ Polymer({
+@@ -195,7 +195,7 @@ Polymer({
  			return false;
  		}
  
@@ -165,18 +135,10 @@ index 31cc486..86e64e7 100644
  		}
  
 diff --git a/d2l-alignment-update.js b/d2l-alignment-update.js
-index c7abd46..cf4c041 100644
+index 075b9ff..cf4c041 100644
 --- a/d2l-alignment-update.js
 +++ b/d2l-alignment-update.js
-@@ -1,7 +1,6 @@
- /**
- `d2l-select-outcomes`
- 
--
- @demo demo/index.html
- */
- /*
-@@ -13,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
+@@ -12,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
  
  import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
  import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
@@ -185,7 +147,7 @@ index c7abd46..cf4c041 100644
  import 'd2l-colors/d2l-colors.js';
  import 'd2l-button/d2l-button.js';
  import 'd2l-inputs/d2l-input-checkbox.js';
-@@ -22,6 +21,7 @@ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+@@ -21,6 +21,7 @@ import 'd2l-loading-spinner/d2l-loading-spinner.js';
  import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
  import './d2l-alignment-intent.js';
  import './localize-behavior.js';
@@ -193,7 +155,7 @@ index c7abd46..cf4c041 100644
  const $_documentContainer = document.createElement('template');
  
  $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-update">
-@@ -148,7 +148,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-update">
+@@ -147,7 +148,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-alignment-update">
  		</siren-entity-loading>
  	</template>
  
@@ -202,7 +164,7 @@ index c7abd46..cf4c041 100644
  </dom-module>`;
  
  document.head.appendChild($_documentContainer.content);
-@@ -160,7 +160,6 @@ Polymer({
+@@ -159,7 +160,6 @@ Polymer({
  		D2L.PolymerBehaviors.Siren.EntityBehavior,
  		D2L.PolymerBehaviors.Siren.SirenActionBehavior,
  		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
@@ -210,7 +172,7 @@ index c7abd46..cf4c041 100644
  	],
  
  	properties: {
-@@ -199,7 +198,7 @@ Polymer({
+@@ -198,7 +198,7 @@ Polymer({
  	},
  
  	_onKeyDown: function(e) {
@@ -219,7 +181,7 @@ index c7abd46..cf4c041 100644
  		if (e.keyCode === this._keyCodes.DOWN || e.keyCode === this._keyCodes.UP) {
  			// prevent scrolling when up/down arrows pressed
  			e.preventDefault();
-@@ -288,29 +287,29 @@ Polymer({
+@@ -287,29 +287,29 @@ Polymer({
  			return;
  		}
  		this._performActionAndUpdate(function() {
@@ -258,7 +220,7 @@ index c7abd46..cf4c041 100644
  				}
  			}
  		})
-@@ -321,8 +320,8 @@ Polymer({
+@@ -320,8 +320,8 @@ Polymer({
  
  	_add: function() {
  		this._buttonsDisabled = true;
@@ -269,7 +231,7 @@ index c7abd46..cf4c041 100644
  		})
  			.then(function() {
  				window.D2L.Siren.EntityStore.fetch(this.href, this.token, true);
-@@ -346,7 +345,7 @@ Polymer({
+@@ -345,7 +345,7 @@ Polymer({
  
  	_updateLoading: function(promises) {
  		if (promises > 0) {
@@ -336,18 +298,10 @@ index ab99cd8..42ac285 100644
  			this.dispatchEvent(new CustomEvent('d2l-alignment-remove', {
  				bubbles: true,
 diff --git a/d2l-outcome.js b/d2l-outcome.js
-index d0adb63..6c10029 100644
+index f004465..6c10029 100644
 --- a/d2l-outcome.js
 +++ b/d2l-outcome.js
-@@ -1,7 +1,6 @@
- /**
- `d2l-select-outcomes`
- 
--
- @demo demo/index.html
- */
- /*
-@@ -15,6 +14,7 @@ import 'd2l-loading-spinner/d2l-loading-spinner.js';
+@@ -14,6 +14,7 @@ import 'd2l-loading-spinner/d2l-loading-spinner.js';
  import 'd2l-polymer-siren-behaviors/siren-entity-loading.js';
  import 'd2l-typography/d2l-typography-shared-styles.js';
  import 's-html/s-html.js';
@@ -355,16 +309,7 @@ index d0adb63..6c10029 100644
  const $_documentContainer = document.createElement('template');
  
  $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
-@@ -47,7 +47,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
- 			d2l-loading-spinner {
- 				--d2l-loading-spinner-size: 1.2rem;
- 			}
--			
-+
- 			.d2l-outcome-wrap, .d2l-outcome-text {
- 				width: 100%;
- 			}
-@@ -67,7 +67,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
+@@ -66,7 +67,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-outcome">
  		</siren-entity-loading>
  	</template>
  
@@ -374,18 +319,10 @@ index d0adb63..6c10029 100644
  
  document.head.appendChild($_documentContainer.content);
 diff --git a/d2l-select-outcomes.js b/d2l-select-outcomes.js
-index fdd4c7c..0449d28 100644
+index d9f93b4..0449d28 100644
 --- a/d2l-select-outcomes.js
 +++ b/d2l-select-outcomes.js
-@@ -1,7 +1,6 @@
- /**
- `d2l-select-outcomes`
- 
--
- @demo demo/index.html
- */
- /*
-@@ -12,10 +11,11 @@
+@@ -11,10 +11,11 @@
  import '@polymer/polymer/polymer-legacy.js';
  
  import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
@@ -398,7 +335,7 @@ index fdd4c7c..0449d28 100644
  const $_documentContainer = document.createElement('template');
  
  $_documentContainer.innerHTML = `<dom-module id="d2l-select-outcomes">
-@@ -40,7 +40,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-select-outcomes">
+@@ -39,7 +40,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-select-outcomes">
  		</div>
  	</template>
  
@@ -407,7 +344,7 @@ index fdd4c7c..0449d28 100644
  </dom-module>`;
  
  document.head.appendChild($_documentContainer.content);
-@@ -58,7 +58,6 @@ Polymer({
+@@ -57,7 +58,6 @@ Polymer({
  	behaviors: [
  		D2L.PolymerBehaviors.Siren.EntityBehavior,
  		window.D2L.PolymerBehaviors.SelectOutcomes.LocalizeBehavior,
@@ -415,7 +352,7 @@ index fdd4c7c..0449d28 100644
  	],
  
  	ready: function() {
-@@ -79,7 +78,7 @@ Polymer({
+@@ -78,7 +78,7 @@ Polymer({
  	},
  
  	_getAlignments: function(entity) {
@@ -446,7 +383,7 @@ index 220baa4..8fefc94 100644
  	  </demo-snippet>
  	</div>`;
 diff --git a/demo/request-mock.js b/demo/request-mock.js
-index 8ef2cf4..c6bbcfd 100644
+index c49bd4d..c6bbcfd 100644
 --- a/demo/request-mock.js
 +++ b/demo/request-mock.js
 @@ -1,3 +1,5 @@
@@ -491,18 +428,16 @@ index 8ef2cf4..c6bbcfd 100644
  				'class': [
  					'intent'
  				],
-@@ -153,9 +155,8 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
- 				]
+@@ -154,7 +156,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
  			}));
  
--
  		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/outcomes/d31d0671-bdad-4f08-9da9-65351e3b250a':
 -			return Promise.resolve(window.D2L.Hypermedia.Siren.Parse({
 +			return Promise.resolve(SirenParse({
  				'class': [
  					'outcome'
  				],
-@@ -181,7 +182,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+@@ -180,7 +182,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
  			}));
  
  		case 'https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.proddev.d2l/outcomes/edcdd008-20f2-4934-9017-e53650505eae':
@@ -511,7 +446,7 @@ index 8ef2cf4..c6bbcfd 100644
  				'class': [
  					'outcome'
  				],
-@@ -244,7 +245,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
+@@ -243,7 +245,7 @@ D2L.PolymerBehaviors.FetchSirenEntityBehavior._makeRequest = function(request) {
  						}
  					];
  				}
@@ -561,7 +496,7 @@ index 826938a..4c698d5 100644
  			window.D2L.Siren.EntityStore.addListener('https://15215d45-f7e9-4967-bf9b-13a685538829.outcomes.api.dev.brightspace.com/outcomes/73292f97-ebe5-43d5-b1df-299d98f1e0c4/84f0b418-2f25-4184-87e5-9ab7f86fbc34', '', waitForFetch);
  			fixtureElement.href = 'https://15215d45-f7e9-4967-bf9b-13a685538829.activities.api.dev.brightspace.com/activities/6606_3000_1/usages/6609';
 diff --git a/test/d2l-outcome.html b/test/d2l-outcome.html
-index 24ce6cd..bfb2a48 100644
+index 4543598..bfb2a48 100644
 --- a/test/d2l-outcome.html
 +++ b/test/d2l-outcome.html
 @@ -21,6 +21,7 @@
@@ -572,15 +507,6 @@ index 24ce6cd..bfb2a48 100644
  /* global suite, test, assert, fixture, setup, stubWhitelist */
  var runTest = function(testName, href, testFunction) {
  	var element;
-@@ -50,7 +51,7 @@ var runTest = function(testName, href, testFunction) {
- 		element.token = '';
- 	});
- 
--	test(testName, function(){
-+	test(testName, function() {
- 		testFunction(element);
- 	});
- };
 @@ -66,7 +67,7 @@ suite('d2l-outcome', function() {
  			'renders outcome',
  			'static-data/outcomes/c297b02c-19b1-485a-92db-e598316271c8/5f4d6901-7c10-4edc-b2e1-821efc5c3708.json',
@@ -590,66 +516,3 @@ index 24ce6cd..bfb2a48 100644
  				assert.equal(content, 'Interpret words and phrases as they are used in a text, including determining technical, connotative, and figurative meanings, and analyze how specific word choices shape meaning or tone.');
  			}
  		);
-@@ -82,7 +83,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- 	suite('asn multiple lists', function() {
- 		runTest(
- 			'flattens multiple lists in ASN outcomes',
-@@ -93,7 +94,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- 	suite('asn malformed list', function() {
- 		runTest(
- 			'flattens lists in ASN outcomes that are missing closing tags',
-@@ -104,7 +105,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- 	suite('outcome with notation and label', function() {
- 		runTest(
- 			'shows the outcome notation, primary subject, label, and listId',
-@@ -115,7 +116,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- 	suite('outcome with altNotation but no notation', function() {
- 		runTest(
- 			'use altNotation if notation is null, empty, or only whitespace',
-@@ -126,7 +127,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- 	suite('outcome with notation only', function() {
- 		runTest(
- 			'correctly render outcome identifier for outcomes with a notation, but no subject, label, or listId',
-@@ -137,7 +138,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- 	suite('outcome without notation', function() {
- 		runTest(
- 			'correctly render outcome identifier for outcomes with a subject, label, or listId, but no notation',
-@@ -148,7 +149,7 @@ suite('d2l-outcome', function() {
- 			}
- 		);
- 	});
--	
-+
- });
- </script>
-   </body>
