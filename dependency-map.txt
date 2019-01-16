@@ -37,6 +37,7 @@ d2l-localize-behavior,d2l-localize-behavior,BrightspaceUI/localize-behavior#semv
 d2l-media-behavior,@d2l/media-behavior,^1.0.1
 d2l-menu,d2l-menu,BrightspaceUI/menu#semver:^2
 d2l-more-less,d2l-more-less,BrightspaceUI/more-less#semver:^5
+d2l-navigation,d2l-navigation,BrightspaceUI/navigation#semver:^3
 d2l-offscreen,d2l-offscreen,BrightspaceUI/offscreen#semver:^4
 d2l-outcomes-level-of-achievements,d2l-outcomes-level-of-achievements,Brightspace/outcomes-level-of-achievement-ui#semver:^2
 d2l-opt-in-flyout-webcomponent,d2l-opt-in-flyout-webcomponent,Brightspace/d2l-opt-in-flyout-webcomponent#semver:^2

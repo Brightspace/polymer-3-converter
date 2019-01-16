@@ -1,0 +1,97 @@
+From f5fa4a1d6c0c83c722ea8e666fabd12bd6e740db Mon Sep 17 00:00:00 2001
+From: Stacey Van Herk <Stacey.VanHerk@D2L.com>
+Date: Wed, 16 Jan 2019 09:47:59 -0500
+Subject: [PATCH] Polymer 3 Conversion - Patches
+
+---
+ d2l-navigation-button-notification-icon.js |  1 -
+ d2l-navigation-button.js                   |  7 +------
+ d2l-navigation-immersive.js                | 12 ++++--------
+ d2l-navigation-link-back.js                |  1 -
+ 4 files changed, 5 insertions(+), 16 deletions(-)
+
+diff --git a/d2l-navigation-button-notification-icon.js b/d2l-navigation-button-notification-icon.js
+index a2d18c6..8c4a896 100644
+--- a/d2l-navigation-button-notification-icon.js
++++ b/d2l-navigation-button-notification-icon.js
+@@ -43,7 +43,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-navigation-button-notificat
+ 				top: calc(-50% + 11px);
+ 				width: 100%;
+ 			}
+-			:host-context([dir="rtl"]) .d2l-navigation-button-notification-indicator,
+ 			:host(:dir(rtl)) .d2l-navigation-button-notification-indicator {
+ 				left: calc(-50% - 4px);
+ 				right: auto;
+diff --git a/d2l-navigation-button.js b/d2l-navigation-button.js
+index a13f672..27ca21d 100644
+--- a/d2l-navigation-button.js
++++ b/d2l-navigation-button.js
+@@ -39,17 +39,13 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-navigation-button">
+ 
+ 			:host button:hover,
+ 			:host button:focus,
+-			/* ::slotted styles for Polymer 2.0 */
+ 			:host button:hover ::slotted(*),
+ 			:host button:focus ::slotted(*) {
+ 				@apply --d2l-navigation-highlight-base-hover-focus;
+ 			}
+ 
+ 			/*
+-				::slotted styles for Polymer 1.0; styling all slotted children needs
+-				to be applied explicitely.
+-				This cannot be combined with the style block above, as this is not
+-				valid in 2.0 and as such the entire block gets ignored.
++				::slotted styles for IE11
+ 			*/
+ 			:host button:hover ::slotted(*) *,
+ 			:host button:focus ::slotted(*) * {
+@@ -75,7 +71,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-navigation-button">
+ 				@apply --d2l-offscreen;
+ 			}
+ 
+-			:host-context([dir="rtl"]) .d2l-offscreen-description,
+ 			:host(:dir(rtl)) .d2l-offscreen-description {
+ 				@apply --d2l-offscreen-rtl;
+ 			}
+diff --git a/d2l-navigation-immersive.js b/d2l-navigation-immersive.js
+index 6f0a1b9..777be47 100644
+--- a/d2l-navigation-immersive.js
++++ b/d2l-navigation-immersive.js
+@@ -60,10 +60,8 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-navigation-immersive">
+ 			}
+ 
+ 			/*
+-				::slotted styles for Polymer 1.0; styling all slotted children needs
+-				to be applied explicitely.
+-				This cannot be combined with the style block above, as this is not
+-				valid in 2.0 and as such the entire block gets ignored.
++				::slotted styles for Edge and IE11; styling all slotted children needs
++				to be applied explicitly.
+ 			*/
+ 			.d2l-navigation-immersive-left ::slotted(*) > *,
+ 			.d2l-navigation-immersive-middle ::slotted(*) > *,
+@@ -147,10 +145,8 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-navigation-immersive">
+ 					height: var(--d2l-navigation-immersive-height-responsive);
+ 				}
+ 				/*
+-					::slotted styles for Polymer 1.0; styling all slotted children needs
+-					to be applied explicitely.
+-					This cannot be combined with the style block above, as this is not
+-					valid in 2.0 and as such the entire block gets ignored.
++					::slotted styles for Edge and IE11; styling all slotted children needs
++					to be applied explicitly.
+ 				*/
+ 				.d2l-navigation-immersive-left ::slotted(*) > *,
+ 				.d2l-navigation-immersive-middle ::slotted(*) > *,
+diff --git a/d2l-navigation-link-back.js b/d2l-navigation-link-back.js
+index 96d6f03..706ee2e 100644
+--- a/d2l-navigation-link-back.js
++++ b/d2l-navigation-link-back.js
+@@ -33,7 +33,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-navigation-link-back">
+ 			.d2l-navigation-link-back-text {
+ 				padding-left: var(--d2l-navigation-link-back-left-padding, 5px);
+ 			}
+-			:host-context([dir="rtl"]) .d2l-navigation-link-back-text,
+ 			:host(:dir(rtl)) .d2l-navigation-link-back-text {
+ 				padding-left: 0;
+ 				padding-right: var(--d2l-navigation-link-back-left-padding, 5px);
