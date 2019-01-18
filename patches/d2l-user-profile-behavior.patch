@@ -1,0 +1,201 @@
+From 684b8c5fc5f96070a0b013cfac65044e8b0ea924 Mon Sep 17 00:00:00 2001
+From: David Harris <David.Harris@D2L.com>
+Date: Wed, 16 Jan 2019 11:53:52 -0600
+Subject: [PATCH] Polymer 3 Conversion - Patches
+
+---
+ d2l-user-profile-behavior.js        | 38 ++++++++++++++---------------
+ package.json                        |  7 +++---
+ test/d2l-user-profile-behavior.html |  2 +-
+ test/d2l-user-profile-behavior.js   |  6 +++--
+ test/index.html                     |  1 +
+ 5 files changed, 29 insertions(+), 25 deletions(-)
+
+diff --git a/d2l-user-profile-behavior.js b/d2l-user-profile-behavior.js
+index 76e4d1b..c5f0a80 100644
+--- a/d2l-user-profile-behavior.js
++++ b/d2l-user-profile-behavior.js
+@@ -1,7 +1,8 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-organization-hm-behavior/d2l-organization-hm-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+-import 'siren-parser/siren-parser.js';
++import { Classes, Rels } from 'd2l-hypermedia-constants';
++import SirenParse from 'siren-parser';
++
+ /* @polymerBehavior window.D2L.UserProfileBehavior */
+ window.D2L.UserProfileBehaviorImpl = {
+ 	properties: {
+@@ -117,27 +118,27 @@ window.D2L.UserProfileBehaviorImpl = {
+ 				}
+ 				return Promise.reject(new Error(response.status));
+ 			})
+-			.then(window.D2L.Hypermedia.Siren.Parse);
++			.then(SirenParse);
+ 	},
+ 	_fetchUser: function() {
+ 		return this._fetchSirenEntity(this.userUrl).then(function(userEntity) {
+-			this._rootUrl = (userEntity.getLinkByRel(this.HypermediaRels.root) || {}).href;
+-			this._enrollmentsUrl = (userEntity.getLinkByRel(this.HypermediaRels.myEnrollments) || {}).href;
+-			this._folioUrl = (userEntity.getLinkByRel(this.HypermediaRels.Folio.folio) || {}).href;
++			this._rootUrl = (userEntity.getLinkByRel(Rels.root) || {}).href;
++			this._enrollmentsUrl = (userEntity.getLinkByRel(Rels.myEnrollments) || {}).href;
++			this._folioUrl = (userEntity.getLinkByRel(Rels.Folio.folio) || {}).href;
+
+-			var displayNameEntity = userEntity.getSubEntityByRel(this.HypermediaRels.displayName);
++			var displayNameEntity = userEntity.getSubEntityByRel(Rels.displayName);
+ 			if (displayNameEntity) {
+ 				this._name = displayNameEntity.properties && displayNameEntity.properties.name;
+ 			}
+
+-			var profileEntity = userEntity.getSubEntityByRel(this.HypermediaRels.userProfile);
++			var profileEntity = userEntity.getSubEntityByRel(Rels.userProfile);
+ 			if (profileEntity) {
+-				var image = profileEntity.getSubEntityByRel(this.HypermediaRels.profileImage);
++				var image = profileEntity.getSubEntityByRel(Rels.profileImage);
+
+ 				if (image.class && image.class.indexOf('default-image') !== -1) {
+ 					this._iconUrl = null;
+ 				} else {
+-					this._iconUrl = (image.getLinkByRel(this.HypermediaRels.thumbnailRegular) || {}).href;
++					this._iconUrl = (image.getLinkByRel(Rels.thumbnailRegular) || {}).href;
+ 				}
+ 			}
+ 		}.bind(this));
+@@ -152,9 +153,9 @@ window.D2L.UserProfileBehaviorImpl = {
+ 		}
+
+ 		return this._fetchSirenEntity(this._folioUrl).then(function(folioEntity) {
+-			var tiles = (folioEntity.getSubEntitiesByRel(this.HypermediaRels.Folio.evidence));
++			var tiles = (folioEntity.getSubEntitiesByRel(Rels.Folio.evidence));
+ 			for (var i = 0; i < tiles.length; i++) {
+-				var content = tiles[i].getSubEntityByRel(this.HypermediaRels.Folio.contentItem);
++				var content = tiles[i].getSubEntityByRel(Rels.Folio.contentItem);
+ 				var type = content.properties.type;
+ 				switch (type) {
+ 					case 'Png':
+@@ -174,10 +175,10 @@ window.D2L.UserProfileBehaviorImpl = {
+
+ 		this._enrollmentsUrl += '?pageSize=2&orgUnitTypeId=3&embedDepth=1';
+ 		return this._fetchSirenEntity(this._enrollmentsUrl).then(function(enrollmentsEntity) {
+-			var enrollmentEntities = enrollmentsEntity.getSubEntitiesByRel(this.HypermediaRels.userEnrollment);
++			var enrollmentEntities = enrollmentsEntity.getSubEntitiesByRel(Rels.userEnrollment);
+
+ 			if (enrollmentEntities.length === 1) {
+-				var organizationUrl = enrollmentEntities[0].getLinkByRel(this.HypermediaRels.organization).href;
++				var organizationUrl = enrollmentEntities[0].getLinkByRel(Rels.organization).href;
+ 				return Promise.resolve(organizationUrl);
+ 			} else {
+ 				return Promise.reject(new Error('User does not have exactly one enrollment: ' + enrollmentEntities.length));
+@@ -186,7 +187,7 @@ window.D2L.UserProfileBehaviorImpl = {
+ 	},
+ 	_fetchOrganization: function(organizationUrl) {
+ 		return this._fetchSirenEntity(organizationUrl).then(function(organizationEntity) {
+-			var imageLink = organizationEntity.getSubEntityByClass(this.HypermediaClasses.courseImage.courseImage);
++			var imageLink = organizationEntity.getSubEntityByClass(Classes.courseImage.courseImage);
+
+ 			if (!imageLink) {
+ 				return Promise.reject(new Error('Organization image link not found'));
+@@ -198,7 +199,7 @@ window.D2L.UserProfileBehaviorImpl = {
+ 	},
+ 	_fetchOrganizationImage: function(organizationImageUrl) {
+ 		return this._fetchSirenEntity(organizationImageUrl).then(function(organizationImageEntity) {
+-			var backgroundImages = this._getBestImageLinks(organizationImageEntity, this.HypermediaClasses.courseImage.wide);
++			var backgroundImages = this._getBestImageLinks(organizationImageEntity, Classes.courseImage.wide);
+ 			this._backgroundUrl = backgroundImages.highMin || backgroundImages.lowMax;
+ 		}.bind(this));
+ 	},
+@@ -208,13 +209,13 @@ window.D2L.UserProfileBehaviorImpl = {
+ 		}
+
+ 		return this._fetchSirenEntity(this._rootUrl).then(function(rootEntity) {
+-			var institutionUrl = (rootEntity.getLinkByRel(this.HypermediaRels.organization) || {}).href;
++			var institutionUrl = (rootEntity.getLinkByRel(Rels.organization) || {}).href;
+ 			return Promise.resolve(institutionUrl);
+ 		}.bind(this));
+ 	},
+ 	_fetchInstitution: function(institutionUrl) {
+ 		return this._fetchSirenEntity(institutionUrl).then(function(institutionEntity) {
+-			var themeUrl = (institutionEntity.getLinkByRel(this.HypermediaRels.Themes.theme) || {}).href;
++			var themeUrl = (institutionEntity.getLinkByRel(Rels.Themes.theme) || {}).href;
+ 			return Promise.resolve(themeUrl);
+ 		}.bind(this));
+ 	},
+@@ -236,6 +237,5 @@ window.D2L = window.D2L || {};
+ */
+ window.D2L.UserProfileBehavior = [
+ 	D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.UserProfileBehaviorImpl
+ ];
+diff --git a/package.json b/package.json
+index e8f0ddb..1ccb32e 100644
+--- a/package.json
++++ b/package.json
+@@ -15,9 +15,10 @@
+   "scripts": {
+     "test": "npm run lint && npm run test:wct",
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "test:lint:wc": "polymer lint",
+-    "test:wct": "polymer test --skip-plugin sauce"
++    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "lint:wc": "polymer lint",
++    "test:wct": "polymer test --skip-plugin sauce --npm",
++    "test:wct:local": "cross-env LAUNCHPAD_BROWSERS=chrome polymer test --skip-plugin sauce --npm -p"
+   },
+   "bugs": {
+     "url": "https://github.com/Brightspace/user-profile-behavior/issues"
+diff --git a/test/d2l-user-profile-behavior.html b/test/d2l-user-profile-behavior.html
+index 2d40619..65996bc 100644
+--- a/test/d2l-user-profile-behavior.html
++++ b/test/d2l-user-profile-behavior.html
+@@ -12,6 +12,6 @@
+ 				<consumer-element></consumer-element>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-user-profile-behavior.js"></script>
++		<script type="module" src="./d2l-user-profile-behavior.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/d2l-user-profile-behavior.js b/test/d2l-user-profile-behavior.js
+index 7ba361b..0443775 100644
+--- a/test/d2l-user-profile-behavior.js
++++ b/test/d2l-user-profile-behavior.js
+@@ -1,9 +1,11 @@
++import SirenParse from 'siren-parser';
++
+ describe('d2l-user-profile-behavior', function() {
+ 	var component,
+ 		sandbox;
+
+ 	function stubFetchEntity(entity) {
+-		var parsed = window.D2L.Hypermedia.Siren.Parse(entity);
++		var parsed = SirenParse(entity);
+ 		sandbox.stub(component, '_fetchSirenEntity').returns(Promise.resolve(parsed));
+ 	}
+
+@@ -34,7 +36,7 @@ describe('d2l-user-profile-behavior', function() {
+ 		});
+
+ 		it('should call _fetchUser when token/URL are new', function() {
+-			var spy = sandbox.spy(component, '_fetchUser');
++			var spy = sandbox.stub(component, '_fetchUser').returns(Promise.resolve());
+ 			return component.generateUserRequest('foo', 'bar').then(function() {
+ 				expect(spy).to.have.been.called;
+ 			});
+diff --git a/test/index.html b/test/index.html
+index 8d7d21d..2b99557 100644
+--- a/test/index.html
++++ b/test/index.html
+@@ -7,6 +7,7 @@
+ 	</head>
+ 	<body>
+ 		<script>
++			/* global WCT */
+ 			'use strict';
+ 			WCT.loadSuites([
+ 				'd2l-user-profile-behavior.html'
+--
+2.18.0.windows.1
+

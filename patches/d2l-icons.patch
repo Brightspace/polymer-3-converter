@@ -1,5 +1,5 @@
 diff --git a/cli/iconset-builder.js b/cli/iconset-builder.js
-index 3cc8d11..627dc53 100644
+index 3cc8d11..32de587 100644
 --- a/cli/iconset-builder.js
 +++ b/cli/iconset-builder.js
 @@ -6,10 +6,6 @@ var path = require('path'),
@@ -13,6 +13,15 @@ index 3cc8d11..627dc53 100644
  	'iron-iconset-svg': {
  		'$': {'name': '', 'size': '', 'rtl-mirroring': true, 'use-global-rtl-attribute': true},
  		'svg': {'defs': {'g': []}}
+@@ -40,7 +36,7 @@ function buildFileXml(iconsetObj, objs, iconsetPath, file) {
+ 		if (err) {
+ 			return deferred.reject(err);
+ 		}
+-		var id = path.basename(file, extension);
++		var id = 'd2l-icon-' + path.basename(file, extension);
+ 		var parser = new xml2js.Parser();
+ 		parser.parseString(xml, function(err, result) {
+ 			if (err) {
 @@ -108,9 +104,14 @@ module.exports = function(iconsetPath) {
 
  			var deferred = q.defer();
@@ -31,3 +40,31 @@ index 3cc8d11..627dc53 100644
  				if (err) {
  					return deferred.reject(err);
  				}
+diff --git a/d2l-icon.js b/d2l-icon.js
+index 2e418f4..d1f14c7 100644
+--- a/d2l-icon.js
++++ b/d2l-icon.js
+@@ -127,7 +127,9 @@ Polymer({
+ 				this._iconset = /** @type {?Polymer.Iconset} */ (
+ 					this._meta.byKey(this._iconsetName));
+ 				if (this._iconset) {
+-					this._iconset.applyIcon(this, this._iconName, this.theme);
++					var d2lIcon = this._iconset.innerHTML.indexOf(`d2l-icon-${this._iconName}`) > -1;
++					var iconName = d2lIcon ? (`d2l-icon-${this._iconName}`) : this._iconName;
++					this._iconset.applyIcon(this, iconName, this.theme);
+ 					this.unlisten(window, 'iron-iconset-added', '_updateIcon');
+ 				} else {
+ 					this.listen(window, 'iron-iconset-added', '_updateIcon');
+diff --git a/package.json b/package.json
+index 230af8d..3cb474e 100644
+--- a/package.json
++++ b/package.json
+@@ -41,7 +41,7 @@
+     "chalk": "^1.1.1",
+     "d2l-typography": "BrightspaceUI/typography#semver:^7",
+     "eslint": "^4.15.0",
+-    "eslint-config-brightspace": "^0.4.0",
++    "eslint-config-brightspace": "^0.4.1",
+     "eslint-plugin-html": "^4.0.1",
+     "fs": "0.0.2",
+     "imagemin": "^4.0.0",
