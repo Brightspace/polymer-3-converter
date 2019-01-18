@@ -1,5 +1,6 @@
 d2l-accordion,d2l-accordion,BrightspaceUI/accordion#semver:^1
 d2l-activity-alignments,d2l-activity-alignments,Brightspace/d2l-activity-alignments#semver:^1
+d2l-activity-details-ui,d2l-activity-details-ui,Brightspace/d2l-activity-details-ui#semver:^4
 d2l-alert,d2l-alert,BrightspaceUI/alert#semver:^4
 d2l-assignments-ui,d2l-assignments-ui,Brightspace/assignments-ui#semver:^3
 d2l-attachments-ui,d2l-attachments-ui,Brightspace/attachments-ui#semver:^3

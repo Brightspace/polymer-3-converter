@@ -1,0 +1,673 @@
+commit 177dc2f36c1788b0370408e9afcd6600df98bb78
+Author: Anthony Wikkerink <Anthony.Wikkerink@D2L.com>
+Date:   Fri Jan 18 12:52:08 2019 -0500
+
+    Polymer 3 - patches
+
+diff --git a/demo/d2l-activity-details.html b/demo/d2l-activity-details.html
+index 3f019f8..6713e96 100644
+--- a/demo/d2l-activity-details.html
++++ b/demo/d2l-activity-details.html
+@@ -87,11 +87,18 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-activity-details-demo">
+ 						}
+ 					}
+ 				});
+-			&lt;/script>
++			<\/script>
+ 		</dom-module>`;
+ 
+ document.body.appendChild($_documentContainer.content);
+-</script>emplate>
++</script>
++<script type="module">
++const $_documentContainer = document.createElement('template');
++
++$_documentContainer.innerHTML = `<div>
++			<h3>D2L Activity Details</h3>
++			<demo-snippet>
++				<template>
+ 					<d2l-activity-details-demo></d2l-activity-details-demo>
+ 				</template>
+ 			</demo-snippet>
+diff --git a/package.json b/package.json
+index 1c9de3a..090872c 100644
+--- a/package.json
++++ b/package.json
+@@ -39,19 +39,20 @@
+     "wct-browser-legacy": "^1.0.1"
+   },
+   "dependencies": {
+-    "bower-art-resolver": "^2.0.9",
+-    "web-component-tester": "^6.5.0",
+     "@polymer/app-localize-behavior": "^3.0.0",
++    "@polymer/polymer": "^3.0.0",
++    "bower-art-resolver": "^2.0.9",
+     "d2l-attachments-ui": "Brightspace/attachments-ui#semver:^3",
++    "d2l-card": "BrightspaceUI/card#semver:^6",
+     "d2l-fetch-siren-entity-behavior": "Brightspace/d2l-fetch-siren-entity-behavior.git#semver:^6",
+     "d2l-hypermedia-constants": "^6",
+     "d2l-icons": "BrightspaceUI/icons#semver:^6",
+     "d2l-more-less": "BrightspaceUI/more-less#semver:^5",
+     "d2l-richtext-parent": "Brightspace/d2l-richtext-parent#semver:^2",
++    "d2l-rubric": "github:Brightspace/d2l-rubric",
+     "d2l-status-indicator": "BrightspaceUI/status-indicator#semver:^3",
+-    "d2l-card": "BrightspaceUI/card#semver:^6",
+     "d2l-tooltip": "BrightspaceUI/tooltip#semver:^3",
+-    "@polymer/polymer": "^3.0.0"
++    "web-component-tester": "^6.5.0"
+   },
+   "resolutions": {
+     "inherits": "2.0.3",
+diff --git a/src/behaviors/d2l-activity-details-assignment-fetch-behavior.js b/src/behaviors/d2l-activity-details-assignment-fetch-behavior.js
+index 86bcd3b..6cb6a08 100644
+--- a/src/behaviors/d2l-activity-details-assignment-fetch-behavior.js
++++ b/src/behaviors/d2l-activity-details-assignment-fetch-behavior.js
+@@ -1,5 +1,5 @@
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes, Rels } from 'd2l-hypermedia-constants';
+ import './d2l-activity-details-shared-fetch-behavior.js';
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+@@ -19,11 +19,11 @@ var activityDetailsAssignmentFetchBehaviorImpl = {
+ 
+ 	_getRels: function() {
+ 		return {
+-			activity: this.HypermediaRels.assignment,
+-			instructions: this.HypermediaRels.Assignments.instructions,
+-			file: this.HypermediaClasses.assignments.file,
+-			link: this.HypermediaClasses.assignments.link,
+-			attachments: this.HypermediaRels.Assignments.attachments
++			activity: Rels.assignment,
++			instructions: Rels.Assignments.instructions,
++			file: Classes.assignments.file,
++			link: Classes.assignments.link,
++			attachments: Rels.Assignments.attachments
+ 		};
+ 	},
+ 
+@@ -43,9 +43,9 @@ var activityDetailsAssignmentFetchBehaviorImpl = {
+ 	},
+ 
+ 	_getAssignmentSubmission: function(res) {
+-		if (res && res.hasSubEntityByClass(this.HypermediaClasses.assignments.submissionList)) {
+-			var submissionList = res.getSubEntityByClass(this.HypermediaClasses.assignments.submissionList);
+-			var latestSubmission = submissionList.getLinkByClass(this.HypermediaClasses.assignments.latest);
++		if (res && res.hasSubEntityByClass(Classes.assignments.submissionList)) {
++			var submissionList = res.getSubEntityByClass(Classes.assignments.submissionList);
++			var latestSubmission = submissionList.getLinkByClass(Classes.assignments.latest);
+ 			var href = latestSubmission && latestSubmission.href;
+ 
+ 			return href ? this._fetchEntityWithToken(href, this.getToken, this.userUrl) : Promise.resolve();
+@@ -64,11 +64,11 @@ var activityDetailsAssignmentFetchBehaviorImpl = {
+ 
+ 		this._submission = this._getRichtextProperty(submission) || null;
+ 
+-		var dateProperties = this._getDateProperties(submission, this.HypermediaClasses.assignments.submissionDate);
++		var dateProperties = this._getDateProperties(submission, Classes.assignments.submissionDate);
+ 		this._submissionDate = dateProperties.date || null;
+ 		this._submissionDateFull = dateProperties.dateFull || null;
+ 
+-		var attachmentsClass = this.HypermediaClasses.assignments.attachmentList;
++		var attachmentsClass = Classes.assignments.attachmentList;
+ 		var hasAttachments = submission.hasSubEntityByClass(attachmentsClass);
+ 
+ 		if (hasAttachments) {
+@@ -98,7 +98,6 @@ var activityDetailsAssignmentFetchBehaviorImpl = {
+ 
+ window.D2L.ActivityDetails.ActivityDetailsAssignmentFetchBehavior = [
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.ActivityDetails.ActivityDetailsSharedFetchBehavior,
+ 	activityDetailsAssignmentFetchBehaviorImpl
+ ];
+diff --git a/src/behaviors/d2l-activity-details-behavior.js b/src/behaviors/d2l-activity-details-behavior.js
+index 86d4e74..d56955d 100644
+--- a/src/behaviors/d2l-activity-details-behavior.js
++++ b/src/behaviors/d2l-activity-details-behavior.js
+@@ -1,5 +1,5 @@
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes } from 'd2l-hypermedia-constants';
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+ /*
+@@ -39,12 +39,12 @@ var activityDetailsBehaviorImpl = {
+ 
+ 	_getCompletionState: function(userActivityUsage) {
+ 		return {
+-			isCompleted: userActivityUsage.hasSubEntityByClass(this.HypermediaClasses.activities.complete)
++			isCompleted: userActivityUsage.hasSubEntityByClass(Classes.activities.complete)
+ 		};
+ 	},
+ 
+ 	_getDueDateState: function(userActivityUsage) {
+-		var dueDateEntity = userActivityUsage.getSubEntityByClass(this.HypermediaClasses.dates.dueDate);
++		var dueDateEntity = userActivityUsage.getSubEntityByClass(Classes.dates.dueDate);
+ 		var dateDetails = this._getDateDetails(dueDateEntity);
+ 		return {
+ 			isOverdue: dateDetails.isEnded,
+@@ -53,7 +53,7 @@ var activityDetailsBehaviorImpl = {
+ 	},
+ 
+ 	_getEndDateState: function(dateEntity) {
+-		var endDateEntity = dateEntity.getSubEntityByClass(this.HypermediaClasses.dates.endDate);
++		var endDateEntity = dateEntity.getSubEntityByClass(Classes.dates.endDate);
+ 		var isEnded = false;
+ 		var endsToday = false;
+ 
+@@ -86,7 +86,7 @@ var activityDetailsBehaviorImpl = {
+ 
+ 	_getExemptState: function(userActivityUsage) {
+ 		return {
+-			isExempt: userActivityUsage.hasClass(this.HypermediaClasses.activities.exempt)
++			isExempt: userActivityUsage.hasClass(Classes.activities.exempt)
+ 		};
+ 	},
+ 
+@@ -111,6 +111,5 @@ var activityDetailsBehaviorImpl = {
+ 
+ window.D2L.ActivityDetails.ActivityDetailsBehavior = [
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	activityDetailsBehaviorImpl
+ ];
+diff --git a/src/behaviors/d2l-activity-details-discussion-fetch-behavior.js b/src/behaviors/d2l-activity-details-discussion-fetch-behavior.js
+index 3adef18..8132cc3 100644
+--- a/src/behaviors/d2l-activity-details-discussion-fetch-behavior.js
++++ b/src/behaviors/d2l-activity-details-discussion-fetch-behavior.js
+@@ -1,5 +1,5 @@
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes, Rels } from 'd2l-hypermedia-constants';
+ import './d2l-activity-details-shared-fetch-behavior.js';
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+@@ -13,11 +13,11 @@ var activityDetailsDiscussionFetchBehaviorImpl = {
+ 
+ 	_getRels: function() {
+ 		return {
+-			activity: this.HypermediaRels.Discussions.topic,
+-			instructions: this.HypermediaRels.Discussions.description,
+-			file: this.HypermediaClasses.assignments.file,
+-			link: this.HypermediaClasses.assignments.link,
+-			attachments: this.HypermediaRels.Assignments.attachments
++			activity: Rels.Discussions.topic,
++			instructions: Rels.Discussions.description,
++			file: Classes.assignments.file,
++			link: Classes.assignments.link,
++			attachments: Rels.Assignments.attachments
+ 		};
+ 	},
+ 
+@@ -46,7 +46,6 @@ var activityDetailsDiscussionFetchBehaviorImpl = {
+ 
+ window.D2L.ActivityDetails.ActivityDetailsDiscussionFetchBehavior = [
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.ActivityDetails.ActivityDetailsSharedFetchBehavior,
+ 	activityDetailsDiscussionFetchBehaviorImpl
+ ];
+diff --git a/src/behaviors/d2l-activity-details-shared-fetch-behavior.js b/src/behaviors/d2l-activity-details-shared-fetch-behavior.js
+index 69bc266..3f31447 100644
+--- a/src/behaviors/d2l-activity-details-shared-fetch-behavior.js
++++ b/src/behaviors/d2l-activity-details-shared-fetch-behavior.js
+@@ -1,6 +1,6 @@
+ import './localize-behavior.js';
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes, Rels } from 'd2l-hypermedia-constants';
+ import './d2l-activity-details-behavior.js';
+ import './d2l-activity-details-grade-behavior.js';
+ import './fuzzy-date-behavior.js';
+@@ -103,22 +103,22 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 		}.bind(this));
+ 	},
+ 	_getOrgInfo: function(res) {
+-		return this._fetchIfLinkRelExists(res, this.HypermediaRels.organization, 'could not find organization link on activity entity');
++		return this._fetchIfLinkRelExists(res, Rels.organization, 'could not find organization link on activity entity');
+ 	},
+ 	_getActivityInfo: function(res, rels) {
+ 		return this._fetchIfLinkRelExists(res, rels.activity, 'could not find activity link on user activity usage entity');
+ 	},
+ 	_getActivityUsageInfo: function(res) {
+-		return this._fetchIfLinkRelExists(res, this.HypermediaRels.Activities.activityUsage, 'could not find activity usage link on user activity usage entity');
++		return this._fetchIfLinkRelExists(res, Rels.Activities.activityUsage, 'could not find activity usage link on user activity usage entity');
+ 	},
+ 	_getFeedbackInfo: function(res) {
+-		return this._fetchIfLinkRelExists(res, this.HypermediaRels.Activities.feedback);
++		return this._fetchIfLinkRelExists(res, Rels.Activities.feedback);
+ 	},
+ 	_getGradeInfo: function(res) {
+-		return this._fetchIfLinkRelExists(res, this.HypermediaRels.Grades.grade);
++		return this._fetchIfLinkRelExists(res, Rels.Grades.grade);
+ 	},
+ 	_getUserGradeInfo: function(res) {
+-		return this._fetchIfLinkRelExists(res, this.HypermediaRels.Grades.userGrade);
++		return this._fetchIfLinkRelExists(res, Rels.Grades.userGrade);
+ 	},
+ 	_fetchIfLinkRelExists: function(res, rel, throwError) {
+ 		if (res && res.hasLinkByRel(rel)) {
+@@ -131,8 +131,8 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 			Promise.resolve();
+ 	},
+ 	_getAssessmentInfo: function(res) {
+-		if (res && res.hasLinkByRel(this.HypermediaRels.assessment)) {
+-			var href = res.getLinkByRel(this.HypermediaRels.assessment).href;
++		if (res && res.hasLinkByRel(Rels.assessment)) {
++			var href = res.getLinkByRel(Rels.assessment).href;
+ 			this._assessmentHref = href;
+ 			return this._fetchEntityWithToken(href, this.getToken, this.userUrl)
+ 				.catch(function() {
+@@ -186,9 +186,9 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 	},
+ 
+ 	_updateDateInfo: function(res) {
+-		this._startDate = this._getDateInfo(res, this.HypermediaClasses.dates.startDate);
+-		this._endDate = this._getDateInfo(res, this.HypermediaClasses.dates.endDate);
+-		this._dueDate = this._getDateInfo(res, this.HypermediaClasses.dates.dueDate);
++		this._startDate = this._getDateInfo(res, Classes.dates.startDate);
++		this._endDate = this._getDateInfo(res, Classes.dates.endDate);
++		this._dueDate = this._getDateInfo(res, Classes.dates.dueDate);
+ 
+ 		return Promise.resolve();
+ 	},
+@@ -199,7 +199,7 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 	},
+ 
+ 	_getRichtextProperty: function(entity) {
+-		var richtextClass = this.HypermediaClasses.text.richtext;
++		var richtextClass = Classes.text.richtext;
+ 		return entity.getSubEntityByClass(richtextClass);
+ 	},
+ 
+@@ -235,11 +235,11 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 		this._weight = null;
+ 		if (grade) {
+ 			var weight;
+-			if (grade.hasEntityByClass(this.HypermediaClasses.grades.weighted)) {
+-				weight = this._getWeightString(grade.getSubEntityByClass(this.HypermediaClasses.grades.weighted).properties.weight);
++			if (grade.hasEntityByClass(Classes.grades.weighted)) {
++				weight = this._getWeightString(grade.getSubEntityByClass(Classes.grades.weighted).properties.weight);
+ 				this._weight = this.localize('weightPercent', 'weight', weight);
+-			} if (grade.hasEntityByClass(this.HypermediaClasses.grades.points)) {
+-				weight = this._getWeightString(grade.getSubEntityByClass(this.HypermediaClasses.grades.points).properties.weight);
++			} if (grade.hasEntityByClass(Classes.grades.points)) {
++				weight = this._getWeightString(grade.getSubEntityByClass(Classes.grades.points).properties.weight);
+ 				this._weight = this.localize('weightPoints', 'weight', weight);
+ 			}
+ 		}
+@@ -255,8 +255,8 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 	},
+ 
+ 	_updateRubricInfo: function(assessment) {
+-		if (assessment && assessment.hasLinkByRel(this.HypermediaRels.rubric)) {
+-			var href = assessment.getLinkByRel(this.HypermediaRels.rubric).href;
++		if (assessment && assessment.hasLinkByRel(Rels.rubric)) {
++			var href = assessment.getLinkByRel(Rels.rubric).href;
+ 			return this.getToken(this.userUrl)
+ 				.then(function(token) {
+ 					this._rubricHref = href;
+@@ -276,7 +276,7 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 			return Promise.resolve();
+ 		}
+ 
+-		var feedbackEntities = feedback.getSubEntitiesByRel(this.HypermediaRels.Activities.feedback);
++		var feedbackEntities = feedback.getSubEntitiesByRel(Rels.Activities.feedback);
+ 		for (var i = 0; i < feedbackEntities.length; i++) {
+ 			var feedbackEntity = feedbackEntities[i];
+ 
+@@ -285,13 +285,13 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 				this._feedback = feedbackRichtext;
+ 			}
+ 
+-			var dateProperties = this._getDateProperties(feedbackEntity, this.HypermediaClasses.activities.feedbackDate);
++			var dateProperties = this._getDateProperties(feedbackEntity, Classes.activities.feedbackDate);
+ 			if (dateProperties.date) {
+ 				this._feedbackDate = dateProperties.date;
+ 				this._feedbackDateFull = dateProperties.dateFull;
+ 			}
+ 
+-			var activityGradeEntity = feedbackEntity.getSubEntityByRel(this.HypermediaRels.Activities.activityGrade);
++			var activityGradeEntity = feedbackEntity.getSubEntityByRel(Rels.Activities.activityGrade);
+ 			var gradeFeedback = this._formatScoreProperty(activityGradeEntity, function(gradeEntity) {
+ 				// if there is an outOf on the activity object, but not on the activityGrade object, the activity score is hidden
+ 				return outOf && !gradeEntity.properties.outOf && !gradeEntity.properties.score;
+@@ -375,7 +375,6 @@ var activityDetailsSharedFetchBehaviorImpl = {
+ 
+ window.D2L.ActivityDetails.ActivityDetailsSharedFetchBehavior = [
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.ActivityDetails.LocalizeBehavior,
+ 	window.D2L.ActivityDetails.ActivityDetailsBehavior,
+ 	window.D2L.ActivityDetails.FuzzyDateBehavior,
+diff --git a/src/lang/.eslintrc.json b/src/lang/.eslintrc.json
+new file mode 100644
+index 0000000..bd5e47b
+--- /dev/null
++++ b/src/lang/.eslintrc.json
+@@ -0,0 +1,5 @@
++{
++  "rules": {
++    "quotes": ["error", "double"]
++  }
++}
+diff --git a/src/lang/ar.js b/src/lang/ar.js
+index 6a9bfc8..83732eb 100644
+--- a/src/lang/ar.js
++++ b/src/lang/ar.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/de.js b/src/lang/de.js
+index 0adaa48..746e485 100644
+--- a/src/lang/de.js
++++ b/src/lang/de.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/en.js b/src/lang/en.js
+index cd980c0..5086e33 100644
+--- a/src/lang/en.js
++++ b/src/lang/en.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/es.js b/src/lang/es.js
+index 6f07d48..913e673 100644
+--- a/src/lang/es.js
++++ b/src/lang/es.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/fr.js b/src/lang/fr.js
+index f50d7e3..5dd7777 100644
+--- a/src/lang/fr.js
++++ b/src/lang/fr.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/ja.js b/src/lang/ja.js
+index a624123..be5e389 100644
+--- a/src/lang/ja.js
++++ b/src/lang/ja.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/ko.js b/src/lang/ko.js
+index 80efe7c..b7bd067 100644
+--- a/src/lang/ko.js
++++ b/src/lang/ko.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/nl.js b/src/lang/nl.js
+index 4729ef5..c3063db 100644
+--- a/src/lang/nl.js
++++ b/src/lang/nl.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/pt.js b/src/lang/pt.js
+index 77778ff..1edbb45 100644
+--- a/src/lang/pt.js
++++ b/src/lang/pt.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/sv.js b/src/lang/sv.js
+index 2c172b7..c550694 100644
+--- a/src/lang/sv.js
++++ b/src/lang/sv.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/tr.js b/src/lang/tr.js
+index 285b3f5..d7ab39e 100644
+--- a/src/lang/tr.js
++++ b/src/lang/tr.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/zh-tw.js b/src/lang/zh-tw.js
+index 6e994f2..91d1ea0 100644
+--- a/src/lang/zh-tw.js
++++ b/src/lang/zh-tw.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/src/lang/zh.js b/src/lang/zh.js
+index 6d9cc84..437dd90 100644
+--- a/src/lang/zh.js
++++ b/src/lang/zh.js
+@@ -1,4 +1,4 @@
+-import '@polymer/polymer/polymer-legacy.js';
++import "@polymer/polymer/polymer-legacy.js";
+ 
+ window.D2L = window.D2L || {};
+ window.D2L.ActivityDetails = window.D2L.ActivityDetails || {};
+diff --git a/test/behaviors/d2l-activity-details-behavior.html b/test/behaviors/d2l-activity-details-behavior.html
+index a728730..1e5e079 100644
+--- a/test/behaviors/d2l-activity-details-behavior.html
++++ b/test/behaviors/d2l-activity-details-behavior.html
+@@ -5,9 +5,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
+-		<script type="module" src="./d2l-activity-details-behavior-consumer.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="d2l-activity-details-behavior-fixture">
+@@ -16,6 +13,6 @@
+ 			</template>
+ 		</test-fixture>
+ 
+-		<script src="./d2l-activity-details-behavior.js"></script>
++		<script type="module" src="./d2l-activity-details-behavior.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/behaviors/d2l-activity-details-behavior.js b/test/behaviors/d2l-activity-details-behavior.js
+index c67f133..004a1e3 100644
+--- a/test/behaviors/d2l-activity-details-behavior.js
++++ b/test/behaviors/d2l-activity-details-behavior.js
+@@ -1,6 +1,7 @@
+ /* global describe, it, expect, fixture, beforeEach */
+ 
+-'use strict';
++import SirenParse from 'siren-parser';
++import './d2l-activity-details-behavior-consumer.js';
+ 
+ describe('d2l activity details behavior', function() {
+ 	var component, completionDate, dueDate, endDate;
+@@ -14,7 +15,7 @@ describe('d2l activity details behavior', function() {
+ 	}
+ 
+ 	function parse(entity) {
+-		return window.D2L.Hypermedia.Siren.Parse(entity);
++		return SirenParse(entity);
+ 	}
+ 
+ 	function getUserActivityUsage(isComplete) {
+diff --git a/test/behaviors/fuzzy-date-behavior.html b/test/behaviors/fuzzy-date-behavior.html
+index 4da584c..6e74486 100644
+--- a/test/behaviors/fuzzy-date-behavior.html
++++ b/test/behaviors/fuzzy-date-behavior.html
+@@ -5,9 +5,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
+-		<script type="module" src="./fuzzy-date-behavior-consumer.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="fuzzy-date-behavior-fixture">
+@@ -16,6 +13,6 @@
+ 			</template>
+ 		</test-fixture>
+ 
+-		<script src="./fuzzy-date-behavior.js"></script>
++		<script type="module" src="./fuzzy-date-behavior.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/behaviors/fuzzy-date-behavior.js b/test/behaviors/fuzzy-date-behavior.js
+index 96ba82b..b7e1f4f 100644
+--- a/test/behaviors/fuzzy-date-behavior.js
++++ b/test/behaviors/fuzzy-date-behavior.js
+@@ -1,6 +1,6 @@
+ /* global describe, it, expect, fixture, beforeEach */
+ 
+-'use strict';
++import './fuzzy-date-behavior-consumer.js';
+ 
+ describe('fuzzy date behavior', function() {
+ 	var component;
+diff --git a/test/behaviors/localize-behavior.html b/test/behaviors/localize-behavior.html
+index bf4dcba..05e9af2 100644
+--- a/test/behaviors/localize-behavior.html
++++ b/test/behaviors/localize-behavior.html
+@@ -5,8 +5,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-
+-		<script type="module" src="./localize-behavior-consumer.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="localize-behavior-fixture">
+@@ -15,6 +13,6 @@
+ 			</template>
+ 		</test-fixture>
+ 
+-		<script src="./localize-behavior.js"></script>
++		<script type="module" src="./localize-behavior.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/behaviors/localize-behavior.js b/test/behaviors/localize-behavior.js
+index c3f51d8..df56d7d 100644
+--- a/test/behaviors/localize-behavior.js
++++ b/test/behaviors/localize-behavior.js
+@@ -1,6 +1,6 @@
+ /* global describe, it, expect, fixture, beforeEach */
+ 
+-'use strict';
++import './localize-behavior-consumer.js';
+ 
+ describe('localize behavior', function() {
+ 	var component;
+diff --git a/test/components/d2l-activity-details-assignment.html b/test/components/d2l-activity-details-assignment.html
+index 3c56237..4a27915 100644
+--- a/test/components/d2l-activity-details-assignment.html
++++ b/test/components/d2l-activity-details-assignment.html
+@@ -7,9 +7,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
+-		<script type="module" src="../../src/d2l-activity-details-assignment.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="basic">
+@@ -17,6 +14,6 @@
+ 				<d2l-activity-details-assignment></d2l-activity-details-assignment>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-activity-details-assignment.js"></script>
++		<script type="module" src="./d2l-activity-details-assignment.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-activity-details-assignment.js b/test/components/d2l-activity-details-assignment.js
+index b4b38ae..6544b88 100644
+--- a/test/components/d2l-activity-details-assignment.js
++++ b/test/components/d2l-activity-details-assignment.js
+@@ -1,6 +1,7 @@
+ /* global describe, it, fixture, expect, beforeEach, sinon */
+ 
+-'use strict';
++import SirenParse from 'siren-parser';
++import '../../src/d2l-activity-details-assignment.js';
+ 
+ describe('<d2l-activity-details-assignment>', function() {
+ 
+@@ -28,7 +29,7 @@ describe('<d2l-activity-details-assignment>', function() {
+ 		};
+ 
+ 	function parse(entity) {
+-		return window.D2L.Hypermedia.Siren.Parse(entity);
++		return SirenParse(entity);
+ 	}
+ 
+ 	function getOrganizationEntity(withName) {
+diff --git a/test/components/d2l-activity-details.html b/test/components/d2l-activity-details.html
+index 720a1e2..664c0c8 100644
+--- a/test/components/d2l-activity-details.html
++++ b/test/components/d2l-activity-details.html
+@@ -7,9 +7,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
+-		<script type="module" src="../../src/d2l-activity-details.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="basic">
+@@ -17,6 +14,6 @@
+ 				<d2l-activity-details></d2l-activity-details>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-activity-details.js"></script>
++		<script type="module" src="./d2l-activity-details.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-activity-details.js b/test/components/d2l-activity-details.js
+index 9a3bcb0..b9aa128 100644
+--- a/test/components/d2l-activity-details.js
++++ b/test/components/d2l-activity-details.js
+@@ -1,6 +1,6 @@
+ /* global describe, it, fixture, expect, beforeEach, sinon */
+ 
+-'use strict';
++import '../../src/d2l-activity-details.js';
+ 
+ describe('<d2l-activity-details>', function() {
+ 
