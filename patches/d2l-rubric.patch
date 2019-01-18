@@ -1,0 +1,1048 @@
+From 9cc908928dbe0680eb9d47ee7434e06c5424610e Mon Sep 17 00:00:00 2001
+From: BrightspaceGitHubReader <BrightspaceGitHubReader@d2l.com>
+Date: Thu, 17 Jan 2019 12:50:42 -0800
+Subject: [PATCH] Patch
+
+---
+ .eslintignore                               |   5 +-
+ .eslintrc.yaml                              |   2 +-
+ assessment-result-behavior.js               |   2 +-
+ d2l-rubric-criteria-group-mobile.js         |   4 +-
+ d2l-rubric-criteria-group.js                |   2 +-
+ d2l-rubric-criteria-groups.js               |   2 +-
+ d2l-rubric-criteria-mobile.js               |   2 +-
+ d2l-rubric-criterion-cell.js                |   2 +-
+ d2l-rubric-criterion-mobile.js              |   2 +-
+ d2l-rubric-levels-mobile.js                 |   2 +-
+ d2l-rubric-loading.js                       |   5 -
+ d2l-rubric-overall-score.js                 |   2 +-
+ d2l-rubric.js                               |   7 +-
+ editor/d2l-rubric-criteria-editor.js        |   4 +-
+ editor/d2l-rubric-criteria-group-editor.js  |   4 +-
+ editor/d2l-rubric-criteria-groups-editor.js |   4 +-
+ editor/d2l-rubric-criterion-editor.js       |   2 +-
+ editor/d2l-rubric-description-editor.js     |   4 +-
+ editor/d2l-rubric-editor.js                 |  13 +-
+ editor/d2l-rubric-feedback-editor.js        |   2 +-
+ editor/d2l-rubric-html-editor.js            | 227 ++++++++++----------
+ editor/d2l-rubric-level-editor.js           |   4 +-
+ editor/d2l-rubric-levels-editor.js          |   4 +-
+ editor/d2l-rubric-overall-level-editor.js   |   2 +-
+ editor/d2l-rubric-overall-levels-editor.js  |   4 +-
+ editor/d2l-rubric-structure-editor.js       |   7 +-
+ editor/d2l-rubric-text-editor.js            |  96 ++++-----
+ editor/d2l-rubric-visibility-editor.js      |   8 +-
+ package.json                                |  34 +--
+ polymer.json                                |   6 +
+ telemetry-behavior.js                       |   2 +-
+ test/components/d2l-rubric-overall-score.js |   3 +-
+ test/components/d2l-rubric-text-only.js     |   5 +-
+ test/components/d2l-rubric.html             |   6 +-
+ 34 files changed, 239 insertions(+), 241 deletions(-)
+
+diff --git a/.eslintignore b/.eslintignore
+index fc1cdfe..d4e541e 100644
+--- a/.eslintignore
++++ b/.eslintignore
+@@ -2,5 +2,6 @@ test/components/data/*
+ test/components/static-data/*
+ test/regen_api_data/*
+ test/test-polyfill.js
+-coveragetest/acceptance/*
+-reports
++coverage
++test/acceptance/*
++reports
+diff --git a/.eslintrc.yaml b/.eslintrc.yaml
+index 59338da..e8c2ac9 100644
+--- a/.eslintrc.yaml
++++ b/.eslintrc.yaml
+@@ -1,5 +1,5 @@
+ extends:
+-  brightspace/wct-config
++  brightspace/wct-polymer-3-config
+ rules:
+   object-shorthand: [2, "never"]
+   no-useless-escape: 0
+diff --git a/assessment-result-behavior.js b/assessment-result-behavior.js
+index 9ce2cbb..b6e4843 100644
+--- a/assessment-result-behavior.js
++++ b/assessment-result-behavior.js
+@@ -1,4 +1,4 @@
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+ window.D2L = window.D2L || {};
+diff --git a/d2l-rubric-criteria-group-mobile.js b/d2l-rubric-criteria-group-mobile.js
+index f74731e..14912ae 100644
+--- a/d2l-rubric-criteria-group-mobile.js
++++ b/d2l-rubric-criteria-group-mobile.js
+@@ -1,7 +1,7 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import './telemetry-behavior.js';
+ import './d2l-rubric-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import './d2l-rubric-criteria-mobile.js';
+ import './d2l-rubric-levels-mobile.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+@@ -25,7 +25,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-criteria-group-mobil
+ 		<d2l-rubric-criteria-mobile href="[[_criteriaHref]]" levels-href="[[_levelsHref]]" assessment-href="[[assessmentHref]]" token="[[token]]" is-holistic="[[_isHolistic]]" is-numeric="[[_isNumeric]]" read-only="[[readOnly]]">
+ 		</d2l-rubric-criteria-mobile>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/d2l-rubric-criteria-group.js b/d2l-rubric-criteria-group.js
+index 6f4aad7..e34ecf2 100644
+--- a/d2l-rubric-criteria-group.js
++++ b/d2l-rubric-criteria-group.js
+@@ -8,7 +8,7 @@ import 'd2l-table/d2l-th.js';
+ import 'd2l-table/d2l-tspan.js';
+ import './telemetry-behavior.js';
+ import './d2l-rubric-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-colors/d2l-colors.js';
+ import './d2l-rubric-loading.js';
+ import './d2l-rubric-feedback.js';
+diff --git a/d2l-rubric-criteria-groups.js b/d2l-rubric-criteria-groups.js
+index b0c6707..39ecdaf 100644
+--- a/d2l-rubric-criteria-groups.js
++++ b/d2l-rubric-criteria-groups.js
+@@ -4,7 +4,7 @@ import 'd2l-fetch/d2l-fetch.js';
+ import './d2l-rubric-criteria-group.js';
+ import './d2l-rubric-criteria-group-mobile.js';
+ import './d2l-rubric-loading.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import '@polymer/iron-media-query/iron-media-query.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+diff --git a/d2l-rubric-criteria-mobile.js b/d2l-rubric-criteria-mobile.js
+index 99ea8ab..1266dd6 100644
+--- a/d2l-rubric-criteria-mobile.js
++++ b/d2l-rubric-criteria-mobile.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-fetch/d2l-fetch.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import './d2l-rubric-criterion-mobile.js';
+ import './d2l-rubric-levels-mobile.js';
+ import './d2l-rubric-feedback.js';
+diff --git a/d2l-rubric-criterion-cell.js b/d2l-rubric-criterion-cell.js
+index 4faa00f..9fdf8d2 100644
+--- a/d2l-rubric-criterion-cell.js
++++ b/d2l-rubric-criterion-cell.js
+@@ -2,7 +2,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-fetch/d2l-fetch.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import './localize-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import './d2l-rubric-entity-behavior.js';
+ import 's-html/s-html.js';
+ import 'd2l-icons/d2l-icon.js';
+diff --git a/d2l-rubric-criterion-mobile.js b/d2l-rubric-criterion-mobile.js
+index c6f9a03..cf8e49d 100644
+--- a/d2l-rubric-criterion-mobile.js
++++ b/d2l-rubric-criterion-mobile.js
+@@ -4,7 +4,7 @@ import 'd2l-fetch/d2l-fetch.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import './localize-behavior.js';
+ import './d2l-rubric-levels-mobile.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import './d2l-rubric-entity-behavior.js';
+ import 's-html/s-html.js';
+ import './assessment-result-behavior.js';
+diff --git a/d2l-rubric-levels-mobile.js b/d2l-rubric-levels-mobile.js
+index ec6cd9b..32e0863 100644
+--- a/d2l-rubric-levels-mobile.js
++++ b/d2l-rubric-levels-mobile.js
+@@ -2,7 +2,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-fetch/d2l-fetch.js';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import './assessment-result-behavior.js';
+ import './localize-behavior.js';
+ import './d2l-rubric-entity-behavior.js';
+diff --git a/d2l-rubric-loading.js b/d2l-rubric-loading.js
+index 2e58514..c8b81bb 100644
+--- a/d2l-rubric-loading.js
++++ b/d2l-rubric-loading.js
+@@ -2,11 +2,6 @@
+ `d2l-rubric-loading`
+ Polymer Web-Component to display a loading rubric
+ 
+-*/
+-/*
+-  FIXME(polymer-modulizer): the above comments were extracted
+-  from HTML and may be out of place here. Review them and
+-  then delete this comment!
+ */
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+diff --git a/d2l-rubric-overall-score.js b/d2l-rubric-overall-score.js
+index fb41e2f..4918faa 100644
+--- a/d2l-rubric-overall-score.js
++++ b/d2l-rubric-overall-score.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import './d2l-rubric-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-colors/d2l-colors.js';
+ import './localize-behavior.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+diff --git a/d2l-rubric.js b/d2l-rubric.js
+index e9b6ae4..f042bab 100644
+--- a/d2l-rubric.js
++++ b/d2l-rubric.js
+@@ -4,18 +4,13 @@ Polymer Web-Component to display rubrics
+ 
+ @demo demo/index.html
+ */
+-/*
+-  FIXME(polymer-modulizer): the above comments were extracted
+-  from HTML and may be out of place here. Review them and
+-  then delete this comment!
+-*/
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-fetch/d2l-fetch.js';
+ import './d2l-rubric-criteria-groups.js';
+ import './d2l-rubric-loading.js';
+ import './d2l-rubric-overall-score.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import './localize-behavior.js';
+ import './assessment-result-behavior.js';
+diff --git a/editor/d2l-rubric-criteria-editor.js b/editor/d2l-rubric-criteria-editor.js
+index be3437e..a9fdf85 100644
+--- a/editor/d2l-rubric-criteria-editor.js
++++ b/editor/d2l-rubric-criteria-editor.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-table/d2l-table-shared-styles.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-offscreen/d2l-offscreen.js';
+ import 'd2l-icons/d2l-icon.js';
+ import 'd2l-button/d2l-button-subtle.js';
+@@ -182,7 +182,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-criteria-editor">
+ 		</div>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-criteria-group-editor.js b/editor/d2l-rubric-criteria-group-editor.js
+index 039df68..a3caffa 100644
+--- a/editor/d2l-rubric-criteria-group-editor.js
++++ b/editor/d2l-rubric-criteria-group-editor.js
+@@ -1,7 +1,7 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-table/d2l-table-shared-styles.js';
+ import 'd2l-table/d2l-scroll-wrapper.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-alert/d2l-alert.js';
+ import 'd2l-tooltip/d2l-tooltip.js';
+ import '../d2l-rubric-entity-behavior.js';
+@@ -126,7 +126,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-criteria-group-edito
+ 		</d2l-scroll-wrapper>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-criteria-groups-editor.js b/editor/d2l-rubric-criteria-groups-editor.js
+index 22f3503..3a47f2e 100644
+--- a/editor/d2l-rubric-criteria-groups-editor.js
++++ b/editor/d2l-rubric-criteria-groups-editor.js
+@@ -1,5 +1,5 @@
+ import '@polymer/polymer/polymer-legacy.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import '../d2l-rubric-entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+ import '../localize-behavior.js';
+@@ -77,7 +77,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-criteria-groups-edit
+ 
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-criterion-editor.js b/editor/d2l-rubric-criterion-editor.js
+index f9b1643..8e3e405 100644
+--- a/editor/d2l-rubric-criterion-editor.js
++++ b/editor/d2l-rubric-criterion-editor.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-table/d2l-table-shared-styles.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import 'd2l-inputs/d2l-input-textarea.js';
+ import 'd2l-inputs/d2l-input-text.js';
+diff --git a/editor/d2l-rubric-description-editor.js b/editor/d2l-rubric-description-editor.js
+index 7852f09..592143b 100644
+--- a/editor/d2l-rubric-description-editor.js
++++ b/editor/d2l-rubric-description-editor.js
+@@ -1,5 +1,5 @@
+ import '@polymer/polymer/polymer-legacy.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-tooltip/d2l-tooltip.js';
+ import 'd2l-inputs/d2l-input-text.js';
+ import '../d2l-rubric-entity-behavior.js';
+@@ -83,7 +83,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-description-editor">
+ 		</d2l-tooltip>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-editor.js b/editor/d2l-rubric-editor.js
+index 929472d..ef58f9c 100644
+--- a/editor/d2l-rubric-editor.js
++++ b/editor/d2l-rubric-editor.js
+@@ -4,11 +4,6 @@ Creates and edits a rubric
+ 
+ @demo demo/d2l-rubric-editor.html
+ */
+-/*
+-  FIXME(polymer-modulizer): the above comments were extracted
+-  from HTML and may be out of place here. Review them and
+-  then delete this comment!
+-*/
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import './d2l-rubric-structure-editor.js';
+@@ -22,7 +17,7 @@ import 'd2l-accordion/d2l-accordion-collapse.js';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import 'd2l-tooltip/d2l-tooltip.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-inputs/d2l-input-checkbox.js';
+ import 'd2l-dropdown/d2l-dropdown-button-subtle.js';
+ import 'd2l-dropdown/d2l-dropdown-menu.js';
+@@ -42,6 +37,10 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-editor">
+ 				display: block;
+ 			}
+ 
++			[hidden] {
++				display: none;
++			}
++
+ 			#accordion-container {
+ 				margin: 3rem var(--d2l-rubric-editor-end-gutter-width) 0;
+ 				margin-left: var(--d2l-rubric-editor-start-gutter-width);
+@@ -306,7 +305,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-editor">
+ 			</d2l-accordion-collapse>
+ 		</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-feedback-editor.js b/editor/d2l-rubric-feedback-editor.js
+index 6387111..82f2a1a 100644
+--- a/editor/d2l-rubric-feedback-editor.js
++++ b/editor/d2l-rubric-feedback-editor.js
+@@ -1,5 +1,5 @@
+ import '@polymer/polymer/polymer-legacy.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-tooltip/d2l-tooltip.js';
+ import '../d2l-rubric-entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+diff --git a/editor/d2l-rubric-html-editor.js b/editor/d2l-rubric-html-editor.js
+index a58cf32..e22f42a 100644
+--- a/editor/d2l-rubric-html-editor.js
++++ b/editor/d2l-rubric-html-editor.js
+@@ -1,12 +1,13 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-html-editor/d2l-html-editor-client.js';
++import 'd2l-html-editor/d2l-html-editor-component.js';
+ import 'd2l-html-editor/d2l-html-editor.js';
+ import 'd2l-inputs/d2l-input-shared-styles.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+ Polymer({
+-  _template: html`
++	_template: html`
+ 		<style include="d2l-input-styles">
+ 
+ 			:host {
+@@ -77,114 +78,116 @@ Polymer({
+ 		</d2l-html-editor>
+ `,
+ 
+-  is: 'd2l-rubric-html-editor',
+-
+-  properties: {
+-	  /**
+-	  * Every html editor element on a page MUST have a unique ID
+-	  */
+-	  _uniqueId: {
+-		  type: String,
+-		  value: function() {
+-			  return 'htmleditor-' + Date.now();
+-		  },
+-	  },
+-	  ariaLabel: {
+-		  type: String,
+-	  },
+-	  invalid: {
+-		  type: Boolean,
+-		  value: false,
+-		  observer: '_invalidChanged',
+-	  },
+-	  inline: {
+-		  type: Number,
+-		  value: 1,
+-	  },
+-	  autoFocus: {
+-		  type: Number,
+-		  value: 0,
+-	  },
+-	  minRows: {
+-		  type: Number,
+-		  value: 1,
+-	  },
+-	  maxRows: {
+-		  type: Number,
+-	  },
+-	  value: {
+-		  type: String,
+-	  },
+-	  key: {
+-		  type: String,
+-	  },
+-	  _appRoot: {
+-		  type: String,
+-		  value: function() {
+-			  return this.resolveUrl('../');
+-		  },
+-	  },
+-	  placeholder: {
+-		  type: String,
+-	  },
+-	  _toolbar: {
+-		  type: String,
+-		  value: 'bold italic bullist d2l_isf',
+-	  },
+-	  _plugins: {
+-		  type: String,
+-		  value: 'lists paste d2l_placeholder d2l_filter d2l_isf d2l_replacestring d2l_equation',
+-	  },
+-	  objectResizing: {
+-		  type: Boolean,
+-		  value: false,
+-	  },
+-	  /**
+-	   * The user access token
+-	   */
+-	  token: {
+-		  type: String,
+-	  },
+-  },
+-
+-  behaviors: [
+-	  window.D2L.Hypermedia.HMConstantsBehavior,
+-  ],
+-
+-  attached: function() {
+-	  this._fetchConfig();
+-  },
+-
+-  _fetchConfig: function() {
+-	  window.D2L.Siren.EntityStore
+-		  .get(this.HypermediaRels.richTextEditorConfig, this.token)
+-		  .then(function(entity) {
+-			  this.$$('d2l-html-editor').d2lPluginSettings = entity.properties;
+-		  }.bind(this));
+-  },
+-
+-  focus: function() {
+-	  this.$$('d2l-html-editor').focus();
+-  },
+-
+-  _getContent: function() {
+-	  return this.$$('d2l-html-editor').getContent();
+-  },
+-
+-  _invalidChanged: function(isInvalid) {
+-	  var htmlEditor = this.$$('d2l-html-editor');
+-	  this.toggleClass('invalid', isInvalid, htmlEditor);
+-  },
+-
+-  _encodeURIComponent: function(value) {
+-	  return value ? encodeURIComponent(value) : '';
+-  },
+-
+-  _showToolbar: function() {
+-	  this.$$('.toolbar').removeAttribute('hidden');
+-  },
+-
+-  _hideToolbar: function() {
+-	  this.$$('.toolbar').setAttribute('hidden', true);
+-  }
++	is: 'd2l-rubric-html-editor',
++	get importMeta() {
++		return import.meta;
++	},
++	properties: {
++		/**
++		* Every html editor element on a page MUST have a unique ID
++		*/
++		_uniqueId: {
++			type: String,
++			value: function() {
++				return 'htmleditor-' + Date.now();
++			},
++		},
++		ariaLabel: {
++			type: String,
++		},
++		invalid: {
++			type: Boolean,
++			value: false,
++			observer: '_invalidChanged',
++		},
++		inline: {
++			type: Number,
++			value: 1,
++		},
++		autoFocus: {
++			type: Number,
++			value: 0,
++		},
++		minRows: {
++			type: Number,
++			value: 1,
++		},
++		maxRows: {
++			type: Number,
++		},
++		value: {
++			type: String,
++		},
++		key: {
++			type: String,
++		},
++		_appRoot: {
++			type: String,
++			value: function() {
++				return this.resolveUrl('../');
++			},
++		},
++		placeholder: {
++			type: String,
++		},
++		_toolbar: {
++			type: String,
++			value: 'bold italic bullist d2l_isf',
++		},
++		_plugins: {
++			type: String,
++			value: 'lists paste d2l_placeholder d2l_filter d2l_isf d2l_replacestring d2l_equation',
++		},
++		objectResizing: {
++			type: Boolean,
++			value: false,
++		},
++		/**
++		 * The user access token
++		 */
++		token: {
++			type: String,
++		},
++	},
++
++	behaviors: [
++		window.D2L.Hypermedia.HMConstantsBehavior,
++	],
++
++	attached: function() {
++		this._fetchConfig();
++	},
++
++	_fetchConfig: function() {
++		window.D2L.Siren.EntityStore
++			.get(this.HypermediaRels.richTextEditorConfig, this.token)
++			.then(function(entity) {
++				this.$$('d2l-html-editor').d2lPluginSettings = entity.properties;
++			}.bind(this));
++	},
++
++	focus: function() {
++		this.$$('d2l-html-editor').focus();
++	},
++
++	_getContent: function() {
++		return this.$$('d2l-html-editor').getContent();
++	},
++
++	_invalidChanged: function(isInvalid) {
++		var htmlEditor = this.$$('d2l-html-editor');
++		this.toggleClass('invalid', isInvalid, htmlEditor);
++	},
++
++	_encodeURIComponent: function(value) {
++		return value ? encodeURIComponent(value) : '';
++	},
++
++	_showToolbar: function() {
++		this.$$('.toolbar').removeAttribute('hidden');
++	},
++
++	_hideToolbar: function() {
++		this.$$('.toolbar').setAttribute('hidden', true);
++	}
+ });
+diff --git a/editor/d2l-rubric-level-editor.js b/editor/d2l-rubric-level-editor.js
+index a057723..085332f 100644
+--- a/editor/d2l-rubric-level-editor.js
++++ b/editor/d2l-rubric-level-editor.js
+@@ -2,7 +2,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-inputs/d2l-input-text.js';
+ import 'd2l-tooltip/d2l-tooltip.js';
+ import 'd2l-button/d2l-button-icon.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import '../d2l-rubric-entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+ import '../localize-behavior.js';
+@@ -88,7 +88,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-level-editor">
+ 		</d2l-tooltip>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-levels-editor.js b/editor/d2l-rubric-levels-editor.js
+index 20c78d5..0a2e182 100644
+--- a/editor/d2l-rubric-levels-editor.js
++++ b/editor/d2l-rubric-levels-editor.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-table/d2l-table-shared-styles.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-button/d2l-button-icon.js';
+ import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
+ import '../d2l-rubric-entity-behavior.js';
+@@ -125,7 +125,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-levels-editor">
+ 		<div class="gutter-right"></div>
+ 	</template>
+ 
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-overall-level-editor.js b/editor/d2l-rubric-overall-level-editor.js
+index 8c959aa..15972d5 100644
+--- a/editor/d2l-rubric-overall-level-editor.js
++++ b/editor/d2l-rubric-overall-level-editor.js
+@@ -74,7 +74,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-overall-level-editor
+ 			[[_rangeStartInvalidError]]
+ 		</d2l-tooltip>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-overall-levels-editor.js b/editor/d2l-rubric-overall-levels-editor.js
+index 4ae6e5c..6e56d14 100644
+--- a/editor/d2l-rubric-overall-levels-editor.js
++++ b/editor/d2l-rubric-overall-levels-editor.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-table/d2l-table-shared-styles.js';
+ import 'd2l-table/d2l-scroll-wrapper.js';
+ import '../d2l-rubric-entity-behavior.js';
+@@ -220,7 +220,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-overall-levels-edito
+ 			</div>
+ 		</d2l-scroll-wrapper>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/editor/d2l-rubric-structure-editor.js b/editor/d2l-rubric-structure-editor.js
+index c195b57..7ebbb80 100644
+--- a/editor/d2l-rubric-structure-editor.js
++++ b/editor/d2l-rubric-structure-editor.js
+@@ -4,16 +4,11 @@ Creates and edits a rubric structue
+ 
+ @demo demo/d2l-rubric-structure-editor.html
+ 
+-*/
+-/*
+-  FIXME(polymer-modulizer): the above comments were extracted
+-  from HTML and may be out of place here. Review them and
+-  then delete this comment!
+ */
+ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-fetch/d2l-fetch.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import 'd2l-alert/d2l-alert.js';
+ import '../d2l-rubric-loading.js';
+diff --git a/editor/d2l-rubric-text-editor.js b/editor/d2l-rubric-text-editor.js
+index f7ae45b..db64444 100644
+--- a/editor/d2l-rubric-text-editor.js
++++ b/editor/d2l-rubric-text-editor.js
+@@ -4,7 +4,7 @@ import './d2l-rubric-html-editor.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+ Polymer({
+-  _template: html`
++	_template: html`
+ 		<style>
+ 			:host {
+ 				line-height: 1rem;
+@@ -28,55 +28,55 @@ Polymer({
+ 		</template>
+ `,
+ 
+-  is: 'd2l-rubric-text-editor',
++	is: 'd2l-rubric-text-editor',
+ 
+-  properties: {
+-	  key: String,
+-	  ariaLabel: {
+-		  type: String,
+-	  },
+-	  ariaInvalid: {
+-		  type: Boolean,
+-		  value: false,
+-	  },
+-	  placeholder: {
+-		  type: String,
+-	  },
+-	  value: {
+-		  type: String,
+-		  notify: true,
+-	  },
+-	  richTextEnabled: {
+-		  type: Boolean,
+-		  value: false,
+-	  },
+-	  disabled: {
+-		  type: Boolean,
+-		  value: false,
+-	  },
+-	  /**
+-	   * The user access token
+-	   */
+-	  token: {
+-		  type: String,
+-	  },
+-  },
++	properties: {
++		key: String,
++		ariaLabel: {
++			type: String,
++		},
++		ariaInvalid: {
++			type: Boolean,
++			value: false,
++		},
++		placeholder: {
++			type: String,
++		},
++		value: {
++			type: String,
++			notify: true,
++		},
++		richTextEnabled: {
++			type: Boolean,
++			value: false,
++		},
++		disabled: {
++			type: Boolean,
++			value: false,
++		},
++		/**
++		 * The user access token
++		 */
++		token: {
++			type: String,
++		},
++	},
+ 
+-  focus: function() {
+-	  if (this.richTextEnabled) {
+-		  this.$$('#htmlEditor').focus();
+-	  } else {
+-		  this.$$('#textEditor').focus();
+-	  }
+-  },
++	focus: function() {
++		if (this.richTextEnabled) {
++			this.$$('#htmlEditor').focus();
++		} else {
++			this.$$('#textEditor').focus();
++		}
++	},
+ 
+-  _stringIsTrue: function(string) {
+-	  return string && string === 'true';
+-  },
++	_stringIsTrue: function(string) {
++		return string && string === 'true';
++	},
+ 
+-  _onInputChange: function(e) {
+-	  e.stopPropagation();
+-	  var value = (e.detail && e.detail.content) || e.target.value || '';
+-	  this.fire('change', { value: value });
+-  }
++	_onInputChange: function(e) {
++		e.stopPropagation();
++		var value = (e.detail && e.detail.content) || e.target.value || '';
++		this.fire('change', { value: value });
++	}
+ });
+diff --git a/editor/d2l-rubric-visibility-editor.js b/editor/d2l-rubric-visibility-editor.js
+index ac38681..b5343f6 100644
+--- a/editor/d2l-rubric-visibility-editor.js
++++ b/editor/d2l-rubric-visibility-editor.js
+@@ -3,7 +3,7 @@ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import '@polymer/iron-a11y-announcer/iron-a11y-announcer.js';
+ import 'd2l-tooltip/d2l-tooltip.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-inputs/d2l-input-shared-styles.js';
+ import 'd2l-inputs/d2l-input-radio-styles.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+@@ -31,7 +31,9 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-visibility-editor">
+ 				padding: var(--d2l-input-padding-focus);
+ 				border-width: 2px;
+ 			}
+-
++			[hidden] {
++				display: none;
++			}
+ 			label {
+ 				@apply --d2l-label-text;
+ 			}
+@@ -52,7 +54,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-rubric-visibility-editor">
+ 		</label>
+ 		<d2l-tooltip id="visibility-bubble" hidden$="[[!_visibilityInvalid]]" position="bottom">[[_visibilityInvalidError]]</d2l-tooltip>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/package.json b/package.json
+index 2e667cc..fc5cdc5 100644
+--- a/package.json
++++ b/package.json
+@@ -21,7 +21,7 @@
+     "test": "npm run test:lint && npm run test:wct",
+     "test:lint": "npm run test:lint:wc && npm run test:lint:js",
+     "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "test:lint:wc": "polymer lint",
++    "test:lint:wc": "polymer lint *.js editor/**/*.js test/**/*.js demo/**/*.js",
+     "test:local": "npm run test:lint && npm run test:wct:local",
+     "test:wct": "polymer test",
+     "test:wct:local": "cross-env LAUNCHPAD_BROWSERS=chrome polymer test --skip-plugin sauce",
+@@ -47,35 +47,35 @@
+     "whatwg-fetch": "^2.0.0"
+   },
+   "dependencies": {
++    "@polymer/iron-a11y-announcer": "^3.0.0",
++    "@polymer/iron-media-query": "^3.0.0",
++    "@polymer/iron-resizable-behavior": "^3.0.0",
++    "@polymer/polymer": "^3.0.0",
++    "d2l-accordion": "BrightspaceUI/accordion#semver:^1",
+     "d2l-alert": "BrightspaceUI/alert#semver:^4",
++    "d2l-button": "BrightspaceUI/button#semver:^5",
+     "d2l-colors": "BrightspaceUI/colors#semver:^4",
++    "d2l-dnd-sortable": "Brightspace/dnd-sortable#semver:^3",
++    "d2l-dropdown": "BrightspaceUI/dropdown#semver:^7",
+     "d2l-fetch": "Brightspace/d2l-fetch.git#semver:^2",
+     "d2l-fetch-siren-entity-behavior": "Brightspace/d2l-fetch-siren-entity-behavior.git#semver:^6",
+-    "d2l-hypermedia-constants": "^6",
+     "d2l-html-editor": "Brightspace/d2l-html-editor#semver:^2",
++    "d2l-hypermedia-constants": "^6",
+     "d2l-icons": "BrightspaceUI/icons#semver:^6",
+     "d2l-inputs": "BrightspaceUI/inputs#semver:^2",
++    "d2l-link": "BrightspaceUI/link#semver:^5",
+     "d2l-loading-spinner": "BrightspaceUI/loading-spinner#semver:^7",
+     "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
++    "d2l-menu": "BrightspaceUI/menu#semver:^2",
+     "d2l-offscreen": "BrightspaceUI/offscreen#semver:^4",
+-    "d2l-table": "BrightspaceUI/table#semver:^2",
+-    "d2l-typography": "BrightspaceUI/typography#semver:^7",
+-    "d2l-tooltip": "BrightspaceUI/tooltip#semver:^3",
+-    "d2l-button": "BrightspaceUI/button#semver:^5",
+-    "fastdom": "^1.0.8",
+     "d2l-polymer-siren-behaviors": "Brightspace/polymer-siren-behaviors#semver:^1",
+     "d2l-save-status": "Brightspace/d2l-save-status.git#semver:^3",
+-    "d2l-dnd-sortable": "Brightspace/dnd-sortable#semver:^3",
+-    "@polymer/iron-a11y-announcer": "^3.0.0",
++    "d2l-table": "BrightspaceUI/table#semver:^2",
+     "d2l-telemetry-browser-client": "Brightspace/d2l-telemetry-browser-client#semver:^1",
+-    "@polymer/iron-media-query": "^3.0.0",
+-    "@polymer/iron-resizable-behavior": "^3.0.0",
+-    "@polymer/polymer": "^3.0.0",
+-    "s-html": "Brightspace/s-html#semver:^2.0.0",
+-    "d2l-dropdown": "BrightspaceUI/dropdown#semver:^7",
+-    "d2l-menu": "BrightspaceUI/menu#semver:^2",
+-    "d2l-accordion": "BrightspaceUI/accordion#semver:^1",
+-    "d2l-link": "BrightspaceUI/link#semver:^5"
++    "d2l-tooltip": "BrightspaceUI/tooltip#semver:^3",
++    "d2l-typography": "BrightspaceUI/typography#semver:^7",
++    "fastdom": "^1.0.8",
++    "s-html": "Brightspace/s-html#semver:^2.0.0"
+   },
+   "resolutions": {
+     "inherits": "2.0.3",
+diff --git a/polymer.json b/polymer.json
+index 6111e49..9292646 100644
+--- a/polymer.json
++++ b/polymer.json
+@@ -3,6 +3,12 @@
+   "lint": {
+     "rules": [
+       "polymer-3"
++    ],
++    "ignoreWarnings": [
++      "not-loadable",
++      "non-literal-import",
++      "overriding-private",
++      "could-not-resolve-reference"
+     ]
+   }
+ }
+diff --git a/telemetry-behavior.js b/telemetry-behavior.js
+index 6a16fb2..bed442f 100644
+--- a/telemetry-behavior.js
++++ b/telemetry-behavior.js
+@@ -1,4 +1,4 @@
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import 'd2l-hypermedia-constants/d2l-hypermedia-constants.js';
+ import 'd2l-telemetry-browser-client/d2l-telemetry-browser-client.js';
+ window.D2L = window.D2L || {};
+ window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
+diff --git a/test/components/d2l-rubric-overall-score.js b/test/components/d2l-rubric-overall-score.js
+index 8954eb3..6aee6ff 100644
+--- a/test/components/d2l-rubric-overall-score.js
++++ b/test/components/d2l-rubric-overall-score.js
+@@ -1,6 +1,7 @@
+ /* global suite, test, fixture, expect, suiteSetup, suiteTeardown, sinon */
+ 
+ 'use strict';
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ 
+ suite('<d2l-rubric-overall-score>', function() {
+ 
+@@ -25,7 +26,7 @@ suite('<d2l-rubric-overall-score>', function() {
+ 
+ 		test('Overall Score section is rendered', function(done) {
+ 			myAsyncFunction(function(myElement) {
+-				expect(!!Polymer.dom(myElement.root).querySelector('.overall-levels'));
++				expect(!!dom(myElement.root).querySelector('.overall-levels'));
+ 				done();
+ 			});
+ 		});
+diff --git a/test/components/d2l-rubric-text-only.js b/test/components/d2l-rubric-text-only.js
+index 4a06877..76a8388 100644
+--- a/test/components/d2l-rubric-text-only.js
++++ b/test/components/d2l-rubric-text-only.js
+@@ -1,6 +1,7 @@
+ /* global suite, test, fixture, expect, suiteSetup, suiteTeardown, sinon */
+ 
+ 'use strict';
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ 
+ suite('<d2l-rubric-text-only>', function() {
+ 
+@@ -25,7 +26,7 @@ suite('<d2l-rubric-text-only>', function() {
+ 		test('Out of container is hidden if using a text only rubric', function(done) {
+ 			myAsyncFunction(function(myElement) {
+ 				var outOfContainer;
+-				outOfContainer = Polymer.dom(myElement.root).querySelector('.out-of-container');
++				outOfContainer = dom(myElement.root).querySelector('.out-of-container');
+ 				expect(outOfContainer.attributes).to.have.ownProperty('hidden');
+ 				done();
+ 			});
+@@ -33,7 +34,7 @@ suite('<d2l-rubric-text-only>', function() {
+ 
+ 		test('Overall Score section is not rendered if the rubric has no overall score', function(done) {
+ 			myAsyncFunction(function(myElement) {
+-				expect(!Polymer.dom(myElement.root).querySelector('.overall-levels'));
++				expect(!dom(myElement.root).querySelector('.overall-levels'));
+ 				done();
+ 			});
+ 		});
+diff --git a/test/components/d2l-rubric.html b/test/components/d2l-rubric.html
+index caa69df..1f87c87 100644
+--- a/test/components/d2l-rubric.html
++++ b/test/components/d2l-rubric.html
+@@ -20,21 +20,21 @@
+ 				<d2l-rubric></d2l-rubric>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-rubric.js"></script>
++		<script type="module" src="./d2l-rubric.js"></script>
+ 
+ 		<test-fixture id="rub-text-only">
+ 			<template>
+ 				<d2l-rubric href='data/rubrics/organizations/text-only-no-edit/199.json' token='foozleberries'></d2l-rubric>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-rubric-text-only.js"></script>
++		<script type="module" src="./d2l-rubric-text-only.js"></script>
+ 
+ 		<test-fixture id="rub-overall-score">
+ 			<template>
+ 				<d2l-rubric href='data/rubrics/organizations/overall-score/200.json' token='foozleberries'></d2l-rubric>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-rubric-overall-score.js"></script>
++		<script type="module" src="./d2l-rubric-overall-score.js"></script>
+ 
+ 	</body>
+ </html>
+-- 
+2.20.0.windows.1
+
