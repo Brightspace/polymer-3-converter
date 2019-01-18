@@ -59,6 +59,7 @@ d2l-telemetry-browser-client,d2l-telemetry-browser-client,Brightspace/d2l-teleme
 d2l-time-picker,d2l-time-picker,BrightspaceUI/time-picker#semver:^2
 d2l-tooltip,d2l-tooltip,BrightspaceUI/tooltip#semver:^3
 d2l-typography,d2l-typography,BrightspaceUI/typography#semver:^7
+d2l-user-tile,d2l-user-tile,BrightspaceUI/user-tile#semver:^4
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
 lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
