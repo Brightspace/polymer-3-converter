@@ -1,3 +1,17 @@
+diff --git a/README.md b/README.md
+index 7ddbfaf..438dbf1 100644
+--- a/README.md
++++ b/README.md
+@@ -19,8 +19,7 @@ Run tests:
+ npm test
+ ```
+
+-To see a demo of the `user-card` in action, you can use [Polymer CLI's](https://www.npmjs.com/package/polymer-cli) `serve` command. Run `polymer serve` and navigate to [http://localhost:8000/components/d2l-user-card/demo/index.html](http://localhost:8000/components/d2l-user-card/demo/index.html).
+-
++To see a demo of the `user-card` in action, you can use [Polymer CLI's](https://www.npmjs.com/package/polymer-cli) `serve` command. Run `polymer serve` and go to the component url (you'll need to append `/demo/index.html` to the url to get to the demo page)
+ ## Usage
+
+ There are two variants of the card - `d2l-user-card` and `d2l-user-card-auto`. Both variants of the card support the common attribute `placeholders`, a boolean attribute which will render placeholder elements in place of missing data when true.
 diff --git a/d2l-user-card.js b/d2l-user-card.js
 index bc277eb..94fea5d 100644
 --- a/d2l-user-card.js
@@ -6,10 +20,10 @@ index bc277eb..94fea5d 100644
  			</div>
  		</d2l-card>
  	</template>
--	
+-
 +
  </dom-module>`;
- 
+
  document.head.appendChild($_documentContainer.content);
 diff --git a/demo/index.html b/demo/index.html
 index fb0e94b..ee36c26 100644
@@ -43,6 +57,20 @@ index cbaf05a..cb6472d 100644
      "test": "npm run lint && polymer test --skip-plugin sauce"
    },
    "bugs": {
+diff --git a/polymer.json b/polymer.json
+index b27230e..38783d7 100644
+--- a/polymer.json
++++ b/polymer.json
+@@ -4,7 +4,7 @@
+     "rules": ["polymer-3"]
+   },
+   "sources": [
+-    "d2l-user-card.html",
+-    "d2l-user-card-auto.html"
++    "d2l-user-card.js",
++    "d2l-user-card-auto.js"
+   ]
+ }
 diff --git a/test/d2l-user-card-auto/d2l-user-card-auto-a11y.html b/test/d2l-user-card-auto/d2l-user-card-auto-a11y.html
 new file mode 100644
 index 0000000..94c9ccd
@@ -88,12 +116,12 @@ index 3196280..8e3eaca 100644
 -		<script src="../../../wct-browser-legacy/browser.js"></script>
 +		<script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 +		<script src="../../node_modules/wct-browser-legacy/browser.js"></script>
- 
+
  		<script type="module" src="../../d2l-user-card-auto.js"></script>
  	</head>
 @@ -16,12 +16,5 @@
  		</test-fixture>
- 
+
  		<script src="./d2l-user-card-auto.js"></script>
 -		<script type="module">
 -import '../../d2l-user-card-auto.js';
@@ -137,7 +165,7 @@ index 47fa04e..6719690 100644
 @@ -37,6 +37,6 @@
  			</template>
  		</test-fixture>
- 
+
 -		<script src="./d2l-user-card.js"></script>
 +		<script type="module" src="./d2l-user-card.js"></script>
  	</body>
@@ -148,20 +176,20 @@ index bcac38f..e39b8b4 100644
 +++ b/test/d2l-user-card/d2l-user-card.js
 @@ -1,13 +1,14 @@
  /* global describe, beforeEach, it, expect, fixture */
- 
+
 -'use strict';
 +import '@polymer/polymer/polymer-legacy.js';
 +import {flush} from '@polymer/polymer/lib/utils/flush.js';
- 
+
  describe('<d2l-user-card>', function() {
  	var component;
- 
+
  	beforeEach(function() {
  		component = fixture('basic');
 -		Polymer.dom.flush();
 +		flush();
  	});
- 
+
  	describe('smoke tests', function() {
 @@ -27,7 +28,7 @@ describe('<d2l-user-card>', function() {
  		describe('when the `icon` attribute is provided for a valid image', function() {
@@ -170,7 +198,7 @@ index bcac38f..e39b8b4 100644
 -				Polymer.dom.flush();
 +				flush();
  			});
- 
+
  			it('should render the custom icon only', function() {
 diff --git a/test/index.html b/test/index.html
 index d327bf3..5bb1913 100644
