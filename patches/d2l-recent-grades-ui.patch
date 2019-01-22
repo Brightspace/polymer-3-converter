@@ -1,0 +1,618 @@
+From 72cee5fcabaf4e0b9d0ac91863946fd3f542b454 Mon Sep 17 00:00:00 2001
+From: Chris Kraljevic <Chris.Kraljevic@D2L.com>
+Date: Tue, 22 Jan 2019 11:54:38 -0600
+Subject: [PATCH] Post polymer 3 conversion patch
+
+---
+ package.json                                  |  2 +-
+ src/behaviors/d2l-recent-grades-behavior.js   | 41 ++++++++-----------
+ src/d2l-all-grades.js                         | 27 ++++++------
+ src/d2l-feedback-display.js                   |  7 ++--
+ src/d2l-recent-grades.js                      |  7 ++--
+ .../behaviors/d2l-recent-grades-behavior.html |  2 +-
+ test/components/d2l-all-grades-list-item.html |  2 +-
+ test/components/d2l-all-grades-list-item.js   |  4 +-
+ test/components/d2l-all-grades-list.html      |  2 +-
+ test/components/d2l-all-grades-list.js        | 24 ++++++-----
+ test/components/d2l-all-grades.html           |  4 +-
+ test/components/d2l-all-grades.js             | 14 ++++---
+ test/components/d2l-feedback-display.html     |  2 +-
+ .../d2l-recent-grades-list-item.html          |  2 +-
+ .../components/d2l-recent-grades-list-item.js |  4 +-
+ test/components/d2l-recent-grades.html        |  2 +-
+ 16 files changed, 72 insertions(+), 74 deletions(-)
+
+diff --git a/package.json b/package.json
+index 9dbe464..27c7458 100644
+--- a/package.json
++++ b/package.json
+@@ -17,7 +17,7 @@
+     "build": "gulp build",
+     "test": "npm run test:lint:html && npm run test:lint:wc && npm run test:wct",
+     "test:local": "npm run test:lint:html && npm run test:lint:wc && npm run test:wct:local",
+-    "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
++    "test:lint:html": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+     "test:lint:wc": "polymer lint",
+     "test:wct": "polymer test",
+     "test:wct:local": "cross-env LAUNCHPAD_BROWSERS=chrome polymer test -p --skip-plugin sauce"
+diff --git a/src/behaviors/d2l-recent-grades-behavior.js b/src/behaviors/d2l-recent-grades-behavior.js
+index 9a986de..3b911ec 100644
+--- a/src/behaviors/d2l-recent-grades-behavior.js
++++ b/src/behaviors/d2l-recent-grades-behavior.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels, Classes } from 'd2l-hypermedia-constants';
+ import './localize-behavior.js';
+ import './local-storage-behavior.js';
+ 
+@@ -25,7 +25,7 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	_recentGradesBehavior_getInfo: function(userEntity) {
+-		var myEnrollmentsLink = userEntity.getLinkByRel(this.HypermediaRels.myEnrollments);
++		var myEnrollmentsLink = userEntity.getLinkByRel(Rels.myEnrollments);
+ 		if (!myEnrollmentsLink) {
+ 			return Promise.reject('could not find my-enrollments link on user entity');
+ 		}
+@@ -38,7 +38,7 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	_recentGradesBehavior_userCanSeeGrades: function(userEntity) {
+-		var myEnrollmentsLink = userEntity.getLinkByRel(this.HypermediaRels.myEnrollments);
++		var myEnrollmentsLink = userEntity.getLinkByRel(Rels.myEnrollments);
+ 		if (!myEnrollmentsLink) {
+ 			return Promise.reject('could not find my-enrollments link on user entity');
+ 		}
+@@ -67,7 +67,7 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	_recentGradesBehavior_userGradeIsNew: function(userGrade) {
+-		if (!userGrade || userGrade.hasClass(this.HypermediaClasses.grades.final)) {
++		if (!userGrade || userGrade.hasClass(Classes.grades.final)) {
+ 			return false;
+ 		}
+ 
+@@ -94,7 +94,7 @@ var recentGradesBehaviorImpl = {
+ 				}
+ 
+ 				enrollmentHrefs = enrollmentHrefs || [];
+-				var userEnrollments = myEnrollmentsEntity.getSubEntitiesByRel(self.HypermediaRels.userEnrollment);
++				var userEnrollments = myEnrollmentsEntity.getSubEntitiesByRel(Rels.userEnrollment);
+ 				if (userEnrollments) {
+ 					enrollmentHrefs = enrollmentHrefs.concat(userEnrollments.map(function(enrollment) {
+ 						return enrollment.href;
+@@ -129,7 +129,7 @@ var recentGradesBehaviorImpl = {
+ 			return Promise.reject('invalid argument exception: allEnrollments must be an array');
+ 		}
+ 		var organizationHrefs = allEnrollments.map(function(enrollment) {
+-			return (enrollment.getLinkByRel(self.HypermediaRels.organization) || {}).href;
++			return (enrollment.getLinkByRel(Rels.organization) || {}).href;
+ 		});
+ 		return Promise.all(
+ 			organizationHrefs.map(function(href) { return self._fetchEntityWithToken(href, self.getToken, self.userUrl); })
+@@ -145,7 +145,7 @@ var recentGradesBehaviorImpl = {
+ 
+ 		var myOrganizationGradesHrefs = [];
+ 		allOrganizations.forEach(function(organization) {
+-			var orgGradeHref = (organization.getLinkByRel(self.HypermediaRels.myOrganizationGrades) || {}).href;
++			var orgGradeHref = (organization.getLinkByRel(Rels.myOrganizationGrades) || {}).href;
+ 			if (orgGradeHref) {
+ 				myOrganizationGradesHrefs.push(orgGradeHref);
+ 			}
+@@ -156,13 +156,11 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	__recentGradesBehavior_hasOrganizationGradesLinks: function(allOrganizations) {
+-		var self = this;
+-
+ 		if (allOrganizations instanceof Array !== true) {
+ 			return Promise.reject('invalid argument exception: allOrganizations must be an array');
+ 		}
+ 		return allOrganizations.some(function(organization) {
+-			return organization.hasLinkByRel(self.HypermediaRels.myOrganizationGrades);
++			return organization.hasLinkByRel(Rels.myOrganizationGrades);
+ 		});
+ 	},
+ 
+@@ -178,18 +176,16 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	__recentGradesBehavior_getGradeType: function(userActivityUsageHref) {
+-		var self = this;
+-
+ 		if (userActivityUsageHref) {
+ 			return this._fetchEntityWithToken(userActivityUsageHref, this.getToken, this.userUrl)
+ 				.then(function(userActivityUsage) {
+ 					var type;
+ 
+-					if (userActivityUsage.hasClass(self.HypermediaClasses.activities.userAssignmentActivity)) {
++					if (userActivityUsage.hasClass(Classes.activities.userAssignmentActivity)) {
+ 						type = 'assignment';
+-					} else if (userActivityUsage.hasClass(self.HypermediaClasses.activities.userQuizActivity)) {
++					} else if (userActivityUsage.hasClass(Classes.activities.userQuizActivity)) {
+ 						type = 'quiz';
+-					} else if (userActivityUsage.hasClass(self.HypermediaClasses.activities.userDiscussionActivity)) {
++					} else if (userActivityUsage.hasClass(Classes.activities.userDiscussionActivity)) {
+ 						type = 'discussion';
+ 					}
+ 					return type;
+@@ -226,7 +222,7 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	__recentGradesBehavior_getFirstName: function(userEntity) {
+-		var firstNameEntity = userEntity.getSubEntityByRel(this.HypermediaRels.firstName);
++		var firstNameEntity = userEntity.getSubEntityByRel(Rels.firstName);
+ 		if (firstNameEntity) {
+ 			return firstNameEntity.properties.name;
+ 		}
+@@ -242,9 +238,9 @@ var recentGradesBehaviorImpl = {
+ 	_recentGradesBehavior_formatUserGrade: function(userGrade) {
+ 		var self = this;
+ 		var lastModified = Date.parse(((userGrade.getSubEntityByClass('last-modified') || {}).properties || {}).date);
+-		var userActivityUsageHref = (userGrade.getLinkByRel(self.HypermediaRels.Activities.userActivityUsage) || {}).href;
+-		var gradeHref = (userGrade.getLinkByRel(self.HypermediaRels.Grades.grade) || {}).href;
+-		var commentsHref = (userGrade.getLinkByRel(self.HypermediaRels.Grades.comments) || {}).href;
++		var userActivityUsageHref = (userGrade.getLinkByRel(Rels.Activities.userActivityUsage) || {}).href;
++		var gradeHref = (userGrade.getLinkByRel(Rels.Grades.grade) || {}).href;
++		var commentsHref = (userGrade.getLinkByRel(Rels.Grades.comments) || {}).href;
+ 
+ 		return Promise.all([
+ 			this.__recentGradesBehavior_getGradeType(userActivityUsageHref),
+@@ -255,8 +251,8 @@ var recentGradesBehaviorImpl = {
+ 
+ 			return {
+ 				name: gradeItem ? gradeItem.properties.name : '',
+-				courseName: self.__recentGradesBehavior_getCourseName((userGrade.getLinkByRel(self.HypermediaRels.organization) || {}).href),
+-				courseHref: (userGrade.getLinkByRel(self.HypermediaRels.organization) || {}).href,
++				courseName: self.__recentGradesBehavior_getCourseName((userGrade.getLinkByRel(Rels.organization) || {}).href),
++				courseHref: (userGrade.getLinkByRel(Rels.organization) || {}).href,
+ 				type: type,
+ 				score: userGrade.properties.value ||
+ 					self._recentGradesBehavior_getFraction(
+@@ -279,7 +275,7 @@ var recentGradesBehaviorImpl = {
+ 	},
+ 
+ 	_recentGradesBehavior_isFinalGrade: function(grade) {
+-		return grade.hasClass(this.HypermediaClasses.grades.final);
++		return grade.hasClass(Classes.grades.final);
+ 	},
+ 	_recentGradesBehavior_formatScoreOutOf: function(score, outOf) {
+ 		var numberAbsent = this.localize('numberAbsent');
+@@ -303,7 +299,6 @@ var recentGradesBehaviorImpl = {
+ 
+ window.D2L.RecentGrades.RecentGradesBehavior = [
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.RecentGrades.LocalStorageBehavior,
+ 	window.D2L.RecentGrades.LocalizeBehavior,
+ 	recentGradesBehaviorImpl
+diff --git a/src/d2l-all-grades.js b/src/d2l-all-grades.js
+index dc893c2..7bc1fe4 100644
+--- a/src/d2l-all-grades.js
++++ b/src/d2l-all-grades.js
+@@ -11,7 +11,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ 
+ import 'd2l-fetch/d2l-fetch.js';
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels, Classes } from 'd2l-hypermedia-constants';
+ import 'd2l-image/d2l-image.js';
+ import 'd2l-offscreen/d2l-offscreen.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+@@ -255,7 +255,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
+ 			<p hidden$="[[!_checkShowNoGradesForFilter(loaded, _allGrades, _filteredGrades)]]" class="no-grades-message">[[localize('noRecentGradesForFilter')]]</p>
+ 		</section>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -323,7 +323,6 @@ Polymer({
+ 
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior,
+ 		window.D2L.RecentGrades.LocalizeBehavior,
+ 		window.D2L.RecentGrades.RecentGradesBehavior
+ 	],
+@@ -396,7 +395,7 @@ Polymer({
+ 
+ 		var requests = [];
+ 		organizationEntities.forEach(function(org) {
+-			if (org && org.hasLinkByRel(this.HypermediaRels.myOrganizationGrades)) {
++			if (org && org.hasLinkByRel(Rels.myOrganizationGrades)) {
+ 				requests.push(this._formatOrganization(org));
+ 			}
+ 		}.bind(this));
+@@ -411,8 +410,8 @@ Polymer({
+ 	},
+ 
+ 	_formatOrganization: function(org) {
+-		var myOrganizationGradesHref = (org.getLinkByRel(this.HypermediaRels.myOrganizationGrades) || {}).href;
+-		var courseImageHref = (org.getSubEntityByClass(this.HypermediaClasses.courseImage.courseImage) || {}).href;
++		var myOrganizationGradesHref = (org.getLinkByRel(Rels.myOrganizationGrades) || {}).href;
++		var courseImageHref = (org.getSubEntityByClass(Classes.courseImage.courseImage) || {}).href;
+ 
+ 		return Promise.all([
+ 			this._getFinalGrade(myOrganizationGradesHref),
+@@ -445,13 +444,13 @@ Polymer({
+ 			if (categories && categories.includes('default')) {
+ 				isCatalogImage = true;
+ 				url = (courseImage.getLinkByClasses([
+-					this.HypermediaClasses.courseImage.tile,
+-					this.HypermediaClasses.courseImage.min,
+-					this.HypermediaClasses.courseImage.lowDensity]) || {}).href;
++					Classes.courseImage.tile,
++					Classes.courseImage.min,
++					Classes.courseImage.lowDensity]) || {}).href;
+ 			} else {
+ 				url = (courseImage.getLinkByClasses([
+-					this.HypermediaClasses.courseImage.tile,
+-					this.HypermediaClasses.courseImage.min]) || {}).href;
++					Classes.courseImage.tile,
++					Classes.courseImage.min]) || {}).href;
+ 			}
+ 
+ 			return {
+@@ -462,11 +461,9 @@ Polymer({
+ 	},
+ 
+ 	_getFinalGrade: function(myOrganizationGradesHref) {
+-		var self = this;
+-
+ 		return this._fetchEntityWithToken(myOrganizationGradesHref, this.getToken, this.userUrl)
+ 			.then(function(myOrganizationGrades) {
+-				var finalGradeEntity = (myOrganizationGrades.getSubEntitiesByClass(self.HypermediaClasses.grades.final))[0];
++				var finalGradeEntity = (myOrganizationGrades.getSubEntitiesByClass(Classes.grades.final))[0];
+ 				var finalGrade = null;
+ 
+ 				if (finalGradeEntity) {
+@@ -486,7 +483,7 @@ Polymer({
+ 
+ 			myOrganizationGradesEntities.forEach(function(orgGrades) {
+ 				if (orgGrades) {
+-					orgGrades.getSubEntitiesByClass(self.HypermediaClasses.grades.userGrade).forEach(function(userGrade) {
++					orgGrades.getSubEntitiesByClass(Classes.grades.userGrade).forEach(function(userGrade) {
+ 						if (!self._recentGradesBehavior_isFinalGrade(userGrade)) {
+ 							requests.push(self._recentGradesBehavior_formatUserGrade(userGrade));
+ 						}
+diff --git a/src/d2l-feedback-display.js b/src/d2l-feedback-display.js
+index dca01ed..e65a7af 100644
+--- a/src/d2l-feedback-display.js
++++ b/src/d2l-feedback-display.js
+@@ -5,7 +5,7 @@ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import 'd2l-icons/d2l-icon.js';
+ import 'd2l-icons/tier1-icons.js';
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels } from 'd2l-hypermedia-constants';
+ import './behaviors/localize-behavior.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+@@ -25,7 +25,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-feedback-display">
+ 			[[_feedbackText]]
+ 		</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -55,7 +55,6 @@ Polymer({
+ 
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior,
+ 		window.D2L.RecentGrades.LocalizeBehavior
+ 	],
+ 
+@@ -70,7 +69,7 @@ Polymer({
+ 
+ 		return this._fetchEntityWithToken(commentsUrl, getToken, userUrl)
+ 			.then(function(commentsEntity) {
+-				var comment = commentsEntity.getSubEntityByRel(this.HypermediaRels.Grades.comment);
++				var comment = commentsEntity.getSubEntityByRel(Rels.Grades.comment);
+ 				if (comment && comment.properties.text) {
+ 					this.set('_feedbackText', comment.properties.text);
+ 					this.hasFeedback = true;
+diff --git a/src/d2l-recent-grades.js b/src/d2l-recent-grades.js
+index abec045..5ebb38b 100644
+--- a/src/d2l-recent-grades.js
++++ b/src/d2l-recent-grades.js
+@@ -12,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-fetch/d2l-fetch.js';
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes } from 'd2l-hypermedia-constants';
+ import 'd2l-link/d2l-link.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import './behaviors/localize-behavior.js';
+@@ -70,7 +70,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-recent-grades">
+ 			<h3>[[localize('viewAllGrades')]]</h3>
+ 		</d2l-link>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -132,7 +132,6 @@ Polymer({
+ 
+ 	behaviors: [
+ 		D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior,
+ 		window.D2L.RecentGrades.LocalizeBehavior,
+ 		window.D2L.RecentGrades.RecentGradesBehavior
+ 	],
+@@ -166,7 +165,7 @@ Polymer({
+ 
+ 			myOrganizationGradesEntities.forEach(function(orgGrades) {
+ 				if (orgGrades) {
+-					orgGrades.getSubEntitiesByClass(self.HypermediaClasses.grades.userGrade).forEach(function(userGrade) {
++					orgGrades.getSubEntitiesByClass(Classes.grades.userGrade).forEach(function(userGrade) {
+ 						if (!self._recentGradesBehavior_isFinalGrade(userGrade)) {
+ 							requests.push(self._recentGradesBehavior_formatUserGrade(userGrade));
+ 						}
+diff --git a/test/behaviors/d2l-recent-grades-behavior.html b/test/behaviors/d2l-recent-grades-behavior.html
+index 20b6995..715a1dc 100644
+--- a/test/behaviors/d2l-recent-grades-behavior.html
++++ b/test/behaviors/d2l-recent-grades-behavior.html
+@@ -6,7 +6,7 @@
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
++		<script type="module" src="../../../siren-parser/global.js"></script>
+ 		<script type="module" src="./d2l-recent-grades-behavior-consumer.js"></script>
+ 	</head>
+ 	<body>
+diff --git a/test/components/d2l-all-grades-list-item.html b/test/components/d2l-all-grades-list-item.html
+index 40d7ab2..bf6aef0 100644
+--- a/test/components/d2l-all-grades-list-item.html
++++ b/test/components/d2l-all-grades-list-item.html
+@@ -16,6 +16,6 @@
+ 				<d2l-all-grades-list-item></d2l-all-grades-list-item>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-all-grades-list-item.js"></script>
++		<script type="module" src="./d2l-all-grades-list-item.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-all-grades-list-item.js b/test/components/d2l-all-grades-list-item.js
+index 1e51e9b..378b1f7 100644
+--- a/test/components/d2l-all-grades-list-item.js
++++ b/test/components/d2l-all-grades-list-item.js
+@@ -2,6 +2,8 @@
+ 
+ 'use strict';
+ 
++import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
++
+ describe('<d2l-all-grades-list-item>', function() {
+ 
+ 	var element, sandbox;
+@@ -20,7 +22,7 @@ describe('<d2l-all-grades-list-item>', function() {
+ 		};
+ 
+ 		element.set('gradeItem', gradeItem);
+-		Polymer.dom.flush();
++		flush();
+ 	}
+ 
+ 	beforeEach(function() {
+diff --git a/test/components/d2l-all-grades-list.html b/test/components/d2l-all-grades-list.html
+index 0a69f32..2b75df4 100644
+--- a/test/components/d2l-all-grades-list.html
++++ b/test/components/d2l-all-grades-list.html
+@@ -16,6 +16,6 @@
+ 				<d2l-all-grades-list></d2l-all-grades-list>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-all-grades-list.js"></script>
++		<script type="module" src="./d2l-all-grades-list.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-all-grades-list.js b/test/components/d2l-all-grades-list.js
+index f3bc6cb..f1b1fdb 100644
+--- a/test/components/d2l-all-grades-list.js
++++ b/test/components/d2l-all-grades-list.js
+@@ -2,6 +2,8 @@
+ 
+ 'use strict';
+ 
++import { flush, dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
++
+ describe('<d2l-all-grades-list>', function() {
+ 
+ 	var element;
+@@ -48,10 +50,10 @@ describe('<d2l-all-grades-list>', function() {
+ 
+ 		it('renders the correct number of list items and headers', function() {
+ 			element.set('gradeItems', gradeItems);
+-			Polymer.dom.flush();
++			flush();
+ 
+-			var listElements = Polymer.dom(element.root).querySelectorAll('d2l-all-grades-list-item');
+-			var headerElements = Polymer.dom(element.root).querySelectorAll('h4');
++			var listElements = dom(element.root).querySelectorAll('d2l-all-grades-list-item');
++			var headerElements = dom(element.root).querySelectorAll('h4');
+ 
+ 			expect(listElements.length).to.equal(gradeItems.length, 'Number of d2l-all-grades-list-item items');
+ 			expect(headerElements.length).to.equal(3, 'Number of date headers');
+@@ -59,13 +61,13 @@ describe('<d2l-all-grades-list>', function() {
+ 
+ 		it('re-renders the list when a new set of items is supplied', function() {
+ 			element.set('gradeItems', gradeItems);
+-			Polymer.dom.flush();
++			flush();
+ 
+ 			element.set('gradeItems', newGradeItems);
+-			Polymer.dom.flush();
++			flush();
+ 
+-			var listElements = Polymer.dom(element.root).querySelectorAll('d2l-all-grades-list-item');
+-			var headerElements = Polymer.dom(element.root).querySelectorAll('h4');
++			var listElements = dom(element.root).querySelectorAll('d2l-all-grades-list-item');
++			var headerElements = dom(element.root).querySelectorAll('h4');
+ 
+ 			expect(listElements.length).to.equal(newGradeItems.length, 'Number of d2l-all-grades-list-item items');
+ 			expect(headerElements.length).to.equal(2, 'Number of date headers');
+@@ -73,11 +75,11 @@ describe('<d2l-all-grades-list>', function() {
+ 
+ 		it('renders nothing when no items are supplied', function() {
+ 			element.set('gradeItems', []);
+-			Polymer.dom.flush();
++			flush();
+ 
+-			var listElements = Polymer.dom(element.root).querySelectorAll('d2l-all-grades-list-item');
+-			var headerElements = Polymer.dom(element.root).querySelectorAll('h4');
+-			var childrenElements = Polymer.dom(element.root).querySelectorAll('d2l-all-grades-list-item');
++			var listElements = dom(element.root).querySelectorAll('d2l-all-grades-list-item');
++			var headerElements = dom(element.root).querySelectorAll('h4');
++			var childrenElements = dom(element.root).querySelectorAll('d2l-all-grades-list-item');
+ 
+ 			expect(listElements.length).to.equal(0, 'Number of d2l-all-grades-list-item items');
+ 			expect(headerElements.length).to.equal(0, 'Number of date headers');
+diff --git a/test/components/d2l-all-grades.html b/test/components/d2l-all-grades.html
+index a9c4e79..88e730e 100644
+--- a/test/components/d2l-all-grades.html
++++ b/test/components/d2l-all-grades.html
+@@ -9,7 +9,7 @@
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 
+ 		<script type="module" src="../../src/d2l-all-grades.js"></script>
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
++		<script type="module" src="../../../siren-parser/global.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="basic">
+@@ -17,6 +17,6 @@
+ 				<d2l-all-grades></d2l-all-grades>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-all-grades.js"></script>
++		<script type="module" src="./d2l-all-grades.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-all-grades.js b/test/components/d2l-all-grades.js
+index d3b934e..5d327f6 100644
+--- a/test/components/d2l-all-grades.js
++++ b/test/components/d2l-all-grades.js
+@@ -2,6 +2,8 @@
+ 
+ 'use strict';
+ 
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
++
+ function getUserGradeJson(value, orgHref, gradeHref, lastModified, userActivityUsageHref) {
+ 	var userGradeJson = {
+ 		class: ['user-grade'],
+@@ -398,11 +400,11 @@ describe('<d2l-all-grades>', function() {
+ 				element._loadCourses().then(function() {
+ 					setTimeout(function() {
+ 						expect(element._filteredGrades.length).to.equal(5);
+-						Polymer.dom(element.root).querySelectorAll('.courses-list-item div')[0].click(); // All courses
++						dom(element.root).querySelectorAll('.courses-list-item div')[0].click(); // All courses
+ 						expect(element._filteredGrades.length).to.equal(5);
+-						Polymer.dom(element.root).querySelectorAll('.courses-list-item div')[1].click(); // First course
++						dom(element.root).querySelectorAll('.courses-list-item div')[1].click(); // First course
+ 						expect(element._filteredGrades.length).to.not.equal(5);
+-						Polymer.dom(element.root).querySelectorAll('.courses-list-item div')[0].click(); // All courses
++						dom(element.root).querySelectorAll('.courses-list-item div')[0].click(); // All courses
+ 						expect(element._filteredGrades.length).to.equal(5);
+ 						done();
+ 					}, 0);
+@@ -416,7 +418,7 @@ describe('<d2l-all-grades>', function() {
+ 					setTimeout(function() {
+ 						element._allCourses[0].href = 'httplink4';
+ 						element._allCourses[1].href = 'httplink4';
+-						Polymer.dom(element.root).querySelectorAll('.courses-list-item div')[1].click();
++						dom(element.root).querySelectorAll('.courses-list-item div')[1].click();
+ 						expect(element._filteredGrades.length).to.not.equal(5);
+ 						done();
+ 					}, 0);
+@@ -431,7 +433,7 @@ describe('<d2l-all-grades>', function() {
+ 				element._loadCourses();
+ 				setTimeout(function() {
+ 					expect(element._filteredGrades.length).to.equal(5);
+-					Polymer.dom(element.root).querySelectorAll('.courses-list-item div')[1].click();
++					dom(element.root).querySelectorAll('.courses-list-item div')[1].click();
+ 					expect(element._courseFilterHref).to.equal('httplink2');
+ 					element._allCourses = null;
+ 					expect(element._courseFilterHref).to.equal(null);
+@@ -449,7 +451,7 @@ describe('<d2l-all-grades>', function() {
+ 			element._loadGrades([org1Grades, org2Grades]).then(function() {
+ 				element._loadCourses();
+ 				setTimeout(function() {
+-					Polymer.dom(element.root).querySelectorAll('.courses-list-item div')[1].click();
++					dom(element.root).querySelectorAll('.courses-list-item div')[1].click();
+ 				}, 0);
+ 			});
+ 		});
+diff --git a/test/components/d2l-feedback-display.html b/test/components/d2l-feedback-display.html
+index 65b5f15..ecb248c 100644
+--- a/test/components/d2l-feedback-display.html
++++ b/test/components/d2l-feedback-display.html
+@@ -9,7 +9,7 @@
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 
+ 		<script type="module" src="../../src/d2l-feedback-display.js"></script>
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
++		<script type="module" src="../../../siren-parser/global.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="basic">
+diff --git a/test/components/d2l-recent-grades-list-item.html b/test/components/d2l-recent-grades-list-item.html
+index 1b78e5e..adf3909 100644
+--- a/test/components/d2l-recent-grades-list-item.html
++++ b/test/components/d2l-recent-grades-list-item.html
+@@ -16,6 +16,6 @@
+ 				<d2l-recent-grades-list-item></d2l-recent-grades-list-item>
+ 			</template>
+ 		</test-fixture>
+-		<script src="./d2l-recent-grades-list-item.js"></script>
++		<script type="module" src="./d2l-recent-grades-list-item.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-recent-grades-list-item.js b/test/components/d2l-recent-grades-list-item.js
+index 75c60b0..1ed4bce 100644
+--- a/test/components/d2l-recent-grades-list-item.js
++++ b/test/components/d2l-recent-grades-list-item.js
+@@ -2,6 +2,8 @@
+ 
+ 'use strict';
+ 
++import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
++
+ describe('<d2l-recent-grades-list-item>', function() {
+ 
+ 	var element, sandbox;
+@@ -20,7 +22,7 @@ describe('<d2l-recent-grades-list-item>', function() {
+ 		};
+ 
+ 		element.gradeItem = gradeItem;
+-		Polymer.dom.flush();
++		flush();
+ 	}
+ 
+ 	function getEvent(type) {
+diff --git a/test/components/d2l-recent-grades.html b/test/components/d2l-recent-grades.html
+index faa0824..803948e 100644
+--- a/test/components/d2l-recent-grades.html
++++ b/test/components/d2l-recent-grades.html
+@@ -9,7 +9,7 @@
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+ 
+ 		<script type="module" src="../../src/d2l-recent-grades.js"></script>
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
++		<script type="module" src="../../../siren-parser/global.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="basic">
+-- 
+2.18.0.windows.1
+
