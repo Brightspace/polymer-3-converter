@@ -1,13 +1,11 @@
 diff --git a/d2l-focusable-behavior.js b/d2l-focusable-behavior.js
-index e753b19..40dfd92 100644
+index d000c61..40dfd92 100644
 --- a/d2l-focusable-behavior.js
 +++ b/d2l-focusable-behavior.js
-@@ -1,78 +1,19 @@
+@@ -1,76 +1,19 @@
  import '@polymer/polymer/polymer-legacy.js';
  import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
--// WORKAROUND: polymer-modulizer grabs non-existing Element export from polymer-element
--// TODO: Remove Element reference
--import { PolymerElement as Element } from '@polymer/polymer/polymer-element.js';
+-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 -import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
 +
  window.D2L = window.D2L || {};
@@ -61,7 +59,7 @@ index e753b19..40dfd92 100644
 -	},
 -
 -	_handleFocus: function() {
--		if (!Element && !useShadow) {
+-		if (!PolymerElement && !useShadow) {
 -			// This custom focus event is only needed for Polymer 1. We should
 -			// be able to remove this event once we move to Polymer 2.
 -			this.dispatchEvent(new CustomEvent(
@@ -72,7 +70,7 @@ index e753b19..40dfd92 100644
 -	},
 -
 -	_handleBlur: function() {
--		if (!Element && !useShadow) {
+-		if (!PolymerElement && !useShadow) {
 -			// This custom focus event is only needed for Polymer 1. We should
 -			// be able to remove this event once we move to Polymer 2.
 -			this.dispatchEvent(new CustomEvent(
@@ -90,35 +88,90 @@ index adf2865..0000000
 +++ /dev/null
 @@ -1 +0,0 @@
 -<script src="./d2l-gestures-swipe.js"></script>
+diff --git a/requestIdleCallback.html b/requestIdleCallback.html
+deleted file mode 100644
+index 1c6b6ab..0000000
+--- a/requestIdleCallback.html
++++ /dev/null
+@@ -1 +0,0 @@
+-<script src="./requestIdleCallback.js"></script>
 diff --git a/test/dom.html b/test/dom.html
-index 30e29b3..f217024 100644
+index 6147680..de9621a 100644
 --- a/test/dom.html
 +++ b/test/dom.html
-@@ -45,19 +45,15 @@
+@@ -44,158 +44,112 @@
  		<script type="module">
  import '../d2l-dom.js';
  import './dom-components.js';
 -import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
--import { Element } from '@polymer/polymer/polymer-element.js';
+-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
  import { dom as dom$0 } from '@polymer/polymer/lib/legacy/polymer.dom.js';
  describe('d2l-dom', function() {
- 
+-
  	var simpleFixture, wcFixture, mixedFixture;
 -	var shadow;
- 
+-
  	beforeEach(function() {
  		simpleFixture = fixture('simpleFixture');
  		wcFixture = fixture('wcFixture');
  		mixedFixture = fixture('mixedFixture');
 -		shadow = undefined.dom === 'shadow' || useShadow;
  	});
- 
+-
  	describe('findComposedAncestor', function() {
-@@ -113,10 +109,8 @@ describe('d2l-dom', function() {
+-
+ 		it('finds ancestor with specified id', function() {
+ 			var predicate = function(node) { return node.id === 'light1'; };
+ 			expect(D2L.Dom.findComposedAncestor(simpleFixture.querySelector('#light2'), predicate))
+ 				.to.equal(simpleFixture);
+ 		});
+-
+ 		it('does not find ancestor with specified id', function() {
+ 			var predicate = function(node) { return node.id === 'x'; };
+ 			expect(D2L.Dom.findComposedAncestor(simpleFixture.querySelector('#light2'), predicate))
+ 				.to.be.null;
+ 		});
+-
+ 		it('finds shadow ancestor with specified id for light node', function() {
+ 			var predicate = function(node) { return node.id === 'container'; };
+ 			expect(D2L.Dom.findComposedAncestor(wcFixture.querySelector('#light1'), predicate))
+ 				.to.equal(wcFixture.getContainer());
+ 		});
+-
+ 		it('finds light ancestor with specified id for shadow node', function() {
+ 			var predicate = function(node) { return node.id === 'light1'; };
+ 			expect(D2L.Dom.findComposedAncestor(mixedFixture.querySelector('#wc1').getContainer(), predicate))
+ 				.to.equal(mixedFixture);
+ 		});
+-
+ 	});
+-
+ 	describe('getComposedChildren', function() {
+-
+ 		it('returns child elememts', function() {
+ 			var children = D2L.Dom.getComposedChildren(simpleFixture);
+ 			var expected = simpleFixture.children;
+ 			expect(children.length).to.equal(expected.length);
+ 			expect(children[0]).to.equal(expected[0]);
+ 		});
+-
+ 		it('returns child elememts for document', function() {
+ 			var children = D2L.Dom.getComposedChildren(document);
+ 			var expected = document.children;
+ 			expect(children.length).to.equal(expected.length);
+ 			expect(children[0]).to.equal(expected[0]);
+ 		});
+-
+ 		it('returns shadow child elememts', function() {
+ 			var children = D2L.Dom.getComposedChildren(wcFixture);
+ 			expect(children.length).to.equal(1);
+ 			expect(children[0]).to.equal(wcFixture.getContainer());
+ 		});
+-
  		it('returns distributed child elements for insertion point', function() {
  			var container = wcFixture.getContainer();
  			var children = D2L.Dom.getComposedChildren(container);
--			if (shadow || Element) {
+-			if (shadow || PolymerElement) {
 -				expect(children[0].tagName).to.be.oneOf(['SLOT', 'CONTENT']);
 -				children = D2L.Dom.getComposedChildren(children[0]);
 -			}
@@ -127,11 +180,19 @@ index 30e29b3..f217024 100644
  			expect(children.length).to.equal(2);
  			expect(children[0]).to.equal(wcFixture.querySelector('#light1'));
  			expect(children[1]).to.equal(wcFixture.querySelector('#light2'));
-@@ -132,23 +126,13 @@ describe('d2l-dom', function() {
  		});
- 
+-
+ 	});
+-
+ 	describe('getComposedParent', function() {
+-
+ 		it('returns parent', function() {
+ 			expect(D2L.Dom.getComposedParent(simpleFixture.querySelector('#light2')))
+ 				.to.equal(simpleFixture);
+ 		});
+-
  		it('returns insertion point as parent of distributed node', function() {
--			if (shadow || Element) {
+-			if (shadow || PolymerElement) {
 -				expect(D2L.Dom.getComposedParent(wcFixture.querySelector('#light1')))
 -					.to.equal(dom$0(wcFixture.querySelector('#light1')).getDestinationInsertionPoints()[0]);
 -			} else {
@@ -141,9 +202,9 @@ index 30e29b3..f217024 100644
 +			expect(D2L.Dom.getComposedParent(wcFixture.querySelector('#light1')))
 +				.to.equal(dom$0(wcFixture.querySelector('#light1')).getDestinationInsertionPoints()[0]);
  		});
- 
+-
  		it('returns host as parent of shadow-root', function() {
--			if (shadow || Element) {
+-			if (shadow || PolymerElement) {
 -				expect(D2L.Dom.getComposedParent(wcFixture.root))
 -					.to.equal(wcFixture);
 -			} else {
@@ -153,5 +214,53 @@ index 30e29b3..f217024 100644
 +			expect(D2L.Dom.getComposedParent(wcFixture.root))
 +				.to.equal(wcFixture);
  		});
- 
+-
  		it('returns null as parent of detached element', function() {
+ 			expect(D2L.Dom.getComposedParent(document.createElement('div')))
+ 				.to.equal(null);
+ 		});
+-
+ 		it('returns null as parent of document', function() {
+ 			expect(D2L.Dom.getComposedParent(document))
+ 				.to.equal(null);
+ 		});
+-
+ 	});
+-
+ 	describe('isComposedAncestor', function() {
+-
+ 		it('returns true if ancestor', function() {
+ 			expect(D2L.Dom.isComposedAncestor(simpleFixture, simpleFixture.querySelector('#light2')))
+ 				.to.be.true;
+ 		});
+-
+ 		it('returns true if ancestor and node are same', function() {
+ 			expect(D2L.Dom.isComposedAncestor(simpleFixture, simpleFixture))
+ 				.to.be.true;
+ 		});
+-
+ 		it('returns false not ancestor', function() {
+ 			expect(D2L.Dom.isComposedAncestor(simpleFixture.querySelector('#light2'), simpleFixture))
+ 				.to.be.false;
+ 		});
+-
+ 		it('returns true if shadow ancestor of light descendant', function() {
+ 			expect(D2L.Dom.isComposedAncestor(wcFixture.getContainer(), wcFixture.querySelector('#light2')))
+ 				.to.be.true;
+ 		});
+-
+ 		it('returns false if light sibling', function() {
+ 			expect(D2L.Dom.isComposedAncestor(wcFixture.querySelector('#light3'), wcFixture.querySelector('#light2')))
+ 				.to.be.false;
+ 		});
+-
+ 		it('returns true if light ancestor of shadow descendant', function() {
+ 			expect(D2L.Dom.isComposedAncestor(mixedFixture, mixedFixture.querySelector('#light2')))
+ 				.to.be.true;
+ 		});
+-
+ 	});
+-
+ });
+ </script>
+ 	</body>
