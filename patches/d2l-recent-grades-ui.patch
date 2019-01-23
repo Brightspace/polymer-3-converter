@@ -1,29 +1,172 @@
-From 72cee5fcabaf4e0b9d0ac91863946fd3f542b454 Mon Sep 17 00:00:00 2001
+From 479790d157a955a555a48bfdb294c9f26d8a074b Mon Sep 17 00:00:00 2001
 From: Chris Kraljevic <Chris.Kraljevic@D2L.com>
-Date: Tue, 22 Jan 2019 11:54:38 -0600
-Subject: [PATCH] Post polymer 3 conversion patch
+Date: Wed, 23 Jan 2019 16:39:15 -0600
+Subject: [PATCH] Post-conversion fixes plus stuff from the last PR
 
 ---
+ demo/d2l-all-grades-demo-harness.js           | 56 ++++++++++---------
+ demo/d2l-recent-grades-demo-harness.js        | 56 ++++++++++---------
  package.json                                  |  2 +-
- src/behaviors/d2l-recent-grades-behavior.js   | 41 ++++++++-----------
- src/d2l-all-grades.js                         | 27 ++++++------
- src/d2l-feedback-display.js                   |  7 ++--
- src/d2l-recent-grades.js                      |  7 ++--
+ src/behaviors/d2l-recent-grades-behavior.js   | 41 ++++++--------
+ src/d2l-all-grades-list-item.js               | 16 +++---
+ src/d2l-all-grades-list.js                    |  2 +-
+ src/d2l-all-grades.js                         | 39 ++++++-------
+ src/d2l-feedback-display.js                   |  7 +--
+ src/d2l-recent-grades-list-item.js            |  6 +-
+ src/d2l-recent-grades.js                      |  7 +--
  .../behaviors/d2l-recent-grades-behavior.html |  2 +-
  test/components/d2l-all-grades-list-item.html |  2 +-
  test/components/d2l-all-grades-list-item.js   |  4 +-
  test/components/d2l-all-grades-list.html      |  2 +-
- test/components/d2l-all-grades-list.js        | 24 ++++++-----
+ test/components/d2l-all-grades-list.js        | 24 ++++----
  test/components/d2l-all-grades.html           |  4 +-
- test/components/d2l-all-grades.js             | 14 ++++---
+ test/components/d2l-all-grades.js             | 14 +++--
  test/components/d2l-feedback-display.html     |  2 +-
  .../d2l-recent-grades-list-item.html          |  2 +-
  .../components/d2l-recent-grades-list-item.js |  4 +-
  test/components/d2l-recent-grades.html        |  2 +-
- 16 files changed, 72 insertions(+), 74 deletions(-)
+ 21 files changed, 150 insertions(+), 144 deletions(-)
 
+diff --git a/demo/d2l-all-grades-demo-harness.js b/demo/d2l-all-grades-demo-harness.js
+index b03d98f..55eb9f8 100644
+--- a/demo/d2l-all-grades-demo-harness.js
++++ b/demo/d2l-all-grades-demo-harness.js
+@@ -1,34 +1,38 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import '../src/d2l-all-grades.js';
+-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
++import {
++	Polymer
++} from '@polymer/polymer/lib/legacy/polymer-fn.js';
++import {
++	html
++} from '@polymer/polymer/lib/utils/html-tag.js';
+ Polymer({
+-  _template: html`
++	_template: html `
+ 		<d2l-all-grades user-url="[[url]]" get-token="[[getToken]]" flags="[[flags]]"></d2l-all-grades>
+ `,
+ 
+-  is: 'd2l-all-grades-demo-harness',
++	is: 'd2l-all-grades-demo-harness',
+ 
+-  properties: {
+-	  url: {
+-		  type: String,
+-		  value: ''
+-	  },
+-	  getToken: {
+-		  type: Function,
+-		  value: function () {
+-			  return function () {
+-				  return Promise.resolve('');
+-			  };
+-		  }
+-	  },
+-	  flags: {
+-		  type: Object,
+-		  value: function () {
+-			  return {
+-				  assignmentDetailsEnabled: true
+-			  };
+-		  }
+-	  }
+-  }
++	properties: {
++		url: {
++			type: String,
++			value: ''
++		},
++		getToken: {
++			type: Function,
++			value: function() {
++				return function() {
++					return Promise.resolve('');
++				};
++			}
++		},
++		flags: {
++			type: Object,
++			value: function() {
++				return {
++					assignmentDetailsEnabled: true
++				};
++			}
++		}
++	}
+ });
+diff --git a/demo/d2l-recent-grades-demo-harness.js b/demo/d2l-recent-grades-demo-harness.js
+index 211a483..b1adae7 100644
+--- a/demo/d2l-recent-grades-demo-harness.js
++++ b/demo/d2l-recent-grades-demo-harness.js
+@@ -1,34 +1,38 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import '../src/d2l-recent-grades.js';
+-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
++import {
++	Polymer
++} from '@polymer/polymer/lib/legacy/polymer-fn.js';
++import {
++	html
++} from '@polymer/polymer/lib/utils/html-tag.js';
+ Polymer({
+-  _template: html`
++	_template: html `
+ 		<d2l-recent-grades user-url="[[url]]" get-token="[[getToken]]" flags="[[flags]]"></d2l-recent-grades>
+ `,
+ 
+-  is: 'd2l-recent-grades-demo-harness',
++	is: 'd2l-recent-grades-demo-harness',
+ 
+-  properties: {
+-	  url: {
+-		  type: String,
+-		  value: ''
+-	  },
+-	  getToken: {
+-		  type: Function,
+-		  value: function () {
+-			  return function () {
+-				  return Promise.resolve('');
+-			  };
+-		  }
+-	  },
+-	  flags: {
+-		  type: Object,
+-		  value: function () {
+-			  return {
+-				  assignmentDetailsEnabled: true
+-			  };
+-		  }
+-	  }
+-  }
++	properties: {
++		url: {
++			type: String,
++			value: ''
++		},
++		getToken: {
++			type: Function,
++			value: function() {
++				return function() {
++					return Promise.resolve('');
++				};
++			}
++		},
++		flags: {
++			type: Object,
++			value: function() {
++				return {
++					assignmentDetailsEnabled: true
++				};
++			}
++		}
++	}
+ });
 diff --git a/package.json b/package.json
-index 9dbe464..27c7458 100644
+index 72cac8f..0584a8e 100644
 --- a/package.json
 +++ b/package.json
 @@ -17,7 +17,7 @@
@@ -188,8 +331,97 @@ index 9a986de..3b911ec 100644
  	window.D2L.RecentGrades.LocalStorageBehavior,
  	window.D2L.RecentGrades.LocalizeBehavior,
  	recentGradesBehaviorImpl
+diff --git a/src/d2l-all-grades-list-item.js b/src/d2l-all-grades-list-item.js
+index 83344bd..d533595 100644
+--- a/src/d2l-all-grades-list-item.js
++++ b/src/d2l-all-grades-list-item.js
+@@ -55,7 +55,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 				align-items: center;
+ 			}
+ 
+-			:host-context([dir="rtl"]) .feedback {
++			:host(:dir(rtl)) .feedback {
+ 				padding: 10px 80px 10px 30px;
+ 			}
+ 
+@@ -65,7 +65,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 				margin-right:20px;
+ 			}
+ 
+-			:host-context([dir="rtl"]) .type-icon {
++			:host(:dir(rtl)) .type-icon {
+ 				margin-right: 0px;
+ 				margin-left: 20px;
+ 			}
+@@ -117,7 +117,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 				font-size: 2rem;
+ 			}
+ 
+-			:host-context([dir="rtl"]) .grade-text {
++			:host(:dir(rtl)) .grade-text {
+ 				margin: 0 auto 0 0;
+ 			}
+ 
+@@ -157,7 +157,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 				height: 100%;
+ 			}
+ 
+-			:host-context([dir="rtl"]) .indicator-container {
++			:host(:dir(rtl)) .indicator-container {
+ 				margin-left: 0;
+ 				margin-right: 20px;
+ 			}
+@@ -199,7 +199,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 					margin-right: 20px;
+ 				}
+ 
+-				:host-context([dir="rtl"]) .type-icon {
++				:host(:dir(rtl)) .type-icon {
+ 					margin-left: 20px;
+ 					margin-right: 0px;
+ 				}
+@@ -223,7 +223,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 					grid-row-start: 2;
+ 					grid-column: 1/3;
+ 				}
+-				:host-context([dir="rtl"]) .grade-text {
++				:host(:dir(rtl)) .grade-text {
+ 					margin-right: 0;
+ 				}
+ 
+@@ -231,7 +231,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 					padding-left: 80px;
+ 				}
+ 
+-				:host-context([dir="rtl"]) .feedback {
++				:host(:dir(rtl)) .feedback {
+ 					padding-left: 30px;
+ 					padding-right: 80px;
+ 				}
+@@ -286,7 +286,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list-item">
+ 			</div>
+ 		</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/src/d2l-all-grades-list.js b/src/d2l-all-grades-list.js
+index ae005f5..4a4e5b0 100644
+--- a/src/d2l-all-grades-list.js
++++ b/src/d2l-all-grades-list.js
+@@ -31,7 +31,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades-list">
+ 				h4 {
+ 					margin-left: 15px;
+ 				}
+-				:host-context([dir="rtl"]) h4 {
++				:host(:dir(rtl)) h4 {
+ 					margin-left: 0;
+ 					margin-right: 15px;
+ 				}
 diff --git a/src/d2l-all-grades.js b/src/d2l-all-grades.js
-index dc893c2..7bc1fe4 100644
+index dfe05f4..3ceba98 100644
 --- a/src/d2l-all-grades.js
 +++ b/src/d2l-all-grades.js
 @@ -11,7 +11,7 @@ import '@polymer/polymer/polymer-legacy.js';
@@ -201,6 +433,55 @@ index dc893c2..7bc1fe4 100644
  import 'd2l-image/d2l-image.js';
  import 'd2l-offscreen/d2l-offscreen.js';
  import 'd2l-typography/d2l-typography-shared-styles.js';
+@@ -42,7 +42,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
+ 				padding: 40px 0 0 0;
+ 				width: 33%;
+ 			}
+-			:host-context([dir="rtl"]) .courses {
++			:host(:dir(rtl)) .courses {
+ 				background: linear-gradient(to left, rgba(249, 250, 251, 0) 0%, var(--d2l-color-regolith) 320px);
+ 				border-right: none;
+ 				border-left: 1px var(--d2l-color-titanius) solid;
+@@ -69,7 +69,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
+ 				display: flex;
+ 				align-items: center;
+ 			}
+-			:host-context([dir="rtl"]) .courses-list-item-button {
++			:host(:dir(rtl)) .courses-list-item-button {
+ 				padding: calc(var(--d2l-all-grades-spacing)/2) 0 calc(var(--d2l-all-grades-spacing)/2) calc(var(--d2l-all-grades-spacing)/2);
+ 			}
+ 			.courses-list-item-button:hover, .courses-list-item-button:focus {
+@@ -79,7 +79,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
+ 			.courses-list-item-button.selected {
+ 				background: linear-gradient(to right, rgba(230, 234, 240, 0) 0, var(--d2l-color-gypsum) 400px);
+ 			}
+-			:host-context([dir="rtl"]) .courses-list-item-button.selected {
++			:host(:dir(rtl)) .courses-list-item-button.selected {
+ 				background: linear-gradient(to left, rgba(230, 234, 240, 0) 0, var(--d2l-color-gypsum) 400px);
+ 			}
+ 			.courses-list-item-button:hover {
+@@ -179,7 +179,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
+ 					margin-right: 0;
+ 					width: 100%;
+ 				}
+-				:host-context([dir="rtl"]) .courses {
++				:host(:dir(rtl)) .courses {
+ 					border-left: none;
+ 					margin-left: 0;
+ 				}
+@@ -192,10 +192,10 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
+ 				.courses-list-item-button {
+ 					padding-left: calc(var(--d2l-all-grades-spacing)/2);
+ 				}
+-				:host-context([dir="rtl"]) .courses-list-item-button {
++				:host(:dir(rtl)) .courses-list-item-button {
+ 					padding-right: calc(var(--d2l-all-grades-spacing)/2);
+ 				}
+-				.courses-list-item-button.selected, :host-context([dir="rtl"]) .courses-list-item-button.selected {
++				.courses-list-item-button.selected, :host(:dir(rtl)) .courses-list-item-button.selected {
+ 					background: var(--d2l-color-sylvite);
+ 				}
+ 
 @@ -255,7 +255,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-grades">
  			<p hidden$="[[!_checkShowNoGradesForFilter(loaded, _allGrades, _filteredGrades)]]" class="no-grades-message">[[localize('noRecentGradesForFilter')]]</p>
  		</section>
@@ -280,19 +561,18 @@ index dc893c2..7bc1fe4 100644
  							requests.push(self._recentGradesBehavior_formatUserGrade(userGrade));
  						}
 diff --git a/src/d2l-feedback-display.js b/src/d2l-feedback-display.js
-index dca01ed..e65a7af 100644
+index 33dc379..b5aa196 100644
 --- a/src/d2l-feedback-display.js
 +++ b/src/d2l-feedback-display.js
-@@ -5,7 +5,7 @@ import 'd2l-typography/d2l-typography-shared-styles.js';
- import 'd2l-icons/d2l-icon.js';
- import 'd2l-icons/tier1-icons.js';
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
  import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
 -import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
 +import { Rels } from 'd2l-hypermedia-constants';
  import './behaviors/localize-behavior.js';
  import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
  const $_documentContainer = document.createElement('template');
-@@ -25,7 +25,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-feedback-display">
+@@ -20,7 +20,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-feedback-display">
  			[[_feedbackText]]
  		</div>
  	</template>
@@ -301,7 +581,7 @@ index dca01ed..e65a7af 100644
  </dom-module>`;
  
  document.head.appendChild($_documentContainer.content);
-@@ -55,7 +55,6 @@ Polymer({
+@@ -50,7 +50,6 @@ Polymer({
  
  	behaviors: [
  		D2L.PolymerBehaviors.FetchSirenEntityBehavior,
@@ -309,7 +589,7 @@ index dca01ed..e65a7af 100644
  		window.D2L.RecentGrades.LocalizeBehavior
  	],
  
-@@ -70,7 +69,7 @@ Polymer({
+@@ -65,7 +64,7 @@ Polymer({
  
  		return this._fetchEntityWithToken(commentsUrl, getToken, userUrl)
  			.then(function(commentsEntity) {
@@ -318,6 +598,37 @@ index dca01ed..e65a7af 100644
  				if (comment && comment.properties.text) {
  					this.set('_feedbackText', comment.properties.text);
  					this.hasFeedback = true;
+diff --git a/src/d2l-recent-grades-list-item.js b/src/d2l-recent-grades-list-item.js
+index a1e5659..67976ac 100644
+--- a/src/d2l-recent-grades-list-item.js
++++ b/src/d2l-recent-grades-list-item.js
+@@ -31,7 +31,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-recent-grades-list-item">
+ 				position: absolute;
+ 			}
+ 
+-			:host-context([dir="rtl"]) .icon-wrapper {
++			:host(:dir(rtl)) .icon-wrapper {
+ 				left: auto;
+ 				right: -7px;
+ 			}
+@@ -50,7 +50,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-recent-grades-list-item">
+ 			:host([is-new]) .info-wrapper {
+ 				padding-left: 22px;
+ 			}
+-			:host-context([dir="rtl"]) .info-wrapper.is-new {
++			:host(:dir(rtl)) .info-wrapper.is-new {
+ 				padding-left: 0;
+ 				padding-right: 22px;
+ 			}
+@@ -95,7 +95,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-recent-grades-list-item">
+ 			:host([is-new]) .grade-text {
+ 				font-weight: 700;
+ 			}
+-			:host-context([dir="rtl"]) .grade-text {
++			:host(:dir(rtl)) .grade-text {
+ 				margin: 0 10px 0 0;
+ 			}
+ 
 diff --git a/src/d2l-recent-grades.js b/src/d2l-recent-grades.js
 index abec045..5ebb38b 100644
 --- a/src/d2l-recent-grades.js
