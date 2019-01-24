@@ -1,0 +1,94 @@
+diff --git a/components/d2l-profile-image.js b/components/d2l-profile-image.js
+index f70bd78..c144a84 100644
+--- a/components/d2l-profile-image.js
++++ b/components/d2l-profile-image.js
+@@ -12,7 +12,7 @@ import '@polymer/polymer/polymer-legacy.js';
+
+ import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels } from 'd2l-hypermedia-constants';
+ import './d2l-profile-image-base.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+@@ -28,7 +28,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-profile-image">
+ 			<d2l-profile-image-base id="d2l-profile-image" small$="[[small]]" medium$="[[medium]]" large$="[[large]]" x-large$="[[xLarge]]" first-name="[[_firstName]]" last-name="[[_lastName]]" colour-id="[[_colourId]]" href="[[_imageUrl]]" token="[[token]]" loading$="[[_loading]]">
+ 			</d2l-profile-image-base>
+ 	</template>
+-
++
+ </dom-module>`;
+
+ document.head.appendChild($_documentContainer.content);
+@@ -69,8 +69,7 @@ Polymer({
+ 		}
+ 	},
+ 	behaviors: [
+-		D2L.PolymerBehaviors.Siren.EntityBehavior,
+-		D2L.Hypermedia.HMConstantsBehavior
++		D2L.PolymerBehaviors.Siren.EntityBehavior
+ 	],
+ 	observers: [
+ 		'_configureProfileImage(entity, href)',
+@@ -99,12 +98,12 @@ Polymer({
+ 			.then(function(data) {
+
+ 				this.set('_imageUrl', '');
+-				if (data.hasSubEntityByRel(this.HypermediaRels.userProfile)) {
++				if (data.hasSubEntityByRel(Rels.userProfile)) {
+
+-					var userProfile = data.getSubEntityByRel(this.HypermediaRels.userProfile);
++					var userProfile = data.getSubEntityByRel(Rels.userProfile);
+ 					if (userProfile) {
+
+-						var profileImage = userProfile.getSubEntityByRel(this.HypermediaRels.profileImage);
++						var profileImage = userProfile.getSubEntityByRel(Rels.profileImage);
+ 						if (profileImage && !profileImage.hasClass('default-image')) {
+
+ 							var imageEntity = profileImage.getLinkByRel('alternate');
+@@ -114,13 +113,13 @@ Polymer({
+ 				}
+
+ 				this.set('_firstName', '');
+-				var firstName = data.getSubEntityByRel(this.HypermediaRels.firstName);
++				var firstName = data.getSubEntityByRel(Rels.firstName);
+ 				if (!firstName.hasClass('default-name')) {
+ 					this.set('_firstName', firstName.properties.name);
+ 				}
+
+ 				this.set('_lastName', '');
+-				var lastName = data.getSubEntityByRel(this.HypermediaRels.lastName);
++				var lastName = data.getSubEntityByRel(Rels.lastName);
+ 				if (!lastName.hasClass('default-name')) {
+ 					this.set('_lastName', lastName.properties.name);
+ 				}
+diff --git a/test/d2l-profile-image.html b/test/d2l-profile-image.html
+index 29a1103..9ee45f0 100644
+--- a/test/d2l-profile-image.html
++++ b/test/d2l-profile-image.html
+@@ -24,6 +24,7 @@
+ 	</test-fixture>
+ 	<script type="module">
+ import '../components/d2l-profile-image.js';
++import SirenParse from 'siren-parser';
+ import { flush as flush$0, dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ suite('d2l-profile-image', function() {
+
+@@ -115,7 +116,7 @@
+ 					{ 'rel': ['self'], 'href': href }
+ 				]
+ 			};
+-			var entity = window.D2L.Hypermedia.Siren.Parse(response);
++			var entity = SirenParse(response);
+
+ 			defaultElement._configureProfileImage(entity)
+ 				.then(function() {
+@@ -180,7 +181,7 @@
+ 					{ 'rel': ['self'], 'href': href }
+ 				]
+ 			};
+-			var entity = window.D2L.Hypermedia.Siren.Parse(response);
++			var entity = SirenParse(response);
+
+ 			defaultElement._configureProfileImage(entity)
+ 				.then(function() {
