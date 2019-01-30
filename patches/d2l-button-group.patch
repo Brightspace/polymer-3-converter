@@ -1,0 +1,56 @@
+diff --git a/d2l-action-button-group.js b/d2l-action-button-group.js
+index f41993d..a281df7 100644
+--- a/d2l-action-button-group.js
++++ b/d2l-action-button-group.js
+@@ -39,11 +39,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-action-button-group">
+ 				color: var(--d2l-color-celestine);
+ 			}
+
+-			:host-context([dir='rtl']) .d2l-dropdown-opener-text {
+-				margin-left: 0.3rem;
+-				margin-right: 0;
+-			}
+-
+ 			:host(:dir(rtl)) .d2l-dropdown-opener-text {
+ 				margin-left: 0.3rem;
+ 				margin-right: 0;
+diff --git a/d2l-button-group-styles.js b/d2l-button-group-styles.js
+index 1cb4cd3..e868249 100644
+--- a/d2l-button-group-styles.js
++++ b/d2l-button-group-styles.js
+@@ -28,19 +28,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button-group-styles">
+ 				margin-right: 0.75rem;
+ 			}
+
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-button),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-button-subtle),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-button-icon),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-link),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(span),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-dropdown:not(.d2l-overflow-dropdown)),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-dropdown-button),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(d2l-dropdown-button-subtle),
+-			:host-context([dir='rtl']) .d2l-button-group-container ::slotted(.d2l-button-group-custom-item) {
+-				margin-left: 0.75rem;
+-				margin-right: 0;
+-			}
+-
+ 			:host(:dir(rtl)) .d2l-button-group-container ::slotted(d2l-button),
+ 			:host(:dir(rtl)) .d2l-button-group-container ::slotted(d2l-button-subtle),
+ 			:host(:dir(rtl)) .d2l-button-group-container ::slotted(d2l-button-icon),
+diff --git a/d2l-button-group.js b/d2l-button-group.js
+index 8c58499..4c39eb0 100644
+--- a/d2l-button-group.js
++++ b/d2l-button-group.js
+@@ -33,11 +33,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button-group">
+ 				vertical-align: middle;
+ 			}
+
+-			:host-context([dir='rtl']) .d2l-dropdown-opener-text {
+-				margin-left: 0.3rem;
+-				margin-right: 0;
+-			}
+-
+ 			:host(:dir(rtl)) .d2l-dropdown-opener-text {
+ 				margin-left: 0.3rem;
+ 				margin-right: 0;
