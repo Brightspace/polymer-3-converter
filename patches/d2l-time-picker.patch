@@ -1,7 +1,7 @@
 From 2981cab4394d96dc24bb55c7c6e7b09a71fa27c2 Mon Sep 17 00:00:00 2001
 From: Emil Furniss <emil.furniss@d2l.com>
 Date: Thu, 13 Dec 2018 13:21:18 -0800
-Subject: [PATCH] patches after polymer 3 conversion
+Subject: [PATCH 1/2] patches after polymer 3 conversion
 
 ---
  .gitignore                     | 2 --
@@ -103,7 +103,7 @@ index 4ccd773..018fa6e 100644
 From fd70df165e49baec95c69918e1f1df9aa59e2554 Mon Sep 17 00:00:00 2001
 From: Margaret Dulat <Margaret.Dulat@D2L.com>
 Date: Fri, 1 Feb 2019 12:30:10 -0800
-Subject: [PATCH] use d2l-inputs/d2l-input-styes instead of local copy
+Subject: [PATCH 2/2] use d2l-inputs/d2l-input-styes instead of local copy
 
 ---
  d2l-input-styles.js | 135 ----------------------------------------------------
