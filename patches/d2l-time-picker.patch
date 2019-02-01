@@ -1,7 +1,7 @@
 From 2981cab4394d96dc24bb55c7c6e7b09a71fa27c2 Mon Sep 17 00:00:00 2001
 From: Emil Furniss <emil.furniss@d2l.com>
 Date: Thu, 13 Dec 2018 13:21:18 -0800
-Subject: [PATCH] patches after polymer 3 conversion
+Subject: [PATCH 1/2] patches after polymer 3 conversion
 
 ---
  .gitignore                     | 2 --
@@ -34,6 +34,24 @@ index da14a8f..7451c38 100644
  import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
  import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
  const $_documentContainer = document.createElement('template');
+@@ -298,7 +298,7 @@ Polymer({
+ 				var offsetTop = listBox.selectedItem.offsetTop;
+ 				dropdownContent.scrollTo(offsetTop - height / 2);
+ 			}
+-		});
++		}.bind(this));
+ 	},
+
+ 	_onBlur: function() {
+@@ -317,7 +317,7 @@ Polymer({
+ 			if (dom(this.root).activeElement !== this.$$('input')) {
+ 				this._onBlur();
+ 			}
+-		}, 1);
++		}.bind(this), 1);
+ 	},
+
+ 	_onTimeInputFocused: function() {
 diff --git a/package.json b/package.json
 index 61ab0e3..918e93f 100644
 --- a/package.json
@@ -54,15 +72,15 @@ index b631bd7..e74eef6 100644
 --- a/test/a11y.html
 +++ b/test/a11y.html
 @@ -6,10 +6,9 @@
- 
+
  		<title>d2l-time-picker test</title>
- 
+
 -		<script src="../../@babel/polyfill/browser.js"></script>
 +		<!-- <script src="../../@babel/polyfill/browser.js"></script> -->
  		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../wct-browser-legacy/browser.js"></script>
 -		<script src="../../wct-browser-legacy/data/a11ySuite.js"></script>
- 
+
  		<script type="module" src="../../@polymer/iron-test-helpers/mock-interactions.js"></script>
  		<script type="module" src="../d2l-time-picker.js"></script>
 diff --git a/test/d2l-time-picker_test.html b/test/d2l-time-picker_test.html
@@ -70,21 +88,21 @@ index 4ccd773..018fa6e 100644
 --- a/test/d2l-time-picker_test.html
 +++ b/test/d2l-time-picker_test.html
 @@ -6,11 +6,10 @@
- 
+
  		<title>d2l-time-picker test</title>
- 
+
 -		<script src="../../@babel/polyfill/browser.js"></script>
 +		<!-- <script src="../../@babel/polyfill/browser.js"></script> -->
  		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../wct-browser-legacy/browser.js"></script>
- 
+
 -		<script type="module" src="../../d2l-intl-import/d2l-intl.js"></script>
  		<script type="module" src="../../@polymer/iron-test-helpers/mock-interactions.js"></script>
  		<script type="module" src="../d2l-time-picker.js"></script>
  	</head>
 @@ -25,11 +24,12 @@
  		</test-fixture>
- 
+
  		<script type="module">
 -import 'd2l-intl-import/d2l-intl.js';
 +import d2lIntl from 'd2l-intl';
@@ -97,6 +115,249 @@ index 4ccd773..018fa6e 100644
  suite('d2l-time-picker', function() {
  	setup(function() {
  		this.fixture = fixture('basic');
--- 
-2.20.0.windows.1
+--
+2.15.1.windows.2
+
+
+From fd70df165e49baec95c69918e1f1df9aa59e2554 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Fri, 1 Feb 2019 12:30:10 -0800
+Subject: [PATCH 2/2] use d2l-inputs/d2l-input-styes instead of local copy
+
+---
+ d2l-input-styles.js | 135 ----------------------------------------------------
+ d2l-time-picker.js  |  36 +++++++++-----
+ package.json        |   1 +
+ 3 files changed, 26 insertions(+), 146 deletions(-)
+ delete mode 100644 d2l-input-styles.js
+
+diff --git a/d2l-input-styles.js b/d2l-input-styles.js
+deleted file mode 100644
+index bf89724..0000000
+--- a/d2l-input-styles.js
++++ /dev/null
+@@ -1,135 +0,0 @@
+-import '@polymer/polymer/polymer-legacy.js';
+-import 'd2l-colors/d2l-colors.js';
+-const $_documentContainer = document.createElement('template');
+-
+-$_documentContainer.innerHTML = `<dom-module id="d2l-input-styles">
+-	<template>
+-		<style include="d2l-colors">
+-			:host {
+-				--d2l-input-border-radius: 0.3rem;
+-				--d2l-input-height: auto;
+-				--d2l-input-line-height: 1;
+-				--d2l-input-width: 100%;
+-				--d2l-input-background-color: #ffffff;
+-				--d2l-input-background-hover: inherit;
+-				--d2l-input-border-color: var(--d2l-color-mica);
+-				--d2l-input-boxshadow: inset 0 2px 0 0 rgba(185, 194, 208, .2);
+-				--d2l-input-padding: 0.7rem 1rem;
+-				--d2l-input-padding-focus: calc(0.7rem - 1px) calc(1rem - 1px);
+-				--d2l-input-color: var(--d2l-color-ferrite);
+-				--d2l-input-placeholder-color: var(--d2l-color-tungsten);
+-
+-				--d2l-input-common: {
+-					border-radius: var(--d2l-input-border-radius);
+-					border-style: solid;
+-					box-sizing: border-box;
+-					display: inline-block;
+-					margin: 0;
+-					min-width: 0;
+-					vertical-align: middle;
+-					width: var(--d2l-input-width);
+-					transition: background-color 0.5s ease, border-color 0.5s ease;
+-				};
+-
+-				--d2l-input-text: {
+-					color: var(--d2l-input-color);
+-					font-family: inherit;
+-					font-size: 0.8rem;
+-					font-weight: 400;
+-					letter-spacing: 0.01rem;
+-					line-height: var(--d2l-input-line-height);
+-				};
+-
+-				--d2l-input-textarea: {
+-					line-height: normal;
+-				};
+-
+-				--d2l-input-hover-disabled: {
+-					background-color: var(--d2l-input-background-color);
+-					border-color: var(--d2l-color-mica);
+-					border-width: 1px;
+-					box-shadow: var(--d2l-input-boxshadow);
+-					padding: var(--d2l-input-padding);
+-				};
+-
+-				--d2l-input-hover-focus: {
+-					background-color: var(--d2l-input-background-hover);
+-					border-color: var(--d2l-color-celestine);
+-					border-width: 2px;
+-					outline-width: 0;
+-					padding: var(--d2l-input-padding-focus);
+-				};
+-
+-				--d2l-input-invalid: {
+-					border-color: var(--d2l-color-cinnabar);
+-				};
+-
+-				--d2l-input-disabled: {
+-					opacity: 0.5;
+-				};
+-
+-				--d2l-input-placeholder: {
+-					color: var(--d2l-input-placeholder-color);
+-					font-size: 0.8rem;
+-					font-weight: 400;
+-				};
+-			}
+-
+-			input[type="text"].d2l-input, input[type="search"].d2l-input,
+-			input[type="tel"].d2l-input, input[type="url"].d2l-input,
+-			input[type="email"].d2l-input, input[type="password"].d2l-input,
+-			input[type="number"].d2l-input {
+-				@apply --d2l-input-common;
+-				@apply --d2l-input-text;
+-				@apply --d2l-input-hover-disabled;
+-				height: var(--d2l-input-height);
+-			}
+-
+-			input.d2l-input::placeholder {
+-				@apply --d2l-input-placeholder;
+-			}
+-
+-			input.d2l-input::-webkit-input-placeholder {
+-				@apply --d2l-input-placeholder;
+-			}
+-
+-			input.d2l-input::-moz-placeholder {
+-				@apply --d2l-input-placeholder;
+-			}
+-
+-			input.d2l-input:-ms-input-placeholder {
+-				@apply --d2l-input-placeholder;
+-				/* IE will cause field to resize if placeholder font-size is different */
+-				font-size: 0.8rem;
+-			}
+-
+-			input.d2l-input:hover:disabled {
+-				@apply --d2l-input-hover-disabled;
+-			}
+-
+-			input.d2l-input:hover, input.d2l-input:focus {
+-				@apply --d2l-input-hover-focus;
+-			}
+-
+-			input.d2l-input[aria-invalid='true'], input.d2l-input:invalid {
+-				@apply --d2l-input-invalid;
+-			}
+-
+-			input.d2l-input:disabled {
+-				@apply --d2l-input-disabled;
+-			}
+-
+-			input.d2l-input::-webkit-search-cancel-button {
+-				display: none;
+-			}
+-
+-			input.d2l-input::-ms-clear {
+-				display: none;
+-				width: 0;
+-				height: 0;
+-			}
+-		</style>
+-	</template>
+-</dom-module>`;
+-
+-document.head.appendChild($_documentContainer.content);
+diff --git a/d2l-time-picker.js b/d2l-time-picker.js
+index 7451c38..290eb4f 100644
+--- a/d2l-time-picker.js
++++ b/d2l-time-picker.js
+@@ -4,25 +4,19 @@ Accessible, Localized Time Picker Input Element
+
+ @demo demo/index.html
+ */
+-/*
+-  FIXME(polymer-modulizer): the above comments were extracted
+-  from HTML and may be out of place here. Review them and
+-  then delete this comment!
+-*/
+ import '@polymer/polymer/polymer-legacy.js';
+-
+-import './d2l-input-styles.js';
+ import 'd2l-dropdown/d2l-dropdown.js';
+ import 'd2l-dropdown/d2l-dropdown-content.js';
+ import { IronA11yKeysBehavior } from '@polymer/iron-a11y-keys-behavior/iron-a11y-keys-behavior.js';
+ import '@polymer/iron-selector/iron-selector.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
++import 'd2l-inputs/d2l-input-shared-styles.js';
+ import d2lIntl from 'd2l-intl';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ const $_documentContainer = document.createElement('template');
+
+-$_documentContainer.innerHTML = `<dom-module id="d2l-time-picker">
++$_documentContainer.innerHTML = /*html*/`<dom-module id="d2l-time-picker">
+ 	<template strip-whitespace="">
+ 		<style include="d2l-input-styles">
+ 			:host {
+@@ -78,10 +72,30 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-time-picker">
+
+ 		<d2l-dropdown no-auto-open="">
+ 			<div class="d2l-dropdown-opener" id="opener">
+-				<input id="{{id}}-combobox" type="text" class="d2l-input" role="combobox" aria-autocomplete="list" aria-label$="{{label}}" aria-owns$="{{listboxId}}" aria-activedescendant$="{{selectedListboxId}}" on-focus="_onTimeInputFocused" value="{{value::input}}">
++				<input
++					id="{{id}}-combobox"
++					type="text"
++					class="d2l-input"
++					role="combobox"
++					aria-autocomplete="list"
++					aria-label$="{{label}}"
++					aria-owns$="{{listboxId}}"
++					aria-activedescendant$="{{selectedListboxId}}"
++					on-focus="_onTimeInputFocused"
++					value="{{value::input}}">
+ 			</div>
+
+-			<d2l-dropdown-content id="dropdown" min-width="[[_dropdownWidth]]" max-width="[[_dropdownWidth]]" boundary="[[boundary]]" align="start" no-auto-close="" no-pointer="" no-auto-focus="" no-padding="" on-tap="_handleTimesListClick">
++			<d2l-dropdown-content
++				id="dropdown"
++				min-width="[[_dropdownWidth]]"
++				max-width="[[_dropdownWidth]]"
++				boundary="[[boundary]]"
++				align="start"
++				no-auto-close=""
++				no-pointer=""
++				no-auto-focus=""
++				no-padding=""
++				on-tap="_handleTimesListClick">
+
+ 					<div class="dropdown-content">
+ 						<iron-selector id="{{listboxId}}" role="listbox" selected-attribute="selected">
+@@ -95,7 +109,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-time-picker">
+ 		<span class="timezone">{{timezone}}</span>
+ 	</template>
+
+-
++
+ </dom-module>`;
+
+ document.head.appendChild($_documentContainer.content);
+diff --git a/package.json b/package.json
+index 918e93f..851a78a 100644
+--- a/package.json
++++ b/package.json
+@@ -57,6 +57,7 @@
+     "@polymer/iron-a11y-keys-behavior": "^3.0.0-pre.18",
+     "d2l-colors": "BrightspaceUI/colors#semver:^4",
+     "d2l-dropdown": "BrightspaceUI/dropdown#semver:^7",
++    "d2l-inputs": "BrightspaceUI/inputs#semver:^2",
+     "d2l-typography": "BrightspaceUI/typography#semver:^7"
+   }
+ }
+--
+2.15.1.windows.2
 
