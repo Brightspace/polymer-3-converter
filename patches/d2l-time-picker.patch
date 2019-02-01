@@ -34,6 +34,24 @@ index da14a8f..7451c38 100644
  import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
  import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
  const $_documentContainer = document.createElement('template');
+@@ -298,7 +298,7 @@ Polymer({
+ 				var offsetTop = listBox.selectedItem.offsetTop;
+ 				dropdownContent.scrollTo(offsetTop - height / 2);
+ 			}
+-		});
++		}.bind(this));
+ 	},
+
+ 	_onBlur: function() {
+@@ -317,7 +317,7 @@ Polymer({
+ 			if (dom(this.root).activeElement !== this.$$('input')) {
+ 				this._onBlur();
+ 			}
+-		}, 1);
++		}.bind(this), 1);
+ 	},
+
+ 	_onTimeInputFocused: function() {
 diff --git a/package.json b/package.json
 index 61ab0e3..918e93f 100644
 --- a/package.json
@@ -98,7 +116,8 @@ index 4ccd773..018fa6e 100644
  	setup(function() {
  		this.fixture = fixture('basic');
 --
-2.20.0.windows.1
+2.15.1.windows.2
+
 
 From fd70df165e49baec95c69918e1f1df9aa59e2554 Mon Sep 17 00:00:00 2001
 From: Margaret Dulat <Margaret.Dulat@D2L.com>
