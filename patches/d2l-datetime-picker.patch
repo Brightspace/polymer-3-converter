@@ -1,566 +1,7 @@
-From 0c2a27f3d3f787697e5d45c17609fee60378764f Mon Sep 17 00:00:00 2001
-From: Margaret Dulat <Margaret.Dulat@D2L.com>
-Date: Wed, 9 Jan 2019 13:01:18 -0800
-Subject: [PATCH] patch after polymer 3 conversion
-
----
- .travis.yml                        |   2 +-
- d2l-datetime-picker.js             |  10 +-
- demo/galen.html                    |  12 +-
- test/acceptance/galen.test.js      |  40 +++---
- test/d2l-datetime-picker_test.html | 253 +++++++++++++++++++------------------
- 5 files changed, 158 insertions(+), 159 deletions(-)
-
-diff --git a/.travis.yml b/.travis.yml
-index 6754da3..13a4026 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -8,7 +8,7 @@ script:
- - |
-   if [ $TRAVIS_PULL_REQUEST != false ] && [ $TRAVIS_SECURE_ENV_VARS == true ]; then
-     echo "Pull request with secure environment variables, running Sauce tests...";
--    npm run test:polymer:sauce && npm run test:galen:sauce || travis_terminate 1;
-+    npm run test:polymer:sauce || travis_terminate 1;
-   else
-     echo "Not a pull request and/or no secure environment variables, running headless tests...";
-     npm run test:polymer:local || travis_terminate 1;
-diff --git a/d2l-datetime-picker.js b/d2l-datetime-picker.js
-index 78704c9..cf94b47 100644
---- a/d2l-datetime-picker.js
-+++ b/d2l-datetime-picker.js
-@@ -53,7 +53,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
- 				@apply --d2l-datetime-picker-clear-button-container;
- 			}
- 
--			:host-context([dir="rtl"]) .clear-button-container {
-+			:host(:dir(rtl)) .clear-button-container {
- 				margin-right: 0;
- 				margin-left: 34px;
- 			}
-@@ -81,13 +81,13 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
- 				padding-bottom: 20px;
- 			}
- 
--			:host-context([dir="rtl"]):host([has-date]) d2l-date-picker {
-+			:host(:dir(rtl)):host([has-date]) d2l-date-picker {
- 				padding-right: 0;
- 				padding-left: 1rem;
- 			}
- 
- 			/* shadyDOM workaround */
--			:host-context([dir="rtl"])[has-date] d2l-date-picker {
-+			:host(:dir(rtl))[has-date] d2l-date-picker {
- 				padding-right: 0;
- 				padding-left: 1rem;
- 			}
-@@ -111,7 +111,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
- 				flex: 1 1 auto;
- 			}
- 
--			:host-context([dir="rtl"]) .d2l-time-picker-container {
-+			:host(:dir(rtl)) .d2l-time-picker-container {
- 				padding-left: 0.75rem;
- 				padding-right: 0;
- 			}
-@@ -151,7 +151,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
- 					@apply --d2l-datetime-picker-label-mobile;
- 				}
- 
--				:host-context([dir="rtl"]) label {
-+				:host(:dir(rtl)) label {
- 					padding-right: 0;
- 					padding-left: var(--d2l-datetime-picker-label-padding);
- 					@apply --d2l-datetime-picker-label-mobile-rtl;
-diff --git a/demo/galen.html b/demo/galen.html
-index b4ba27c..b3c582f 100644
---- a/demo/galen.html
-+++ b/demo/galen.html
-@@ -11,6 +11,9 @@
- 		<script type="module" src="../../d2l-typography/d2l-typography.js"></script>
- 		<script type="module" src="../d2l-datetime-picker.js"></script>
- 
-+		<script type="text/javascript" src="https://s.brightspace.com/lib/moment.js/2.15.2/moment.min.js"></script>
-+		<script type="text/javascript" src="https://s.brightspace.com/lib/moment-timezone/0.5.10/moment-timezone-with-data.min.js"></script>
-+
- 		<script type="module">
- 			const $_documentContainer = document.createElement('template');
- 
-@@ -33,7 +36,7 @@
- 			document.body.appendChild($_documentContainer.content);
- 		</script>
- 	</head>
--	<body unresolved>
-+	<body class="d2l-typography">
- 		<script type="module">
- 			const $_documentContainer = document.createElement('template');
- 
-@@ -46,19 +49,14 @@
- 					</dom-bind>`;
- 
- 			document.body.appendChild($_documentContainer.content);
--		</script>
- 
--		<script type="module">
--			import 'd2l-typography/d2l-typography.js';
--			import '../d2l-datetime-picker.js';
- 			var match = window.location.search.match(/width=([^&]*)/);
- 			if (match) {
- 				document.body.style.width = match[1];
- 			}
- 			if (window.location.href.indexOf('dir=rtl') > -1) {
--				document.body.setAttribute('dir', 'rtl');
-+				document.documentElement.setAttribute('dir', 'rtl');
- 			}
--			document.body.className = 'd2l-typography';
- 		</script>
- 	</body>
- </html>
-diff --git a/test/acceptance/galen.test.js b/test/acceptance/galen.test.js
-index a78ecac..5b507ef 100644
---- a/test/acceptance/galen.test.js
-+++ b/test/acceptance/galen.test.js
-@@ -44,17 +44,16 @@ var browsers = {
- 	})*/
- };
- 
--var mainlineEndpoint = 'http://localhost:8081/components/d2l-datetime-picker/demo/galen.html';
--var oneDotXEndpoint = 'http://localhost:8000/components/d2l-datetime-picker/demo/galen.html';
-+var testEndpointOriginal = 'http://localhost:8081/components/d2l-datetime-picker/demo/galen.html';
- 
--var rtlScript = 'document.body.setAttribute("dir", "rtl");';
--var getInput = 'document.querySelector("d2l-datetime-picker").$$("d2l-date-picker").$$(".d2l-input")';
-+var rtlScript = 'document.documentElement.setAttribute("dir", "rtl");';
-+var getInput = 'document.querySelector("d2l-datetime-picker").shadowRoot.querySelector("d2l-date-picker").shadowRoot.querySelector(".d2l-input")';
- var inputClickScript = getInput + '.dispatchEvent(new MouseEvent("click"))';
- var typeDateScript = getInput + '.value= "01/30/1990"';
- var hitEnterScript = getInput + '.dispatchEvent(new KeyboardEvent("keydown", {bubbles: true, cancelable: true, key:"Enter", char:"Enter", keyCode: 13}))';
- 
- polymerTests(browsers, function(test) {
--	function testHelper(rtl, shadow, open, mobile, mainline) {
-+	function testHelper(rtl, shadow, open, mobile) {
- 		var name = 'd2l-datetime-picker';
- 		var queryParams = [];
- 		name = rtl ? name + '-rtl' : name;
-@@ -66,7 +65,8 @@ polymerTests(browsers, function(test) {
- 		shadow && queryParams.push('dom=shadow');
- 		mobile && queryParams.push('width=280px');
- 
--		var testEndpoint = mainline ? mainlineEndpoint : oneDotXEndpoint;
-+		var testEndpoint = testEndpointOriginal;
-+
- 		if (queryParams.length) {
- 			testEndpoint += '?' + queryParams.join('&');
- 		}
-@@ -102,20 +102,20 @@ polymerTests(browsers, function(test) {
- 		}, cb);
- 	}
- 
--	function runTests(mainline) {
--		testHelper(false, false, false, false, mainline);
--		testHelper(false, false, true, false, mainline);
--		testHelper(true, false, false, false, mainline);
--		testHelper(true, false, true, false, mainline);
--		testHelper(false, true, false, false, mainline);
--		testHelper(false, true, true, false, mainline);
--		testHelper(true, true, false, false, mainline);
--		testHelper(true, true, true, false, mainline);
--		testHelper(false, false, false, true, mainline);
--		testHelper(false, false, true, true, mainline);
--		testHelper(true, false, false, true, mainline);
--		testHelper(true, false, true, true, mainline);
-+	function runTests() {
-+		testHelper(false, false, false, false);
-+		testHelper(false, false, true, false);
-+		testHelper(true, false, false, false);
-+		testHelper(true, false, true, false);
-+		testHelper(false, true, false, false);
-+		testHelper(false, true, true, false);
-+		testHelper(true, true, false, false);
-+		testHelper(true, true, true, false);
-+		testHelper(false, false, false, true);
-+		testHelper(false, false, true, true);
-+		testHelper(true, false, false, true);
-+		testHelper(true, false, true, true);
- 	}
- 
--	[false, true].forEach(runTests);
-+	runTests();
- });
-diff --git a/test/d2l-datetime-picker_test.html b/test/d2l-datetime-picker_test.html
-index 8286121..81524c4 100644
---- a/test/d2l-datetime-picker_test.html
-+++ b/test/d2l-datetime-picker_test.html
-@@ -28,236 +28,237 @@
- 			import '../d2l-datetime-picker.js';
- 			import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
- 			suite('d2l-datetime-picker', function() {
-+				var element;
- 				setup(function() {
--					this.element = fixture('basic');
-+					element = fixture('basic');
- 				});
- 
- 				test('instantiating the element works', function() {
--					expect(this.element.is).to.equal('d2l-datetime-picker');
-+					expect(element.is).to.equal('d2l-datetime-picker');
- 				});
- 
- 				test('should have d2l-time-picker when date is set', function() {
--					expect(this.element.$$('d2l-time-picker')).to.not.be.ok;
--					this.element.date = '1990-01-30';
-+					expect(element.$$('d2l-time-picker')).to.not.be.ok;
-+					element.date = '1990-01-30';
- 					flush();
--					expect(this.element.$$('d2l-time-picker')).to.be.ok;
-+					expect(element.$$('d2l-time-picker')).to.be.ok;
- 				});
- 
- 				test('should have d2l-time-picker when alwaysShowTime is set', function() {
--					expect(this.element.$$('d2l-time-picker')).to.not.be.ok;
--					this.element.alwaysShowTime = true;
-+					expect(element.$$('d2l-time-picker')).to.not.be.ok;
-+					element.alwaysShowTime = true;
- 					flush();
--					expect(this.element.$$('d2l-time-picker')).to.be.ok;
-+					expect(element.$$('d2l-time-picker')).to.be.ok;
- 				});
- 
- 				test('should have d2l-date-picker', function() {
--					expect(this.element.$$('d2l-date-picker')).to.be.ok;
-+					expect(element.$$('d2l-date-picker')).to.be.ok;
- 				});
- 
- 				test('should pass locale to d2l-time-picker and d2l-date-picker', function() {
--					this.element.alwaysShowTime = true;
-+					element.alwaysShowTime = true;
- 					flush();
--					this.element.locale = 'fr-CA';
--					expect(this.element.$$('d2l-time-picker').locale).to.equal('fr-CA');
--					expect(this.element.$$('d2l-date-picker').locale).to.equal('fr-CA');
--					this.element.locale = 'en-US';
--					expect(this.element.$$('d2l-time-picker').locale).to.equal('en-US');
--					expect(this.element.$$('d2l-date-picker').locale).to.equal('en-US');
-+					element.locale = 'fr-CA';
-+					expect(element.$$('d2l-time-picker').locale).to.equal('fr-CA');
-+					expect(element.$$('d2l-date-picker').locale).to.equal('fr-CA');
-+					element.locale = 'en-US';
-+					expect(element.$$('d2l-time-picker').locale).to.equal('en-US');
-+					expect(element.$$('d2l-date-picker').locale).to.equal('en-US');
- 				});
- 
- 				test('should pass firstDayOfWeek to d2l-date-picker', function() {
--					this.element.firstDayOfWeek = 2;
--					expect(this.element.$$('d2l-date-picker').firstDayOfWeek).to.equal(2);
--					this.element.firstDayOfWeek = 5;
--					expect(this.element.$$('d2l-date-picker').firstDayOfWeek).to.equal(5);
-+					element.firstDayOfWeek = 2;
-+					expect(element.$$('d2l-date-picker').firstDayOfWeek).to.equal(2);
-+					element.firstDayOfWeek = 5;
-+					expect(element.$$('d2l-date-picker').firstDayOfWeek).to.equal(5);
- 				});
- 
- 				suite('hours/minutes', function() {
- 					test('should update time-picker hours/minutes', function() {
--						this.element.date = '1990-01-30';
-+						element.date = '1990-01-30';
- 						flush();
--						this.element.hours = 1;
--						this.element.minutes = 30;
-+						element.hours = 1;
-+						element.minutes = 30;
- 
--						expect(this.element.$$('d2l-time-picker').hours).to.equal(1);
--						expect(this.element.$$('d2l-time-picker').minutes).to.equal(30);
-+						expect(element.$$('d2l-time-picker').hours).to.equal(1);
-+						expect(element.$$('d2l-time-picker').minutes).to.equal(30);
- 					});
- 				});
- 
- 				suite('datetime', function() {
- 					test('should not be updated when date is undefined', function() {
--						this.element.date = undefined;
--						this.element.hours = 1;
--						this.element.minutes = 30;
--						expect(this.element.datetime).to.not.be.ok;
-+						element.date = undefined;
-+						element.hours = 1;
-+						element.minutes = 30;
-+						expect(element.datetime).to.not.be.ok;
- 					});
- 
- 					test('empty when date is empty', function() {
--						this.element.date = moment();
--						this.element.date = '';
--						expect(this.element.datetime).to.not.be.ok;
-+						element.date = moment();
-+						element.date = '';
-+						expect(element.datetime).to.not.be.ok;
- 					});
- 
- 					test('should be updated when date is defined', function() {
--						this.element.date = '1990-01-30';
-+						element.date = '1990-01-30';
- 						flush();
--						expect(this.element.datetime).to.be.ok;
--						expect(this.element.datetime.year()).to.equal(1990);
--						expect(this.element.datetime.month()).to.equal(0);
--						expect(this.element.datetime.date()).to.equal(30);
-+						expect(element.datetime).to.be.ok;
-+						expect(element.datetime.year()).to.equal(1990);
-+						expect(element.datetime.month()).to.equal(0);
-+						expect(element.datetime.date()).to.equal(30);
- 					});
- 
- 					test('should have correct time', function() {
--						this.element.date = '1990-01-30';
-+						element.date = '1990-01-30';
- 						flush();
--						this.element.hours = 1;
--						this.element.minutes = 30;
--						expect(this.element.datetime).to.be.ok;
--						expect(this.element.datetime.year()).to.equal(1990);
--						expect(this.element.datetime.month()).to.equal(0);
--						expect(this.element.datetime.date()).to.equal(30);
--						expect(this.element.datetime.hours()).to.equal(1);
--						expect(this.element.datetime.minutes()).to.equal(30);
-+						element.hours = 1;
-+						element.minutes = 30;
-+						expect(element.datetime).to.be.ok;
-+						expect(element.datetime.year()).to.equal(1990);
-+						expect(element.datetime.month()).to.equal(0);
-+						expect(element.datetime.date()).to.equal(30);
-+						expect(element.datetime.hours()).to.equal(1);
-+						expect(element.datetime.minutes()).to.equal(30);
- 					});
- 
- 					test('date,hours,minutes should be updated when set', function() {
--						this.element.datetime = moment.tz('1899-12-31T00:00:00', this.element.__timezone);
--						expect(this.element.date).to.equal('1899-12-31');
--						expect(this.element.hours).to.equal(0);
--						expect(this.element.minutes).to.equal(0);
-+						element.datetime = moment.tz('1899-12-31T00:00:00', element.__timezone);
-+						expect(element.date).to.equal('1899-12-31');
-+						expect(element.hours).to.equal(0);
-+						expect(element.minutes).to.equal(0);
- 					});
- 
- 					test('clears date,hours,minutes when set to empty', function() {
--						this.element.datetime = '';
--						expect(this.element.date).to.be.empty;
-+						element.datetime = '';
-+						expect(element.date).to.be.empty;
- 					});
- 
- 					test('noop when date is invalid', function() {
--						this.element.datetime = moment();
--						var date = this.element.date;
--						var hours = this.element.hours;
--						var minutes = this.element.minutes;
--						this.element.datetime = 'foozleberries';
--						expect(this.element.date).to.equal(date);
--						expect(this.element.hours).to.equal(hours);
--						expect(this.element.minutes).to.equal(minutes);
-+						element.datetime = moment();
-+						var date = element.date;
-+						var hours = element.hours;
-+						var minutes = element.minutes;
-+						element.datetime = 'foozleberries';
-+						expect(element.date).to.equal(date);
-+						expect(element.hours).to.equal(hours);
-+						expect(element.minutes).to.equal(minutes);
- 					});
- 				});
- 
- 				suite('date-label', function() {
- 					test('defaults to "Date Picker" under the "en" locale', function() {
--						this.element.locale = 'en';
--						expect(this.element._dateLabel).to.equal('Date Picker');
-+						element.locale = 'en';
-+						expect(element._dateLabel).to.equal('Date Picker');
- 					});
- 				});
- 
- 				suite('time-label', function() {
- 					test('defaults to "Time Picker" under the "en" locale', function() {
--						this.element.locale = 'en';
--						expect(this.element._timeLabel).to.equal('Time Picker');
-+						element.locale = 'en';
-+						expect(element._timeLabel).to.equal('Time Picker');
- 					});
- 				});
- 
- 				suite('d2l-button-icon', function() {
- 					test('clears datetime', function() {
--						this.element.datetime = moment();
-+						element.datetime = moment();
- 						flush();
--						this.element.$$('d2l-button-icon').click();
--						expect(this.element.datetime).to.be.null;
-+						element.$$('d2l-button-icon').click();
-+						expect(element.datetime).to.be.null;
- 					});
- 				});
- 
- 				suite('timezone', function() {
- 					test('utcdatetime is converted to UTC from the given timezone (UTC)', function() {
--						this.element.__timezone = 'UTC';
--						this.element.date = '1990-01-30';
--						this.element.hours = 1;
--						this.element.minutes = 30;
--
--						expect(this.element.datetime.utc().hours()).to.equal(1);
--						expect(this.element.datetime.utc().minutes()).to.equal(30);
--						expect(this.element.datetime.utc().date()).to.equal(30);
-+						element.__timezone = 'UTC';
-+						element.date = '1990-01-30';
-+						element.hours = 1;
-+						element.minutes = 30;
-+
-+						expect(element.datetime.utc().hours()).to.equal(1);
-+						expect(element.datetime.utc().minutes()).to.equal(30);
-+						expect(element.datetime.utc().date()).to.equal(30);
- 					});
- 
- 					test('utcdatetime is converted to UTC from the given timezone (America/Toronto)', function() {
--						this.element.__timezone = 'America/Toronto';
--						this.element.date = '1990-01-30';
--						this.element.hours = 1;
--						this.element.minutes = 30;
--
--						expect(this.element.datetime.utc().hours()).to.equal(6);
--						expect(this.element.datetime.utc().minutes()).to.equal(30);
--						expect(this.element.datetime.utc().date()).to.equal(30);
-+						element.__timezone = 'America/Toronto';
-+						element.date = '1990-01-30';
-+						element.hours = 1;
-+						element.minutes = 30;
-+
-+						expect(element.datetime.utc().hours()).to.equal(6);
-+						expect(element.datetime.utc().minutes()).to.equal(30);
-+						expect(element.datetime.utc().date()).to.equal(30);
- 					});
- 
- 					test('utcdatetime is converted to UTC from the given timezone (America/Los_Angeles)', function() {
--						this.element.__timezone = 'America/Los_Angeles';
--						this.element.date = '1990-01-30';
--						this.element.hours = 1;
--						this.element.minutes = 30;
--
--						expect(this.element.datetime.utc().hours()).to.equal(9);
--						expect(this.element.datetime.utc().minutes()).to.equal(30);
--						expect(this.element.datetime.utc().date()).to.equal(30);
-+						element.__timezone = 'America/Los_Angeles';
-+						element.date = '1990-01-30';
-+						element.hours = 1;
-+						element.minutes = 30;
-+
-+						expect(element.datetime.utc().hours()).to.equal(9);
-+						expect(element.datetime.utc().minutes()).to.equal(30);
-+						expect(element.datetime.utc().date()).to.equal(30);
- 					});
- 
- 					test('changing timezone will not update date/hours/minutes', function() {
--						this.element.__timezone = 'America/Toronto';
--						this.element.date = '1990-01-30';
--						this.element.hours = 1;
--						this.element.minutes = 30;
-+						element.__timezone = 'America/Toronto';
-+						element.date = '1990-01-30';
-+						element.hours = 1;
-+						element.minutes = 30;
- 
--						this.element.__timezone = 'UTC';
-+						element.__timezone = 'UTC';
- 
--						expect(this.element.date).to.equal('1990-01-30');
--						expect(this.element.hours).to.equal(1);
--						expect(this.element.minutes).to.equal(30);
-+						expect(element.date).to.equal('1990-01-30');
-+						expect(element.hours).to.equal(1);
-+						expect(element.minutes).to.equal(30);
- 					});
- 
- 					test('changing timezone will not update date/hours/minutes', function() {
--						this.element.__timezone = 'UTC';
--						this.element.date = '1990-01-30';
--						this.element.hours = 23;
--						this.element.minutes = 30;
-+						element.__timezone = 'UTC';
-+						element.date = '1990-01-30';
-+						element.hours = 23;
-+						element.minutes = 30;
- 
--						this.element.__timezone = 'America/Toronto';
-+						element.__timezone = 'America/Toronto';
- 
--						expect(this.element.date).to.equal('1990-01-30');
--						expect(this.element.hours).to.equal(23);
--						expect(this.element.minutes).to.equal(30);
-+						expect(element.date).to.equal('1990-01-30');
-+						expect(element.hours).to.equal(23);
-+						expect(element.minutes).to.equal(30);
- 					});
- 
- 					test('changing timezone will update datetime', function() {
--						this.element.__timezone = 'America/Toronto';
--						this.element.date = '1990-01-30';
--						this.element.hours = 1;
--						this.element.minutes = 30;
-+						element.__timezone = 'America/Toronto';
-+						element.date = '1990-01-30';
-+						element.hours = 1;
-+						element.minutes = 30;
- 
--						expect(this.element.datetime.utc().hours()).to.equal(6);
--						expect(this.element.datetime.utc().minutes()).to.equal(30);
--						expect(this.element.datetime.utc().date()).to.equal(30);
-+						expect(element.datetime.utc().hours()).to.equal(6);
-+						expect(element.datetime.utc().minutes()).to.equal(30);
-+						expect(element.datetime.utc().date()).to.equal(30);
- 
--						this.element.__timezone = 'UTC';
-+						element.__timezone = 'UTC';
- 
--						expect(this.element.datetime.utc().hours()).to.equal(1);
--						expect(this.element.datetime.utc().minutes()).to.equal(30);
--						expect(this.element.datetime.utc().date()).to.equal(30);
-+						expect(element.datetime.utc().hours()).to.equal(1);
-+						expect(element.datetime.utc().minutes()).to.equal(30);
-+						expect(element.datetime.utc().date()).to.equal(30);
- 					});
- 				});
- 
- 				suite('min/max', function() {
- 					test('should pass min to d2l-date-picker', function() {
--						this.element.min = '2000-10-11';
--						expect(this.element.$$('d2l-date-picker').min).to.equal('2000-10-11');
--						this.element.min = '2020-02-20';
--						expect(this.element.$$('d2l-date-picker').min).to.equal('2020-02-20');
-+						element.min = '2000-10-11';
-+						expect(element.$$('d2l-date-picker').min).to.equal('2000-10-11');
-+						element.min = '2020-02-20';
-+						expect(element.$$('d2l-date-picker').min).to.equal('2020-02-20');
- 					});
- 
- 					test('should pass max to d2l-date-picker', function() {
--						this.element.max = '2000-10-11';
--						expect(this.element.$$('d2l-date-picker').max).to.equal('2000-10-11');
--						this.element.max = '2020-02-20';
--						expect(this.element.$$('d2l-date-picker').max).to.equal('2020-02-20');
-+						element.max = '2000-10-11';
-+						expect(element.$$('d2l-date-picker').max).to.equal('2000-10-11');
-+						element.max = '2020-02-20';
-+						expect(element.$$('d2l-date-picker').max).to.equal('2020-02-20');
- 					});
- 				});
- 			});
--- 
-2.15.1.windows.2
-
 From 541fd30b7ff7d72cb49f35f6675cb18ee603fc5b Mon Sep 17 00:00:00 2001
 From: Margaret Dulat <Margaret.Dulat@D2L.com>
 Date: Fri, 4 Jan 2019 15:00:59 -0800
-Subject: [PATCH] patch after polymer 3 conversion
+Subject: [PATCH 1/3] patch after polymer 3 conversion
 
 ---
  .gitignore                         |   2 -
@@ -589,7 +30,7 @@ index c5274a7..af6d0b6 100644
 +++ b/README.md
 @@ -19,10 +19,12 @@ $ polymer serve
  ## Usage
- 
+
  ```html
 +<script type="text/javascript" src="https://s.brightspace.com/lib/moment.js/2.15.2/moment.min.js"></script>
 +<script type="text/javascript" src="https://s.brightspace.com/lib/moment-timezone/0.5.10/moment-timezone-with-data.min.js"></script>
@@ -611,7 +52,7 @@ index 2cd26bc..78704c9 100644
 -Accessible, Localized Time Picker Input Element
 +`d2l-datetime-picker`
 +Accessible, Localized Date and Time Picker Input Element
- 
+
  @demo demo/index.html
  */
 -/*
@@ -621,7 +62,7 @@ index 2cd26bc..78704c9 100644
 -*/
 +
  import '@polymer/polymer/polymer-legacy.js';
- 
+
  import 'd2l-button/d2l-button-icon.js';
 @@ -18,7 +14,9 @@ import 'd2l-offscreen/d2l-offscreen.js';
  import 'd2l-time-picker/d2l-time-picker.js';
@@ -631,7 +72,7 @@ index 2cd26bc..78704c9 100644
  import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 +
  const $_documentContainer = document.createElement('template');
- 
+
  $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
 @@ -184,7 +182,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
  			<div class="time-clear-container">
@@ -647,9 +88,9 @@ index 2cd26bc..78704c9 100644
  		</template>
  	</template>
 -
--	
+-
  </dom-module>`;
- 
+
  document.head.appendChild($_documentContainer.content);
 @@ -212,18 +208,16 @@ Polymer({
  		},
@@ -677,18 +118,18 @@ index 2cd26bc..78704c9 100644
  			value: ''
 @@ -279,12 +273,12 @@ Polymer({
  	},
- 
+
  	observers: [
 -		'_dateAndTimeChanged(date, timezone, hours, minutes)',
 +		'_dateAndTimeChanged(date, hours, minutes, __timezone)',
  		'_processOverrides(overrides)'
  	],
- 
+
  	clear: function() {
 -		this.datetime = '';
 +		this.datetime = null;
  	},
- 
+
  	_dateTimeChanged: function(datetime) {
 @@ -292,7 +286,7 @@ Polymer({
  			this.date = '';
@@ -719,7 +160,7 @@ index f0c9557..b4ba27c 100644
 --- a/demo/galen.html
 +++ b/demo/galen.html
 @@ -10,60 +10,55 @@
- 
+
  		<script type="module" src="../../d2l-typography/d2l-typography.js"></script>
  		<script type="module" src="../d2l-datetime-picker.js"></script>
 -		<!-- FIXME(polymer-modulizer):
@@ -732,7 +173,7 @@ index f0c9557..b4ba27c 100644
 -		-->
 -	<script type="module">
 -const $_documentContainer = document.createElement('template');
- 
+
 -$_documentContainer.innerHTML = `<custom-style include="d2l-typography">
 -			<style is="custom-style" include="d2l-typography"></style>
 -		</custom-style>`;
@@ -745,13 +186,13 @@ index f0c9557..b4ba27c 100644
 +
 +			document.body.appendChild($_documentContainer.content);
 +		</script>
- 
+
 -document.body.appendChild($_documentContainer.content);
 -</script>
  		<script type="module">
 -const $_documentContainer = document.createElement('template');
 +			const $_documentContainer = document.createElement('template');
- 
+
 -$_documentContainer.innerHTML = `<style>
 -			html {
 -				font-size: 20px;
@@ -762,7 +203,7 @@ index f0c9557..b4ba27c 100644
 +							font-size: 20px;
 +						}
 +					</style>`;
- 
+
 -document.body.appendChild($_documentContainer.content);
 -</script>
 +			document.body.appendChild($_documentContainer.content);
@@ -772,7 +213,7 @@ index f0c9557..b4ba27c 100644
  		<script type="module">
 -const $_documentContainer = document.createElement('template');
 +			const $_documentContainer = document.createElement('template');
- 
+
 -$_documentContainer.innerHTML = `<dom-bind>
 -			<template is="dom-bind">
 -				<d2l-datetime-picker datetime="{{datetime}}"></d2l-datetime-picker>
@@ -790,7 +231,7 @@ index f0c9557..b4ba27c 100644
 +
 +			document.body.appendChild($_documentContainer.content);
 +		</script>
- 
+
 -document.body.appendChild($_documentContainer.content);
 -</script>
  		<script type="module">
@@ -823,7 +264,7 @@ index 52814a1..27ed3d0 100644
 --- a/demo/index.html
 +++ b/demo/index.html
 @@ -12,72 +12,74 @@
- 
+
  		<script type="module" src="../../d2l-typography/d2l-typography.js"></script>
  		<script type="module" src="../d2l-datetime-picker.js"></script>
 -		<!-- FIXME(polymer-modulizer):
@@ -836,13 +277,13 @@ index 52814a1..27ed3d0 100644
 -		-->
 -	<script type="module">
 -const $_documentContainer = document.createElement('template');
- 
+
 -$_documentContainer.innerHTML = `<custom-style include="d2l-typography">
 -			<style is="custom-style" include="d2l-typography"></style>
 -		</custom-style>`;
 +		<script type="text/javascript" src="https://s.brightspace.com/lib/moment.js/2.15.2/moment.min.js"></script>
 +		<script type="text/javascript" src="https://s.brightspace.com/lib/moment-timezone/0.5.10/moment-timezone-with-data.min.js"></script>
- 
+
 -document.body.appendChild($_documentContainer.content);
 -</script>
  		<script type="module">
@@ -869,7 +310,7 @@ index 52814a1..27ed3d0 100644
 +			import '../d2l-datetime-picker.js';
 +			document.body.className = 'd2l-typography';
 +		</script>
- 
+
 -$_documentContainer.innerHTML = `<style>
 -			body {
 -				font-size: 20px;
@@ -883,7 +324,7 @@ index 52814a1..27ed3d0 100644
 +							font-size: 20px;
 +						}
 +					</style>`;
- 
+
 -document.body.appendChild($_documentContainer.content);
 -</script>
 +			document.body.appendChild($_documentContainer.content);
@@ -921,7 +362,7 @@ index 52814a1..27ed3d0 100644
 +							<br>
 +						</template>
 +					</dom-bind>`;
- 
+
 -$_documentContainer.innerHTML = `<dom-bind>
 -			<template is="dom-bind">
 -				<label>Locale: <input value="{{locale::input}}"></label>
@@ -947,7 +388,7 @@ index 52814a1..27ed3d0 100644
 -			</template>
 -		</dom-bind>`;
 +			document.body.appendChild($_documentContainer.content);
- 
+
 -document.body.appendChild($_documentContainer.content);
 -</script>
 +		</script>
@@ -1004,11 +445,11 @@ index 6c021da..7a87f73 100644
 --- a/test/a11y.html
 +++ b/test/a11y.html
 @@ -8,10 +8,12 @@
- 
+
  		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../wct-browser-legacy/browser.js"></script>
 -		<script src="../../wct-browser-legacy/data/a11ySuite.js"></script>
- 
+
  		<script type="module" src="../../@polymer/iron-test-helpers/mock-interactions.js"></script>
  		<script type="module" src="../d2l-datetime-picker.js"></script>
 +
@@ -1019,7 +460,7 @@ index 6c021da..7a87f73 100644
  		<test-fixture id="a11y">
 @@ -23,43 +25,43 @@
  		</test-fixture>
- 
+
  		<script type="module">
 -import '@polymer/iron-test-helpers/mock-interactions.js';
 -import '../d2l-datetime-picker.js';
@@ -1104,7 +545,7 @@ index de3d159..8286121 100644
 --- a/test/d2l-datetime-picker_test.html
 +++ b/test/d2l-datetime-picker_test.html
 @@ -12,6 +12,9 @@
- 
+
  		<script type="module" src="../../@polymer/iron-test-helpers/mock-interactions.js"></script>
  		<script type="module" src="../d2l-datetime-picker.js"></script>
 +
@@ -1115,7 +556,7 @@ index de3d159..8286121 100644
  		<test-fixture id="basic">
 @@ -21,243 +24,243 @@
  		</test-fixture>
- 
+
  		<script type="module">
 -import '@polymer/iron-test-helpers/mock-interactions.js';
 -import '../d2l-datetime-picker.js';
@@ -1595,6 +1036,637 @@ index de3d159..8286121 100644
 +		</script>
  	</body>
  </html>
--- 
+--
+2.15.1.windows.2
+
+From 0c2a27f3d3f787697e5d45c17609fee60378764f Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Wed, 9 Jan 2019 13:01:18 -0800
+Subject: [PATCH 2/3] patch after polymer 3 conversion
+
+---
+ .travis.yml                        |   2 +-
+ d2l-datetime-picker.js             |  10 +-
+ demo/galen.html                    |  12 +-
+ test/acceptance/galen.test.js      |  40 +++---
+ test/d2l-datetime-picker_test.html | 253 +++++++++++++++++++------------------
+ 5 files changed, 158 insertions(+), 159 deletions(-)
+
+diff --git a/.travis.yml b/.travis.yml
+index 6754da3..13a4026 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -8,7 +8,7 @@ script:
+ - |
+   if [ $TRAVIS_PULL_REQUEST != false ] && [ $TRAVIS_SECURE_ENV_VARS == true ]; then
+     echo "Pull request with secure environment variables, running Sauce tests...";
+-    npm run test:polymer:sauce && npm run test:galen:sauce || travis_terminate 1;
++    npm run test:polymer:sauce || travis_terminate 1;
+   else
+     echo "Not a pull request and/or no secure environment variables, running headless tests...";
+     npm run test:polymer:local || travis_terminate 1;
+diff --git a/d2l-datetime-picker.js b/d2l-datetime-picker.js
+index 78704c9..cf94b47 100644
+--- a/d2l-datetime-picker.js
++++ b/d2l-datetime-picker.js
+@@ -53,7 +53,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
+ 				@apply --d2l-datetime-picker-clear-button-container;
+ 			}
+
+-			:host-context([dir="rtl"]) .clear-button-container {
++			:host(:dir(rtl)) .clear-button-container {
+ 				margin-right: 0;
+ 				margin-left: 34px;
+ 			}
+@@ -81,13 +81,13 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
+ 				padding-bottom: 20px;
+ 			}
+
+-			:host-context([dir="rtl"]):host([has-date]) d2l-date-picker {
++			:host(:dir(rtl)):host([has-date]) d2l-date-picker {
+ 				padding-right: 0;
+ 				padding-left: 1rem;
+ 			}
+
+ 			/* shadyDOM workaround */
+-			:host-context([dir="rtl"])[has-date] d2l-date-picker {
++			:host(:dir(rtl))[has-date] d2l-date-picker {
+ 				padding-right: 0;
+ 				padding-left: 1rem;
+ 			}
+@@ -111,7 +111,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
+ 				flex: 1 1 auto;
+ 			}
+
+-			:host-context([dir="rtl"]) .d2l-time-picker-container {
++			:host(:dir(rtl)) .d2l-time-picker-container {
+ 				padding-left: 0.75rem;
+ 				padding-right: 0;
+ 			}
+@@ -151,7 +151,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
+ 					@apply --d2l-datetime-picker-label-mobile;
+ 				}
+
+-				:host-context([dir="rtl"]) label {
++				:host(:dir(rtl)) label {
+ 					padding-right: 0;
+ 					padding-left: var(--d2l-datetime-picker-label-padding);
+ 					@apply --d2l-datetime-picker-label-mobile-rtl;
+diff --git a/demo/galen.html b/demo/galen.html
+index b4ba27c..b3c582f 100644
+--- a/demo/galen.html
++++ b/demo/galen.html
+@@ -11,6 +11,9 @@
+ 		<script type="module" src="../../d2l-typography/d2l-typography.js"></script>
+ 		<script type="module" src="../d2l-datetime-picker.js"></script>
+
++		<script type="text/javascript" src="https://s.brightspace.com/lib/moment.js/2.15.2/moment.min.js"></script>
++		<script type="text/javascript" src="https://s.brightspace.com/lib/moment-timezone/0.5.10/moment-timezone-with-data.min.js"></script>
++
+ 		<script type="module">
+ 			const $_documentContainer = document.createElement('template');
+
+@@ -33,7 +36,7 @@
+ 			document.body.appendChild($_documentContainer.content);
+ 		</script>
+ 	</head>
+-	<body unresolved>
++	<body class="d2l-typography">
+ 		<script type="module">
+ 			const $_documentContainer = document.createElement('template');
+
+@@ -46,19 +49,14 @@
+ 					</dom-bind>`;
+
+ 			document.body.appendChild($_documentContainer.content);
+-		</script>
+
+-		<script type="module">
+-			import 'd2l-typography/d2l-typography.js';
+-			import '../d2l-datetime-picker.js';
+ 			var match = window.location.search.match(/width=([^&]*)/);
+ 			if (match) {
+ 				document.body.style.width = match[1];
+ 			}
+ 			if (window.location.href.indexOf('dir=rtl') > -1) {
+-				document.body.setAttribute('dir', 'rtl');
++				document.documentElement.setAttribute('dir', 'rtl');
+ 			}
+-			document.body.className = 'd2l-typography';
+ 		</script>
+ 	</body>
+ </html>
+diff --git a/test/acceptance/galen.test.js b/test/acceptance/galen.test.js
+index a78ecac..5b507ef 100644
+--- a/test/acceptance/galen.test.js
++++ b/test/acceptance/galen.test.js
+@@ -44,17 +44,16 @@ var browsers = {
+ 	})*/
+ };
+
+-var mainlineEndpoint = 'http://localhost:8081/components/d2l-datetime-picker/demo/galen.html';
+-var oneDotXEndpoint = 'http://localhost:8000/components/d2l-datetime-picker/demo/galen.html';
++var testEndpointOriginal = 'http://localhost:8081/components/d2l-datetime-picker/demo/galen.html';
+
+-var rtlScript = 'document.body.setAttribute("dir", "rtl");';
+-var getInput = 'document.querySelector("d2l-datetime-picker").$$("d2l-date-picker").$$(".d2l-input")';
++var rtlScript = 'document.documentElement.setAttribute("dir", "rtl");';
++var getInput = 'document.querySelector("d2l-datetime-picker").shadowRoot.querySelector("d2l-date-picker").shadowRoot.querySelector(".d2l-input")';
+ var inputClickScript = getInput + '.dispatchEvent(new MouseEvent("click"))';
+ var typeDateScript = getInput + '.value= "01/30/1990"';
+ var hitEnterScript = getInput + '.dispatchEvent(new KeyboardEvent("keydown", {bubbles: true, cancelable: true, key:"Enter", char:"Enter", keyCode: 13}))';
+
+ polymerTests(browsers, function(test) {
+-	function testHelper(rtl, shadow, open, mobile, mainline) {
++	function testHelper(rtl, shadow, open, mobile) {
+ 		var name = 'd2l-datetime-picker';
+ 		var queryParams = [];
+ 		name = rtl ? name + '-rtl' : name;
+@@ -66,7 +65,8 @@ polymerTests(browsers, function(test) {
+ 		shadow && queryParams.push('dom=shadow');
+ 		mobile && queryParams.push('width=280px');
+
+-		var testEndpoint = mainline ? mainlineEndpoint : oneDotXEndpoint;
++		var testEndpoint = testEndpointOriginal;
++
+ 		if (queryParams.length) {
+ 			testEndpoint += '?' + queryParams.join('&');
+ 		}
+@@ -102,20 +102,20 @@ polymerTests(browsers, function(test) {
+ 		}, cb);
+ 	}
+
+-	function runTests(mainline) {
+-		testHelper(false, false, false, false, mainline);
+-		testHelper(false, false, true, false, mainline);
+-		testHelper(true, false, false, false, mainline);
+-		testHelper(true, false, true, false, mainline);
+-		testHelper(false, true, false, false, mainline);
+-		testHelper(false, true, true, false, mainline);
+-		testHelper(true, true, false, false, mainline);
+-		testHelper(true, true, true, false, mainline);
+-		testHelper(false, false, false, true, mainline);
+-		testHelper(false, false, true, true, mainline);
+-		testHelper(true, false, false, true, mainline);
+-		testHelper(true, false, true, true, mainline);
++	function runTests() {
++		testHelper(false, false, false, false);
++		testHelper(false, false, true, false);
++		testHelper(true, false, false, false);
++		testHelper(true, false, true, false);
++		testHelper(false, true, false, false);
++		testHelper(false, true, true, false);
++		testHelper(true, true, false, false);
++		testHelper(true, true, true, false);
++		testHelper(false, false, false, true);
++		testHelper(false, false, true, true);
++		testHelper(true, false, false, true);
++		testHelper(true, false, true, true);
+ 	}
+
+-	[false, true].forEach(runTests);
++	runTests();
+ });
+diff --git a/test/d2l-datetime-picker_test.html b/test/d2l-datetime-picker_test.html
+index 8286121..81524c4 100644
+--- a/test/d2l-datetime-picker_test.html
++++ b/test/d2l-datetime-picker_test.html
+@@ -28,236 +28,237 @@
+ 			import '../d2l-datetime-picker.js';
+ 			import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ 			suite('d2l-datetime-picker', function() {
++				var element;
+ 				setup(function() {
+-					this.element = fixture('basic');
++					element = fixture('basic');
+ 				});
+
+ 				test('instantiating the element works', function() {
+-					expect(this.element.is).to.equal('d2l-datetime-picker');
++					expect(element.is).to.equal('d2l-datetime-picker');
+ 				});
+
+ 				test('should have d2l-time-picker when date is set', function() {
+-					expect(this.element.$$('d2l-time-picker')).to.not.be.ok;
+-					this.element.date = '1990-01-30';
++					expect(element.$$('d2l-time-picker')).to.not.be.ok;
++					element.date = '1990-01-30';
+ 					flush();
+-					expect(this.element.$$('d2l-time-picker')).to.be.ok;
++					expect(element.$$('d2l-time-picker')).to.be.ok;
+ 				});
+
+ 				test('should have d2l-time-picker when alwaysShowTime is set', function() {
+-					expect(this.element.$$('d2l-time-picker')).to.not.be.ok;
+-					this.element.alwaysShowTime = true;
++					expect(element.$$('d2l-time-picker')).to.not.be.ok;
++					element.alwaysShowTime = true;
+ 					flush();
+-					expect(this.element.$$('d2l-time-picker')).to.be.ok;
++					expect(element.$$('d2l-time-picker')).to.be.ok;
+ 				});
+
+ 				test('should have d2l-date-picker', function() {
+-					expect(this.element.$$('d2l-date-picker')).to.be.ok;
++					expect(element.$$('d2l-date-picker')).to.be.ok;
+ 				});
+
+ 				test('should pass locale to d2l-time-picker and d2l-date-picker', function() {
+-					this.element.alwaysShowTime = true;
++					element.alwaysShowTime = true;
+ 					flush();
+-					this.element.locale = 'fr-CA';
+-					expect(this.element.$$('d2l-time-picker').locale).to.equal('fr-CA');
+-					expect(this.element.$$('d2l-date-picker').locale).to.equal('fr-CA');
+-					this.element.locale = 'en-US';
+-					expect(this.element.$$('d2l-time-picker').locale).to.equal('en-US');
+-					expect(this.element.$$('d2l-date-picker').locale).to.equal('en-US');
++					element.locale = 'fr-CA';
++					expect(element.$$('d2l-time-picker').locale).to.equal('fr-CA');
++					expect(element.$$('d2l-date-picker').locale).to.equal('fr-CA');
++					element.locale = 'en-US';
++					expect(element.$$('d2l-time-picker').locale).to.equal('en-US');
++					expect(element.$$('d2l-date-picker').locale).to.equal('en-US');
+ 				});
+
+ 				test('should pass firstDayOfWeek to d2l-date-picker', function() {
+-					this.element.firstDayOfWeek = 2;
+-					expect(this.element.$$('d2l-date-picker').firstDayOfWeek).to.equal(2);
+-					this.element.firstDayOfWeek = 5;
+-					expect(this.element.$$('d2l-date-picker').firstDayOfWeek).to.equal(5);
++					element.firstDayOfWeek = 2;
++					expect(element.$$('d2l-date-picker').firstDayOfWeek).to.equal(2);
++					element.firstDayOfWeek = 5;
++					expect(element.$$('d2l-date-picker').firstDayOfWeek).to.equal(5);
+ 				});
+
+ 				suite('hours/minutes', function() {
+ 					test('should update time-picker hours/minutes', function() {
+-						this.element.date = '1990-01-30';
++						element.date = '1990-01-30';
+ 						flush();
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
++						element.hours = 1;
++						element.minutes = 30;
+
+-						expect(this.element.$$('d2l-time-picker').hours).to.equal(1);
+-						expect(this.element.$$('d2l-time-picker').minutes).to.equal(30);
++						expect(element.$$('d2l-time-picker').hours).to.equal(1);
++						expect(element.$$('d2l-time-picker').minutes).to.equal(30);
+ 					});
+ 				});
+
+ 				suite('datetime', function() {
+ 					test('should not be updated when date is undefined', function() {
+-						this.element.date = undefined;
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
+-						expect(this.element.datetime).to.not.be.ok;
++						element.date = undefined;
++						element.hours = 1;
++						element.minutes = 30;
++						expect(element.datetime).to.not.be.ok;
+ 					});
+
+ 					test('empty when date is empty', function() {
+-						this.element.date = moment();
+-						this.element.date = '';
+-						expect(this.element.datetime).to.not.be.ok;
++						element.date = moment();
++						element.date = '';
++						expect(element.datetime).to.not.be.ok;
+ 					});
+
+ 					test('should be updated when date is defined', function() {
+-						this.element.date = '1990-01-30';
++						element.date = '1990-01-30';
+ 						flush();
+-						expect(this.element.datetime).to.be.ok;
+-						expect(this.element.datetime.year()).to.equal(1990);
+-						expect(this.element.datetime.month()).to.equal(0);
+-						expect(this.element.datetime.date()).to.equal(30);
++						expect(element.datetime).to.be.ok;
++						expect(element.datetime.year()).to.equal(1990);
++						expect(element.datetime.month()).to.equal(0);
++						expect(element.datetime.date()).to.equal(30);
+ 					});
+
+ 					test('should have correct time', function() {
+-						this.element.date = '1990-01-30';
++						element.date = '1990-01-30';
+ 						flush();
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
+-						expect(this.element.datetime).to.be.ok;
+-						expect(this.element.datetime.year()).to.equal(1990);
+-						expect(this.element.datetime.month()).to.equal(0);
+-						expect(this.element.datetime.date()).to.equal(30);
+-						expect(this.element.datetime.hours()).to.equal(1);
+-						expect(this.element.datetime.minutes()).to.equal(30);
++						element.hours = 1;
++						element.minutes = 30;
++						expect(element.datetime).to.be.ok;
++						expect(element.datetime.year()).to.equal(1990);
++						expect(element.datetime.month()).to.equal(0);
++						expect(element.datetime.date()).to.equal(30);
++						expect(element.datetime.hours()).to.equal(1);
++						expect(element.datetime.minutes()).to.equal(30);
+ 					});
+
+ 					test('date,hours,minutes should be updated when set', function() {
+-						this.element.datetime = moment.tz('1899-12-31T00:00:00', this.element.__timezone);
+-						expect(this.element.date).to.equal('1899-12-31');
+-						expect(this.element.hours).to.equal(0);
+-						expect(this.element.minutes).to.equal(0);
++						element.datetime = moment.tz('1899-12-31T00:00:00', element.__timezone);
++						expect(element.date).to.equal('1899-12-31');
++						expect(element.hours).to.equal(0);
++						expect(element.minutes).to.equal(0);
+ 					});
+
+ 					test('clears date,hours,minutes when set to empty', function() {
+-						this.element.datetime = '';
+-						expect(this.element.date).to.be.empty;
++						element.datetime = '';
++						expect(element.date).to.be.empty;
+ 					});
+
+ 					test('noop when date is invalid', function() {
+-						this.element.datetime = moment();
+-						var date = this.element.date;
+-						var hours = this.element.hours;
+-						var minutes = this.element.minutes;
+-						this.element.datetime = 'foozleberries';
+-						expect(this.element.date).to.equal(date);
+-						expect(this.element.hours).to.equal(hours);
+-						expect(this.element.minutes).to.equal(minutes);
++						element.datetime = moment();
++						var date = element.date;
++						var hours = element.hours;
++						var minutes = element.minutes;
++						element.datetime = 'foozleberries';
++						expect(element.date).to.equal(date);
++						expect(element.hours).to.equal(hours);
++						expect(element.minutes).to.equal(minutes);
+ 					});
+ 				});
+
+ 				suite('date-label', function() {
+ 					test('defaults to "Date Picker" under the "en" locale', function() {
+-						this.element.locale = 'en';
+-						expect(this.element._dateLabel).to.equal('Date Picker');
++						element.locale = 'en';
++						expect(element._dateLabel).to.equal('Date Picker');
+ 					});
+ 				});
+
+ 				suite('time-label', function() {
+ 					test('defaults to "Time Picker" under the "en" locale', function() {
+-						this.element.locale = 'en';
+-						expect(this.element._timeLabel).to.equal('Time Picker');
++						element.locale = 'en';
++						expect(element._timeLabel).to.equal('Time Picker');
+ 					});
+ 				});
+
+ 				suite('d2l-button-icon', function() {
+ 					test('clears datetime', function() {
+-						this.element.datetime = moment();
++						element.datetime = moment();
+ 						flush();
+-						this.element.$$('d2l-button-icon').click();
+-						expect(this.element.datetime).to.be.null;
++						element.$$('d2l-button-icon').click();
++						expect(element.datetime).to.be.null;
+ 					});
+ 				});
+
+ 				suite('timezone', function() {
+ 					test('utcdatetime is converted to UTC from the given timezone (UTC)', function() {
+-						this.element.__timezone = 'UTC';
+-						this.element.date = '1990-01-30';
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
+-
+-						expect(this.element.datetime.utc().hours()).to.equal(1);
+-						expect(this.element.datetime.utc().minutes()).to.equal(30);
+-						expect(this.element.datetime.utc().date()).to.equal(30);
++						element.__timezone = 'UTC';
++						element.date = '1990-01-30';
++						element.hours = 1;
++						element.minutes = 30;
++
++						expect(element.datetime.utc().hours()).to.equal(1);
++						expect(element.datetime.utc().minutes()).to.equal(30);
++						expect(element.datetime.utc().date()).to.equal(30);
+ 					});
+
+ 					test('utcdatetime is converted to UTC from the given timezone (America/Toronto)', function() {
+-						this.element.__timezone = 'America/Toronto';
+-						this.element.date = '1990-01-30';
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
+-
+-						expect(this.element.datetime.utc().hours()).to.equal(6);
+-						expect(this.element.datetime.utc().minutes()).to.equal(30);
+-						expect(this.element.datetime.utc().date()).to.equal(30);
++						element.__timezone = 'America/Toronto';
++						element.date = '1990-01-30';
++						element.hours = 1;
++						element.minutes = 30;
++
++						expect(element.datetime.utc().hours()).to.equal(6);
++						expect(element.datetime.utc().minutes()).to.equal(30);
++						expect(element.datetime.utc().date()).to.equal(30);
+ 					});
+
+ 					test('utcdatetime is converted to UTC from the given timezone (America/Los_Angeles)', function() {
+-						this.element.__timezone = 'America/Los_Angeles';
+-						this.element.date = '1990-01-30';
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
+-
+-						expect(this.element.datetime.utc().hours()).to.equal(9);
+-						expect(this.element.datetime.utc().minutes()).to.equal(30);
+-						expect(this.element.datetime.utc().date()).to.equal(30);
++						element.__timezone = 'America/Los_Angeles';
++						element.date = '1990-01-30';
++						element.hours = 1;
++						element.minutes = 30;
++
++						expect(element.datetime.utc().hours()).to.equal(9);
++						expect(element.datetime.utc().minutes()).to.equal(30);
++						expect(element.datetime.utc().date()).to.equal(30);
+ 					});
+
+ 					test('changing timezone will not update date/hours/minutes', function() {
+-						this.element.__timezone = 'America/Toronto';
+-						this.element.date = '1990-01-30';
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
++						element.__timezone = 'America/Toronto';
++						element.date = '1990-01-30';
++						element.hours = 1;
++						element.minutes = 30;
+
+-						this.element.__timezone = 'UTC';
++						element.__timezone = 'UTC';
+
+-						expect(this.element.date).to.equal('1990-01-30');
+-						expect(this.element.hours).to.equal(1);
+-						expect(this.element.minutes).to.equal(30);
++						expect(element.date).to.equal('1990-01-30');
++						expect(element.hours).to.equal(1);
++						expect(element.minutes).to.equal(30);
+ 					});
+
+ 					test('changing timezone will not update date/hours/minutes', function() {
+-						this.element.__timezone = 'UTC';
+-						this.element.date = '1990-01-30';
+-						this.element.hours = 23;
+-						this.element.minutes = 30;
++						element.__timezone = 'UTC';
++						element.date = '1990-01-30';
++						element.hours = 23;
++						element.minutes = 30;
+
+-						this.element.__timezone = 'America/Toronto';
++						element.__timezone = 'America/Toronto';
+
+-						expect(this.element.date).to.equal('1990-01-30');
+-						expect(this.element.hours).to.equal(23);
+-						expect(this.element.minutes).to.equal(30);
++						expect(element.date).to.equal('1990-01-30');
++						expect(element.hours).to.equal(23);
++						expect(element.minutes).to.equal(30);
+ 					});
+
+ 					test('changing timezone will update datetime', function() {
+-						this.element.__timezone = 'America/Toronto';
+-						this.element.date = '1990-01-30';
+-						this.element.hours = 1;
+-						this.element.minutes = 30;
++						element.__timezone = 'America/Toronto';
++						element.date = '1990-01-30';
++						element.hours = 1;
++						element.minutes = 30;
+
+-						expect(this.element.datetime.utc().hours()).to.equal(6);
+-						expect(this.element.datetime.utc().minutes()).to.equal(30);
+-						expect(this.element.datetime.utc().date()).to.equal(30);
++						expect(element.datetime.utc().hours()).to.equal(6);
++						expect(element.datetime.utc().minutes()).to.equal(30);
++						expect(element.datetime.utc().date()).to.equal(30);
+
+-						this.element.__timezone = 'UTC';
++						element.__timezone = 'UTC';
+
+-						expect(this.element.datetime.utc().hours()).to.equal(1);
+-						expect(this.element.datetime.utc().minutes()).to.equal(30);
+-						expect(this.element.datetime.utc().date()).to.equal(30);
++						expect(element.datetime.utc().hours()).to.equal(1);
++						expect(element.datetime.utc().minutes()).to.equal(30);
++						expect(element.datetime.utc().date()).to.equal(30);
+ 					});
+ 				});
+
+ 				suite('min/max', function() {
+ 					test('should pass min to d2l-date-picker', function() {
+-						this.element.min = '2000-10-11';
+-						expect(this.element.$$('d2l-date-picker').min).to.equal('2000-10-11');
+-						this.element.min = '2020-02-20';
+-						expect(this.element.$$('d2l-date-picker').min).to.equal('2020-02-20');
++						element.min = '2000-10-11';
++						expect(element.$$('d2l-date-picker').min).to.equal('2000-10-11');
++						element.min = '2020-02-20';
++						expect(element.$$('d2l-date-picker').min).to.equal('2020-02-20');
+ 					});
+
+ 					test('should pass max to d2l-date-picker', function() {
+-						this.element.max = '2000-10-11';
+-						expect(this.element.$$('d2l-date-picker').max).to.equal('2000-10-11');
+-						this.element.max = '2020-02-20';
+-						expect(this.element.$$('d2l-date-picker').max).to.equal('2020-02-20');
++						element.max = '2000-10-11';
++						expect(element.$$('d2l-date-picker').max).to.equal('2000-10-11');
++						element.max = '2020-02-20';
++						expect(element.$$('d2l-date-picker').max).to.equal('2020-02-20');
+ 					});
+ 				});
+ 			});
+--
+2.15.1.windows.2
+
+From 62b26a4e9ebc037b021e68527bc9eb0d888bfec7 Mon Sep 17 00:00:00 2001
+From: Margaret Dulat <Margaret.Dulat@D2L.com>
+Date: Fri, 1 Feb 2019 12:31:41 -0800
+Subject: [PATCH 3/3] remove unused d2l-input-styles
+
+---
+ d2l-datetime-picker.js | 33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
+
+diff --git a/d2l-datetime-picker.js b/d2l-datetime-picker.js
+index 63519f9..4e02b21 100644
+--- a/d2l-datetime-picker.js
++++ b/d2l-datetime-picker.js
+@@ -19,11 +19,9 @@ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+
+ const $_documentContainer = document.createElement('template');
+
+-$_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
++$_documentContainer.innerHTML = /*html*/`<dom-module id="d2l-datetime-picker">
+ 	<template strip-whitespace="">
+-		<!-- HACK d2l-input-styles is imported from time-picker.
+-		This is here until the input styles get split out into their own repo -->
+-		<style include="d2l-offscreen-shared-styles d2l-input-styles">
++		<style include="d2l-offscreen-shared-styles">
+ 			:host {
+ 				display: inline-flex;
+ 				align-items: flex-start;
+@@ -175,17 +173,38 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-datetime-picker">
+ 		</style>
+ 		<div class="d2l-date-picker-container">
+ 			<label aria-hidden="true" role="presentation">[[_dateLabel]]</label>
+-			<d2l-date-picker value="{{date}}" placeholder="[[placeholder]]" label="[[_dateLabel]]" locale="[[locale]]" min="[[min]]" max="[[max]]" first-day-of-week="[[firstDayOfWeek]]"></d2l-date-picker>
++			<d2l-date-picker
++				value="{{date}}"
++				placeholder="[[placeholder]]"
++				label="[[_dateLabel]]"
++				locale="[[locale]]"
++				min="[[min]]"
++				max="[[max]]"
++				first-day-of-week="[[firstDayOfWeek]]">
++			</d2l-date-picker>
+ 		</div>
+
+ 		<template is="dom-if" if="{{_showTime(date, alwaysShowTime)}}">
+ 			<div class="time-clear-container">
+ 				<div class="d2l-time-picker-container">
+ 					<label aria-hidden="true" role="presentation">{{_timeLabel}}</label>
+-					<d2l-time-picker label="[[_timeLabel]]" locale="[[locale]]" overrides="[[overrides]]" timezone="[[timezoneName]]" hours="{{hours}}" minutes="{{minutes}}" boundary="[[boundary]]"></d2l-time-picker>
++					<d2l-time-picker
++						label="[[_timeLabel]]"
++						locale="[[locale]]"
++						overrides="[[overrides]]"
++						timezone="[[timezoneName]]"
++						hours="{{hours}}"
++						minutes="{{minutes}}"
++						boundary="[[boundary]]">
++					</d2l-time-picker>
+ 				</div>
+ 				<div class="clear-button-container">
+-					<d2l-button-icon class="clear-button" icon="d2l-tier1:close-small" on-click="clear" text="[[localize('clear')]]"></d2l-button-icon>
++					<d2l-button-icon
++						class="clear-button"
++						icon="d2l-tier1:close-small"
++						on-click="clear"
++						text="[[localize('clear')]]">
++					</d2l-button-icon>
+ 				</div>
+ 			</div>
+ 		</template>
+--
 2.15.1.windows.2
 
