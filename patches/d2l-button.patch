@@ -1,3 +1,20 @@
+From 60227de1475590690dc466d2efa699f1031d303e Mon Sep 17 00:00:00 2001
+From: Dave Batiste <dave.batiste@d2l.com>
+Date: Tue, 5 Feb 2019 18:59:29 -0500
+Subject: [PATCH] Polymer 3 Conversion - applying current patch changes.
+
+---
+ d2l-button-icon.js                  | 19 +++++++++++++++++--
+ d2l-button-subtle.js                | 18 ++++++++++++++++--
+ d2l-button.js                       | 18 ++++++++++++++++--
+ d2l-floating-buttons.js             |  2 --
+ demo/floating-buttons-helper.js     |  0
+ demo/floating-buttons-standard.html | 19 +++++++------------
+ demo/floating-buttons.html          | 19 +++++++------------
+ test/acceptance/button.test.js      |  3 +--
+ 8 files changed, 64 insertions(+), 34 deletions(-)
+ delete mode 100644 demo/floating-buttons-helper.js
+
 diff --git a/d2l-button-icon.js b/d2l-button-icon.js
 index f2b6676..cccdd91 100644
 --- a/d2l-button-icon.js
@@ -66,10 +83,10 @@ index e61de15..3edff6b 100644
  
  document.head.appendChild($_documentContainer.content);
 diff --git a/d2l-button.js b/d2l-button.js
-index afd08c4..91069df 100644
+index ba48265..61462cd 100644
 --- a/d2l-button.js
 +++ b/d2l-button.js
-@@ -95,9 +95,23 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button">
+@@ -96,9 +96,23 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-button">
  				@apply --d2l-button-focus;
  			}
  		</style>
@@ -254,3 +271,77 @@ index 5b0db0c..9dbc6dc 100644
 -	runTests('1.x', xEndpoint);
 +
  });
+-- 
+2.4.3
+
+From 5b1c904f69cb8ea13556e99df1ada328d2764ec5 Mon Sep 17 00:00:00 2001
+From: Dave Batiste <dave.batiste@d2l.com>
+Date: Tue, 5 Feb 2019 19:02:29 -0500
+Subject: [PATCH] Polymer 3 Conversion - applying button type changes for
+ patch.
+
+---
+ d2l-button-behavior.js |  3 ++-
+ package.json           |  2 +-
+ test/button.html       | 18 ++++++++++++++++++
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/d2l-button-behavior.js b/d2l-button-behavior.js
+index abd37d8..549fbb8 100644
+--- a/d2l-button-behavior.js
++++ b/d2l-button-behavior.js
+@@ -98,7 +98,8 @@ D2L.PolymerBehaviors.Button.Behavior = {
+ 		 */
+ 		type: {
+ 			type: String,
+-			reflectToAttribute: true
++			reflectToAttribute: true,
++			value: 'button'
+ 		}
+ 
+ 	},
+diff --git a/package.json b/package.json
+index 8ad8ba2..b65f2d2 100644
+--- a/package.json
++++ b/package.json
+@@ -35,7 +35,7 @@
+     "concurrently": "^3.5.0",
+     "d2l-galen-utils": "git+https://github.com/Brightspace/d2l-galen-utils.git#v0.3.0",
+     "eslint": "^4.15.0",
+-    "eslint-config-brightspace": "^0.4.0",
++    "eslint-config-brightspace": "^0.4.1",
+     "eslint-plugin-html": "^4.0.1",
+     "galenframework": "^2.3.4",
+     "node-sass": "^4.5.2",
+diff --git a/test/button.html b/test/button.html
+index 2ba727f..18a7f20 100644
+--- a/test/button.html
++++ b/test/button.html
+@@ -48,6 +48,24 @@ describe('<d2l-button>', function() {
+ 			button.primary = true;
+ 			expect(button.hasAttribute('primary')).to.be.true;
+ 		});
++
++		it('should have default type of button', function() {
++			expect(button.hasAttribute('type')).to.be.true;
++			expect(button.getAttribute('type')).to.equal('button');
++			expect(button.type).to.equal('button');
++		});
++
++		it('should reflect type attribute to property', function() {
++			button.setAttribute('type', 'submit');
++			expect(button.type).to.equal('submit');
++		});
++
++		it('should add type attribute when type has value', function() {
++			button.type = 'submit';
++			expect(button.hasAttribute('type')).to.be.true;
++			expect(button.getAttribute('type')).to.equal('submit');
++		});
++
+ 	});
+ 
+ 	describe('primary', function() {
+-- 
+2.4.3
+
