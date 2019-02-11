@@ -1,0 +1,971 @@
+diff --git a/.travis.yml b/.travis.yml
+index 9cffc71..88bb78d 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -6,7 +6,7 @@ sudo: required
+ addons:
+   chrome: stable
+ before_script:
+-- npm run test:lint:html
++- npm run test:lint:js
+ - npm run test:lint:wc
+ script:
+ - set -e
+diff --git a/behaviors/d2l-upcoming-assessments-behavior.js b/behaviors/d2l-upcoming-assessments-behavior.js
+index 4939507..023fc99 100644
+--- a/behaviors/d2l-upcoming-assessments-behavior.js
++++ b/behaviors/d2l-upcoming-assessments-behavior.js
+@@ -1,4 +1,5 @@
+-import 'siren-parser/siren-parser.js';
++import SirenParse from 'siren-parser';
++import { Actions, Classes, Rels } from 'd2l-hypermedia-constants';
+ import './date-behavior.js';
+ import './types-behavior.js';
+ import './status-badge-behavior.js';
+@@ -37,7 +38,7 @@ var upcomingAssessmentsBehaviorImpl = {
+ 	},
+
+ 	_getOrganizationRequest: function(userActivityUsage, getToken, userUrl) {
+-		var organizationLink = (userActivityUsage.getLinkByRel(this.HypermediaRels.organization) || {}).href;
++		var organizationLink = (userActivityUsage.getLinkByRel(Rels.organization) || {}).href;
+ 		return this._fetchEntityWithToken(organizationLink, getToken, userUrl);
+ 	},
+
+@@ -76,7 +77,7 @@ var upcomingAssessmentsBehaviorImpl = {
+ 	},
+
+ 	_getRichTextValuePreferPlainText: function(richtextEntity) {
+-		if (!richtextEntity || !richtextEntity.hasClass(this.HypermediaClasses.text.richtext) ||
++		if (!richtextEntity || !richtextEntity.hasClass(Classes.text.richtext) ||
+ 			(!richtextEntity.properties.text && !richtextEntity.properties.html)) {
+ 			return '';
+ 		}
+@@ -176,8 +177,8 @@ var upcomingAssessmentsBehaviorImpl = {
+
+ 	_getUserActivityUsages: function(userEntity, getToken, userUrl) {
+ 		var myActivitiesLink = (
+-			userEntity.getLinkByRel(this.HypermediaRels.Activities.myActivitiesEmpty)
+-			|| userEntity.getLinkByRel(this.HypermediaRels.Activities.myActivities)
++			userEntity.getLinkByRel(Rels.Activities.myActivitiesEmpty)
++			|| userEntity.getLinkByRel(Rels.Activities.myActivities)
+ 			|| {}
+ 		).href;
+
+@@ -194,14 +195,14 @@ var upcomingAssessmentsBehaviorImpl = {
+ 	},
+
+ 	_getOverdueActivities: function(activitiesEntity, getToken, userUrl) {
+-		var overdueActivitiesLink = (activitiesEntity.getLinkByRel(this.HypermediaRels.Activities.overdue) || {}).href;
++		var overdueActivitiesLink = (activitiesEntity.getLinkByRel(Rels.Activities.overdue) || {}).href;
+
+ 		if (overdueActivitiesLink) {
+ 			return this._fetchEntityWithToken(overdueActivitiesLink, getToken, userUrl);
+ 		}
+
+ 		// API doesn't include the overdue link if user doesn't have any overdue activities
+-		return window.D2L.Hypermedia.Siren.Parse({});
++		return SirenParse({});
+ 	},
+
+ 	_getCustomRangeAction: function(activitiesEntity, dateObj) {
+@@ -209,7 +210,7 @@ var upcomingAssessmentsBehaviorImpl = {
+ 		var date = dateObj || new Date();
+
+ 		var parameters = self._getCustomDateRangeParameters(date);
+-		var action = (activitiesEntity.getActionByName(self.HypermediaActions.activities.selectCustomDateRange) || {});
++		var action = (activitiesEntity.getActionByName(Actions.activities.selectCustomDateRange) || {});
+
+ 		return self._createActionUrl(action, parameters);
+ 	},
+@@ -239,10 +240,10 @@ var upcomingAssessmentsBehaviorImpl = {
+
+ 		return this._fetchEntityWithToken(this.userUrl, this.getToken)
+ 			.then(function(userEntity) {
+-				self._firstName = (userEntity.getSubEntityByRel(self.HypermediaRels.firstName) || { properties: {} }).properties.name;
++				self._firstName = (userEntity.getSubEntityByRel(Rels.firstName) || { properties: {} }).properties.name;
+ 				var myActivitiesLink = (
+-					userEntity.getLinkByRel(self.HypermediaRels.Activities.myActivitiesEmpty)
+-					|| userEntity.getLinkByRel(self.HypermediaRels.Activities.myActivities)
++					userEntity.getLinkByRel(Rels.Activities.myActivitiesEmpty)
++					|| userEntity.getLinkByRel(Rels.Activities.myActivities)
+ 					|| {}
+ 				).href;
+
+@@ -270,8 +271,8 @@ var upcomingAssessmentsBehaviorImpl = {
+ 				var userActivityUsages = activitiesResponses[0];
+ 				var overdueUserActivityUsages = activitiesResponses[1];
+
+-				self._previousPeriodUrl = (userActivityUsages.getLinkByRel(self.HypermediaRels.Activities.previousPeriod) || {}).href;
+-				self._nextPeriodUrl = (userActivityUsages.getLinkByRel(self.HypermediaRels.Activities.nextPeriod) || {}).href;
++				self._previousPeriodUrl = (userActivityUsages.getLinkByRel(Rels.Activities.previousPeriod) || {}).href;
++				self._nextPeriodUrl = (userActivityUsages.getLinkByRel(Rels.Activities.nextPeriod) || {}).href;
+ 				self._periodStart = userActivityUsages.properties.start;
+ 				self._periodEnd = userActivityUsages.properties.end;
+
+@@ -330,7 +331,6 @@ window.D2L.UpcomingAssessments.UpcomingAssessmentsBehavior = [
+ 	window.D2L.UpcomingAssessments.DateBehavior,
+ 	D2L.UpcomingAssessments.TypesBehavior,
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.UpcomingAssessments.StatusBadgeBehavior,
+ 	upcomingAssessmentsBehaviorImpl
+ ];
+diff --git a/behaviors/status-badge-behavior.js b/behaviors/status-badge-behavior.js
+index 679541e..759baee 100644
+--- a/behaviors/status-badge-behavior.js
++++ b/behaviors/status-badge-behavior.js
+@@ -1,6 +1,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-fetch-siren-entity-behavior/d2l-fetch-siren-entity-behavior.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes } from 'd2l-hypermedia-constants';
+ import './date-behavior.js';
+
+ window.D2L = window.D2L || {};
+@@ -61,14 +61,14 @@ var statusBadgeBehaviorImpl = {
+
+ 	_getCompletionState: function(userActivityUsage) {
+ 		return {
+-			isCompleted: !!userActivityUsage.getSubEntityByClass(this.HypermediaClasses.activities.complete)
++			isCompleted: !!userActivityUsage.getSubEntityByClass(Classes.activities.complete)
+ 		};
+ 	},
+
+ 	_getDueDateState: function(userActivityUsage, overdueUserActivityUsages) {
+ 		var activityIsOverdue = false;
+ 		var activityIsDueToday = false;
+-		var dueDateEntity = userActivityUsage.getSubEntityByClass(this.HypermediaClasses.dates.dueDate);
++		var dueDateEntity = userActivityUsage.getSubEntityByClass(Classes.dates.dueDate);
+ 		var dueDate;
+ 		if (dueDateEntity) {
+ 			dueDate = dueDateEntity.properties.date;
+@@ -86,7 +86,7 @@ var statusBadgeBehaviorImpl = {
+ 	},
+
+ 	_getEndDateState: function(dateEntity) {
+-		var endDateEntity = dateEntity.getSubEntityByClass(this.HypermediaClasses.dates.endDate);
++		var endDateEntity = dateEntity.getSubEntityByClass(Classes.dates.endDate);
+ 		var isEnded = false;
+ 		var endsToday = false;
+ 		var endDate;
+@@ -107,7 +107,7 @@ var statusBadgeBehaviorImpl = {
+
+ 	_getExemptState: function(userActivityUsage) {
+ 		return {
+-			isExempt: userActivityUsage.hasClass(this.HypermediaClasses.activities.exempt)
++			isExempt: userActivityUsage.hasClass(Classes.activities.exempt)
+ 		};
+ 	},
+
+@@ -131,6 +131,5 @@ var statusBadgeBehaviorImpl = {
+ window.D2L.UpcomingAssessments.StatusBadgeBehavior = [
+ 	D2L.PolymerBehaviors.FetchSirenEntityBehavior,
+ 	window.D2L.UpcomingAssessments.DateBehavior,
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	statusBadgeBehaviorImpl
+ ];
+diff --git a/behaviors/types-behavior.js b/behaviors/types-behavior.js
+index 4832023..68da766 100644
+--- a/behaviors/types-behavior.js
++++ b/behaviors/types-behavior.js
+@@ -1,4 +1,4 @@
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Classes, Rels } from 'd2l-hypermedia-constants';
+ import './status-badge-behavior.js';
+
+ window.D2L = window.D2L || {};
+@@ -17,10 +17,10 @@ var typesBehaviorImpl = {
+ 						icon: 'assignments',
+ 						assessmentType: 'assignment',
+ 						canOpen: true,
+-						instructionsRel: this.HypermediaRels.Assignments.instructions,
+-						userActivityUsageClass: this.HypermediaClasses.activities.userAssignmentActivity,
+-						activityRel: this.HypermediaRels.assignment,
+-						activityClass: this.HypermediaClasses.assignments.assignment,
++						instructionsRel: Rels.Assignments.instructions,
++						userActivityUsageClass: Classes.activities.userAssignmentActivity,
++						activityRel: Rels.assignment,
++						activityClass: Classes.assignments.assignment,
+ 						noCompletion: false,
+ 						activityDetailsFeatureFlag: 'assignmentDetailsEnabled'
+ 					},
+@@ -28,10 +28,10 @@ var typesBehaviorImpl = {
+ 						icon: 'discussions',
+ 						assessmentType: 'discussion',
+ 						canOpen: true,
+-						instructionsRel: this.HypermediaRels.Discussions.description,
+-						userActivityUsageClass: this.HypermediaClasses.activities.userDiscussionActivity,
+-						activityRel: this.HypermediaRels.Discussions.topic,
+-						activityClass: this.HypermediaClasses.discussions.topic,
++						instructionsRel: Rels.Discussions.description,
++						userActivityUsageClass: Classes.activities.userDiscussionActivity,
++						activityRel: Rels.Discussions.topic,
++						activityClass: Classes.discussions.topic,
+ 						noCompletion: true,
+ 						activityDetailsFeatureFlag: 'discussionDetailsEnabled'
+ 					},
+@@ -39,10 +39,10 @@ var typesBehaviorImpl = {
+ 						icon: 'quizzing',
+ 						assessmentType: 'quiz',
+ 						canOpen: false,
+-						instructionsRel: this.HypermediaRels.Quizzes.description,
+-						userActivityUsageClass: this.HypermediaClasses.activities.userQuizActivity,
+-						activityRel: this.HypermediaRels.quiz,
+-						activityClass: this.HypermediaClasses.quizzes.quiz,
++						instructionsRel: Rels.Quizzes.description,
++						userActivityUsageClass: Classes.activities.userQuizActivity,
++						activityRel: Rels.quiz,
++						activityClass: Classes.quizzes.quiz,
+ 						noCompletion: false,
+ 						activityDetailsFeatureFlag: 'NOT_IMPLEMENTED'
+ 					},
+@@ -56,13 +56,13 @@ var typesBehaviorImpl = {
+ 						},
+ 						assessmentType: 'content',
+ 						canOpen: false,
+-						instructionsRel: this.HypermediaRels.Content.description,
+-						userActivityUsageClass: this.HypermediaClasses.activities.userContentActivity,
++						instructionsRel: Rels.Content.description,
++						userActivityUsageClass: Classes.activities.userContentActivity,
+ 						usagePredicate: function(userActivityUsage) {
+-							return userActivityUsage && userActivityUsage.hasClass(this.HypermediaClasses.content.topic);
++							return userActivityUsage && userActivityUsage.hasClass(Classes.content.topic);
+ 						}.bind(this),
+-						activityRel: this.HypermediaRels.content,
+-						activityClass: this.HypermediaClasses.content.sequencedActivity,
++						activityRel: Rels.content,
++						activityClass: Classes.content.sequencedActivity,
+ 						noCompletion: false,
+ 						activityDetailsFeatureFlag: 'NOT_IMPLEMENTED'
+ 					}
+@@ -91,7 +91,6 @@ var typesBehaviorImpl = {
+ };
+
+ window.D2L.UpcomingAssessments.TypesBehavior = [
+-	window.D2L.Hypermedia.HMConstantsBehavior,
+ 	window.D2L.UpcomingAssessments.StatusBadgeBehavior,
+ 	typesBehaviorImpl
+ ];
+diff --git a/components/d2l-all-assessments.js b/components/d2l-all-assessments.js
+index 40af053..4778b79 100644
+--- a/components/d2l-all-assessments.js
++++ b/components/d2l-all-assessments.js
+@@ -12,7 +12,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+
+ import 'd2l-colors/d2l-colors.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import '../behaviors/d2l-upcoming-assessments-behavior.js';
+ import '../behaviors/date-behavior.js';
+@@ -78,8 +77,7 @@ Polymer({
+ 	behaviors: [
+ 		window.D2L.UpcomingAssessments.UpcomingAssessmentsBehavior,
+ 		window.D2L.UpcomingAssessments.DateBehavior,
+-		window.D2L.UpcomingAssessments.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
++		window.D2L.UpcomingAssessments.LocalizeBehavior
+ 	],
+
+ 	listeners: {
+diff --git a/components/d2l-upcoming-assessments.js b/components/d2l-upcoming-assessments.js
+index ae2a301..4bfeb69 100644
+--- a/components/d2l-upcoming-assessments.js
++++ b/components/d2l-upcoming-assessments.js
+@@ -12,7 +12,6 @@
+ import '@polymer/polymer/polymer-legacy.js';
+
+ import 'd2l-colors/d2l-colors.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+ import 'd2l-link/d2l-link.js';
+ import 'd2l-typography/d2l-typography-shared-styles.js';
+ import '../behaviors/d2l-upcoming-assessments-behavior.js';
+@@ -188,8 +187,7 @@ Polymer({
+ 	behaviors: [
+ 		window.D2L.UpcomingAssessments.UpcomingAssessmentsBehavior,
+ 		window.D2L.UpcomingAssessments.DateBehavior,
+-		window.D2L.UpcomingAssessments.LocalizeBehavior,
+-		window.D2L.Hypermedia.HMConstantsBehavior
++		window.D2L.UpcomingAssessments.LocalizeBehavior
+ 	],
+
+ 	listeners: {
+diff --git a/demo/d2l-all-assessments.html b/demo/d2l-all-assessments.html
+index 1865db2..0a18c53 100644
+--- a/demo/d2l-all-assessments.html
++++ b/demo/d2l-all-assessments.html
+@@ -18,7 +18,9 @@
+ 		able to expand the underlying CSS custom properties.
+ 		See: https://github.com/Polymer/polymer-modulizer/issues/154
+ 		-->
+-	<script type="module">
++	</head>
++	<body class="d2l-typography">
++		<script type="module">
+ const $_documentContainer = document.createElement('template');
+
+ $_documentContainer.innerHTML = `<custom-style include="d2l-typography">
+@@ -50,36 +52,40 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-assessments-demo">
+ 			<template strip-whitespace="">
+ 				<d2l-all-assessments user-url="[[userUrl]]" get-token="[[getToken]]" flags="[[flags]]"></d2l-all-assessments>
+ 			</template>
+-			<script>
+-				Polymer({
+-					is: 'd2l-all-assessments-demo',
+-					properties: {
+-						userUrl: {
+-							type: String,
+-							value: ''
+-						},
+-						getToken: {
+-							type: Function,
+-							value: function() {
+-								return function() {
+-									return Promise.resolve('');
+-								};
+-							}
+-						},
+-						flags: {
+-							type: Object,
+-							value: {
+-								assignmentDetailsEnabled: true,
+-								discussionDetailsEnabled: true
+-							}
+-						}
+-					}
+-				});
+-			&lt;/script>
+ 		</dom-module>`;
+
+ document.body.appendChild($_documentContainer.content);
+-</script>ntContainer.innerHTML = `<div>
++import '@polymer/polymer/polymer-legacy.js';
++import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
++Polymer({
++	is: 'd2l-all-assessments-demo',
++	properties: {
++		userUrl: {
++			type: String,
++			value: ''
++		},
++		getToken: {
++			type: Function,
++			value: function() {
++				return function() {
++					return Promise.resolve('');
++				};
++			}
++		},
++		flags: {
++			type: Object,
++			value: {
++				assignmentDetailsEnabled: true,
++				discussionDetailsEnabled: true
++			}
++		}
++	}
++});
++</script>
++<script>
++const $_documentContainer = document.createElement('template');
++
++$_documentContainer.innerHTML = `<div>
+ 			<h2>All Assessments</h2>
+ 			<demo-snippet>
+ 				<template>
+diff --git a/demo/d2l-upcoming-assessments.html b/demo/d2l-upcoming-assessments.html
+index 4ab1229..ae05ba3 100644
+--- a/demo/d2l-upcoming-assessments.html
++++ b/demo/d2l-upcoming-assessments.html
+@@ -79,22 +79,16 @@ $_documentContainer.innerHTML = `<div class="vertical-section-container centered
+ 					</d2l-upcoming-assessments>
+ 				</template>
+ 			</demo-snippet>
+-			<script>
+-				setTimeout(function() {
+-					document.querySelectorAll('d2l-upcoming-assessments').forEach(function(assessment) {
+-						assessment._isWhitelisted = function() { return true; };
+-						assessment.getToken = function() { return Promise.resolve('foozleberries'); };
+-						assessment.isActivityUpcoming = function() { return true; };
+-					}, 100);
+-				});
+-			&lt;/script>
+ 		</div>`;
+
+ document.body.appendChild($_documentContainer.content);
+-</script> assessment.isActivityUpcoming = function() { return true; };
++setTimeout(function() {
++	document.querySelectorAll('d2l-upcoming-assessments').forEach(function(assessment) {
++		assessment._isWhitelisted = function() { return true; };
++		assessment.getToken = function() { return Promise.resolve('foozleberries'); };
++		assessment.isActivityUpcoming = function() { return true; };
+ 	}, 100);
+ });
+ </script>
+-		</div>
+ 	</body>
+ </html>
+diff --git a/gulpfile.js b/gulpfile.js
+index 2ae2623..2074571 100644
+--- a/gulpfile.js
++++ b/gulpfile.js
+@@ -19,7 +19,7 @@ const config = {
+ 		data: {
+ 			lang: lang,
+ 			properLang: lang.charAt(0).toUpperCase() + lang.slice(1).replace('-', ''),
+-			resources: JSON.stringify(localeResources[lang], null, '\t\t\t\t'),
++			resources: JSON.stringify(localeResources[lang], null, '\t\t'),
+ 			comment: 'This file is auto-generated. Do not modify.'
+ 		}
+ 	}))
+@@ -38,7 +38,7 @@ function build() {
+ 			.pipe(ejs(data, options))
+ 			.pipe(rename({
+ 				basename: filename,
+-				extname: '.html'
++				extname: '.js'
+ 			}))
+ 			.pipe(gulp.dest(options.root)))
+ 	);
+diff --git a/package.json b/package.json
+index 18a25ca..9854922 100644
+--- a/package.json
++++ b/package.json
+@@ -16,8 +16,8 @@
+   },
+   "scripts": {
+     "build": "gulp build",
+-    "test": "npm run test:lint:html && npm run test:lint:wc && npm run test:wct",
+-    "test:local": "npm run test:lint:html && npm run test:lint:wc && npm run test:wct:local",
++    "test": "npm run test:lint:js && npm run test:lint:wc && npm run test:wct",
++    "test:local": "npm run test:lint:js && npm run test:lint:wc && npm run test:wct:local",
+     "test:lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+     "test:lint:wc": "polymer lint",
+     "test:wct": "polymer test -p",
+diff --git a/templates/lang-behavior.ejs b/templates/lang-behavior.ejs
+index 3cf7ac9..9595958 100644
+--- a/templates/lang-behavior.ejs
++++ b/templates/lang-behavior.ejs
+@@ -1,17 +1,11 @@
+-<script>
+-	'use strict';
++/* eslint-disable quotes, indent */
++window.D2L = window.D2L || {};
++window.D2L.UpcomingAssessments = window.D2L.UpcomingAssessments || {};
+
+-	(function() {
+-		/* eslint-disable quotes, indent */
+-		window.D2L = window.D2L || {};
+-		window.D2L.UpcomingAssessments = window.D2L.UpcomingAssessments || {};
+-
+-		/**
+-		 * <%- data.comment %>
+-		 * @polymerBehavior window.D2L.UpcomingAssessments.Lang<%- data.properLang %>Behavior
+-		 */
+-		window.D2L.UpcomingAssessments.Lang<%- data.properLang %>Behavior = {
+-			'<%- data.lang %>': <%- data.resources %>
+-		};
+-	})();
+-</script>
++/**
++ * <%- data.comment %>
++ * @polymerBehavior window.D2L.UpcomingAssessments.Lang<%- data.properLang %>Behavior
++ */
++window.D2L.UpcomingAssessments.Lang<%- data.properLang %>Behavior = {
++	'<%- data.lang %>': <%- data.resources %>
++};
+diff --git a/test/behaviors/d2l-upcoming-assessments-behavior.html b/test/behaviors/d2l-upcoming-assessments-behavior.html
+index 06d91f1..d1e05c1 100644
+--- a/test/behaviors/d2l-upcoming-assessments-behavior.html
++++ b/test/behaviors/d2l-upcoming-assessments-behavior.html
+@@ -5,9 +5,6 @@
+ 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+ 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<script src="../../../wct-browser-legacy/browser.js"></script>
+-
+-		<script type="module" src="./d2l-upcoming-assessments-behavior-consumer.js"></script>
+-		<script type="module" src="../../../siren-parser/siren-parser.js"></script>
+ 	</head>
+ 	<body>
+ 		<test-fixture id="d2l-upcoming-assessments-behavior-fixture">
+@@ -16,6 +13,6 @@
+ 			</template>
+ 		</test-fixture>
+
+-		<script src="./d2l-upcoming-assessments-behavior.js"></script>
++		<script type="module" src="./d2l-upcoming-assessments-behavior.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/behaviors/d2l-upcoming-assessments-behavior.js b/test/behaviors/d2l-upcoming-assessments-behavior.js
+index 0dc523a..c4e628a 100644
+--- a/test/behaviors/d2l-upcoming-assessments-behavior.js
++++ b/test/behaviors/d2l-upcoming-assessments-behavior.js
+@@ -1,6 +1,7 @@
+ /* global describe, it, expect, fixture, beforeEach, afterEach, sinon */
+
+-'use strict';
++import SirenParse from 'siren-parser';
++import './d2l-upcoming-assessments-behavior-consumer.js';
+
+ describe('d2l upcoming assessments behavior', function() {
+ 	var component, sandbox, getToken, userUrl, completionDate, dueDate, endDate;
+@@ -51,7 +52,7 @@ describe('d2l upcoming assessments behavior', function() {
+ 	}
+
+ 	function parse(entity) {
+-		return window.D2L.Hypermedia.Siren.Parse(entity);
++		return SirenParse(entity);
+ 	}
+
+ 	function getUserActivityUsage(type, isComplete, isExempt, isModuleContent) {
+@@ -570,7 +571,7 @@ describe('d2l upcoming assessments behavior', function() {
+
+ 	describe('_getCustomRangeAction', function() {
+ 		it('returns a URL for the correct period', function() {
+-			const parsedActivitiesEntity = window.D2L.Hypermedia.Siren.Parse(activitiesEntity);
++			const parsedActivitiesEntity = SirenParse(activitiesEntity);
+ 			const testDate = new Date(2019, 0, 29);
+ 			const actionUrl = component._getCustomRangeAction(parsedActivitiesEntity, testDate);
+ 			const expectedStartDate = new Date(2019, 0, 27, 0, 0, 0, 0).toISOString();
+@@ -600,8 +601,8 @@ describe('d2l upcoming assessments behavior', function() {
+ 			};
+
+ 			const fetchEntityStub = sinon.stub();
+-			fetchEntityStub.onFirstCall().returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(userEntity)));
+-			fetchEntityStub.onSecondCall().returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(activitiesEntity)));
++			fetchEntityStub.onFirstCall().returns(Promise.resolve(SirenParse(userEntity)));
++			fetchEntityStub.onSecondCall().returns(Promise.resolve(SirenParse(activitiesEntity)));
+
+ 			component.isActivityUpcoming = sinon.stub().returns(true);
+ 			component._fetchEntityWithToken = fetchEntityStub;
+@@ -650,7 +651,7 @@ describe('d2l upcoming assessments behavior', function() {
+ 			}]
+ 		}].forEach(ctx => {
+ 			it(ctx.description, function() {
+-				const parsedUserEntity = window.D2L.Hypermedia.Siren.Parse(
++				const parsedUserEntity = SirenParse(
+ 					Object.assign({}, userEntity, {
+ 						links: ctx.links
+ 					})
+@@ -696,7 +697,7 @@ describe('d2l upcoming assessments behavior', function() {
+ 			const startDate = new Date(2017, 6, 16).toISOString();
+ 			const endDate = new Date(2017, 6, 29, 23, 59, 59, 999).toISOString();
+
+-			const parsedActivitiesEntity = window.D2L.Hypermedia.Siren.Parse(activitiesEntity);
++			const parsedActivitiesEntity = SirenParse(activitiesEntity);
+
+ 			return component._loadActivitiesForPeriod(parsedActivitiesEntity, new Date('2017-07-21T16:20:07.567Z'))
+ 				.then(function() {
+@@ -706,7 +707,7 @@ describe('d2l upcoming assessments behavior', function() {
+ 		});
+
+ 		it('should not update the assessments with the activities in the period', function() {
+-			const parsedActivitiesEntity = window.D2L.Hypermedia.Siren.Parse(activitiesEntity);
++			const parsedActivitiesEntity = SirenParse(activitiesEntity);
+
+ 			return component._loadActivitiesForPeriod(parsedActivitiesEntity, new Date('2017-07-21T16:20:07.567Z'))
+ 				.then(function() {
+diff --git a/test/components/d2l-all-assessments-list-item.html b/test/components/d2l-all-assessments-list-item.html
+index a53b755..8c2b076 100644
+--- a/test/components/d2l-all-assessments-list-item.html
++++ b/test/components/d2l-all-assessments-list-item.html
+@@ -17,6 +17,6 @@
+ 			</template>
+ 		</test-fixture>
+
+-		<script src="./d2l-all-assessments-list-item.js"></script>
++		<script type="module" src="./d2l-all-assessments-list-item.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-all-assessments-list-item.js b/test/components/d2l-all-assessments-list-item.js
+index 62235e0..bafe200 100644
+--- a/test/components/d2l-all-assessments-list-item.js
++++ b/test/components/d2l-all-assessments-list-item.js
+@@ -1,7 +1,5 @@
+ /* global describe, it, fixture, expect, beforeEach, sinon */
+
+-'use strict';
+-
+ describe('<d2l-all-assessments-list-item>', function() {
+ 	var element;
+
+@@ -25,7 +23,7 @@ describe('<d2l-all-assessments-list-item>', function() {
+ 		return date;
+ 	}
+
+-	function setAssessmentItem(isDueToday, isOverdue, isEnded, statusConfig, type, userActivityUsageHref) {
++	function setAssessmentItem(isDueToday, isOverdue, isEnded, statusConfig, type, userActivityUsageHref, cb) {
+ 		// If due today, 0; if overdue, negative; otherwise, positive
+ 		var dueDateModifier = isDueToday ? 0 : isOverdue ? -3 : 3;
+ 		var endDateModifier = isEnded ? -1 : 5;
+@@ -42,25 +40,29 @@ describe('<d2l-all-assessments-list-item>', function() {
+ 		};
+
+ 		element.set('assessmentItem', item);
+-		Polymer.dom.flush();
++		flush(cb);
+ 	}
+
+ 	describe('_updateActivityStatus', function() {
+-		it('should not display the badge when statusConfig is null', function() {
+-			setAssessmentItem(false, false, false, null, 'assignment', 'https://example.com');
+-			var statusBadge = element.$$('d2l-status-indicator');
+-			expect(statusBadge.text || '').to.eql('');
+-			expect(statusBadge.state).to.eql(undefined);
++		it('should not display the badge when statusConfig is null', function(done) {
++			setAssessmentItem(false, false, false, null, 'assignment', 'https://example.com', function() {
++				var statusBadge = element.$$('d2l-status-indicator');
++				expect(statusBadge.text || '').to.eql('');
++				expect(statusBadge.state).to.eql(undefined);
++				done();
++			});
+ 		});
+
+-		it('should display the badge when statusConfig has state and text', function() {
++		it('should display the badge when statusConfig has state and text', function(done) {
+ 			setAssessmentItem(false, false, false, {
+ 				state: 'success',
+ 				text: 'activityComplete'
+-			}, 'assignment', 'https://example.com');
+-			var statusBadge = element.$$('d2l-status-indicator');
+-			expect(statusBadge.text).to.eql('Complete');
+-			expect(statusBadge.state).to.eql('success');
++			}, 'assignment', 'https://example.com', function() {
++				var statusBadge = element.$$('d2l-status-indicator');
++				expect(statusBadge.text).to.eql('Complete');
++				expect(statusBadge.state).to.eql('success');
++				done();
++			});
+ 		});
+ 	});
+
+@@ -92,39 +94,49 @@ describe('<d2l-all-assessments-list-item>', function() {
+ 			sandbox.restore();
+ 		});
+
+-		it('should not dispatch event if activity details is not enabled', function() {
++		it('should not dispatch event if activity details is not enabled', function(done) {
+ 			element.flags = { assignmentDetailsEnabled: false };
+-			setAssessmentItem(false, false, false, null, 'assignment', '/user/activity/url');
+-			element._openActivityDetails();
+-			expect(element.dispatchEvent).to.not.be.called;
++			setAssessmentItem(false, false, false, null, 'assignment', '/user/activity/url', function() {
++				element._openActivityDetails();
++				expect(element.dispatchEvent).to.not.be.called;
++				done();
++			});
+ 		});
+
+-		it('should not dispatch event for quiz assessment items', function() {
++		it('should not dispatch event for quiz assessment items', function(done) {
+ 			element.flags = { assignmentDetailsEnabled: true };
+-			setAssessmentItem(false, false, false, null, 'quiz');
+-			element._openActivityDetails();
+-			expect(element.dispatchEvent).to.not.be.called;
++			setAssessmentItem(false, false, false, null, 'quiz', undefined, function() {
++				element._openActivityDetails();
++				expect(element.dispatchEvent).to.not.be.called;
++				done();
++			});
+ 		});
+
+-		it('should not dispatch event if userActivityUsageHref is null', function() {
++		it('should not dispatch event if userActivityUsageHref is null', function(done) {
+ 			element.flags = { assignmentDetailsEnabled: true };
+-			setAssessmentItem(false, false, false, null, 'assignment');
+-			element._openActivityDetails();
+-			expect(element.dispatchEvent).to.not.be.called;
++			setAssessmentItem(false, false, false, null, 'assignment', undefined, function() {
++				element._openActivityDetails();
++				expect(element.dispatchEvent).to.not.be.called;
++				done();
++			});
+ 		});
+
+-		it('should dispatch event when all conditions are met for an assignment', function() {
++		it('should dispatch event when all conditions are met for an assignment', function(done) {
+ 			element.flags = { assignmentDetailsEnabled: true };
+-			setAssessmentItem(false, false, false, null, 'assignment', '/user/activity/url');
+-			element._openActivityDetails();
+-			expect(element.dispatchEvent).to.be.called;
++			setAssessmentItem(false, false, false, null, 'assignment', '/user/activity/url', function() {
++				element._openActivityDetails();
++				expect(element.dispatchEvent).to.be.called;
++				done();
++			});
+ 		});
+
+-		it('should dispatch event when all conditions are met for a discussion', function() {
++		it('should dispatch event when all conditions are met for a discussion', function(done) {
+ 			element.flags = { discussionDetailsEnabled: true };
+-			setAssessmentItem(false, false, false, null, 'discussion', '/user/activity/url');
+-			element._openActivityDetails();
+-			expect(element.dispatchEvent).to.be.called;
++			setAssessmentItem(false, false, false, null, 'discussion', '/user/activity/url', function() {
++				element._openActivityDetails();
++				expect(element.dispatchEvent).to.be.called;
++				done();
++			});
+ 		});
+ 	});
+
+diff --git a/test/components/d2l-assessments-list-item.html b/test/components/d2l-assessments-list-item.html
+index 30a405b..774d86e 100644
+--- a/test/components/d2l-assessments-list-item.html
++++ b/test/components/d2l-assessments-list-item.html
+@@ -17,6 +17,6 @@
+ 			</template>
+ 		</test-fixture>
+
+-		<script src="./d2l-assessments-list-item.js"></script>
++		<script type="module" src="./d2l-assessments-list-item.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-assessments-list-item.js b/test/components/d2l-assessments-list-item.js
+index fd0d2d5..c4e5011 100644
+--- a/test/components/d2l-assessments-list-item.js
++++ b/test/components/d2l-assessments-list-item.js
+@@ -1,6 +1,6 @@
+ /* global describe, it, fixture, expect */
+
+-'use strict';
++import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
+
+ describe('<d2l-assessments-list-item>', function() {
+
+@@ -13,7 +13,7 @@ describe('<d2l-assessments-list-item>', function() {
+ 	}
+
+ 	// sets and return activity item
+-	function setActivityItem(type, completed, userActivityUsageHref) {
++	function setActivityItem(type, completed, userActivityUsageHref, cb) {
+ 		var capitalizedType = type && type[0].toUpperCase() + type.slice(1);
+ 		var activityItem = {
+ 			name: 'Math ' + capitalizedType,
+@@ -27,9 +27,9 @@ describe('<d2l-assessments-list-item>', function() {
+ 		};
+
+ 		element.assessmentItem = activityItem;
+-		Polymer.dom.flush();
+-
+-		return activityItem;
++		flush(function() {
++			cb(activityItem);
++		});
+ 	}
+
+ 	function getEvent(type) {
+@@ -80,54 +80,56 @@ describe('<d2l-assessments-list-item>', function() {
+ 	describe('item rendering', function() {
+
+ 		it('renders the correct data for a quiz', function(done) {
+-			var quizItem = setActivityItem('quiz');
+-
+-			Polymer.RenderStatus.afterNextRender(element, () => {
+-				expect(element.$$('.assessment-title').textContent).to.equal(quizItem.name);
+-				expect(element.$$('.course-name').textContent).to.equal(quizItem.courseName);
+-				expect(element.$$('.assessment-type').textContent).to.equal(quizItem.itemType);
+-				expect(element.$$('.activity-icon').icon).to.equal('d2l-tier2:quizzing');
+-				done();
++			setActivityItem('quiz', undefined, undefined, (quizItem) => {
++				afterNextRender(element, () => {
++					expect(element.$$('.assessment-title').textContent).to.equal(quizItem.name);
++					expect(element.$$('.course-name').textContent).to.equal(quizItem.courseName);
++					expect(element.$$('.assessment-type').textContent).to.equal(quizItem.itemType);
++					expect(element.$$('.activity-icon').icon).to.equal('d2l-tier2:quizzing');
++					done();
++				});
+ 			});
+ 		});
+
+ 		it('renders the correct data for a discussion', function(done) {
+-			var discussionItem = setActivityItem('discussion');
+-
+-			Polymer.RenderStatus.afterNextRender(element, () => {
+-				expect(element.$$('.assessment-title').textContent).to.equal(discussionItem.name);
+-				expect(element.$$('.course-name').textContent).to.equal(discussionItem.courseName);
+-				expect(element.$$('.assessment-type').textContent).to.equal(discussionItem.itemType);
+-				expect(element.$$('.activity-icon').icon).to.equal('d2l-tier2:discussions');
+-				done();
++			setActivityItem('discussion', undefined, undefined, (discussionItem) => {
++				afterNextRender(element, () => {
++					expect(element.$$('.assessment-title').textContent).to.equal(discussionItem.name);
++					expect(element.$$('.course-name').textContent).to.equal(discussionItem.courseName);
++					expect(element.$$('.assessment-type').textContent).to.equal(discussionItem.itemType);
++					expect(element.$$('.activity-icon').icon).to.equal('d2l-tier2:discussions');
++					done();
++				});
+ 			});
+ 		});
+
+ 		it('renders the correct data for an assignment', function(done) {
+-			var assignmentItem = setActivityItem('assignment');
+-
+-			Polymer.RenderStatus.afterNextRender(element, () => {
+-				expect(element.$$('.assessment-title').textContent).to.equal(assignmentItem.name);
+-				expect(element.$$('.course-name').textContent).to.equal(assignmentItem.courseName);
+-				expect(element.$$('.assessment-type').textContent).to.equal(assignmentItem.itemType);
+-				expect(element.$$('.activity-icon').icon).to.equal('d2l-tier2:assignments');
+-				done();
++			setActivityItem('assignment', undefined, undefined, (assignmentItem) => {
++				afterNextRender(element, () => {
++					expect(element.$$('.assessment-title').textContent).to.equal(assignmentItem.name);
++					expect(element.$$('.course-name').textContent).to.equal(assignmentItem.courseName);
++					expect(element.$$('.assessment-type').textContent).to.equal(assignmentItem.itemType);
++					expect(element.$$('.activity-icon').icon).to.equal('d2l-tier2:assignments');
++					done();
++				});
+ 			});
+ 		});
+
+ 		it('has a completion checkmark when completed', function(done) {
+-			setActivityItem('assignment', true);
+-			Polymer.RenderStatus.afterNextRender(element, () => {
+-				expect(element.$$('.completion-icon')).to.exist;
+-				done();
++			setActivityItem('assignment', true, undefined, () => {
++				afterNextRender(element, () => {
++					expect(element.$$('.completion-icon')).to.exist;
++					done();
++				});
+ 			});
+ 		});
+
+ 		it('doesn\'t have a completion checkmark when not completed', function(done) {
+-			setActivityItem('quiz');
+-			Polymer.RenderStatus.afterNextRender(element, () => {
+-				expect(element.$$('.completion-icon')).to.not.exist;
+-				done();
++			setActivityItem('quiz', undefined, undefined, () => {
++				afterNextRender(element, () => {
++					expect(element.$$('.completion-icon')).to.not.exist;
++					done();
++				});
+ 			});
+ 		});
+
+@@ -163,12 +165,14 @@ describe('<d2l-assessments-list-item>', function() {
+ 			{ assignmentLocation: null, flags: { activityDetailsEnabled: true }, event: 'space' },
+ 			{ assignmentLocation: '/path/to/userActivityUsageAssignment', flags: { activityDetailsEnabled: true }, event: 'tab' }
+ 		].forEach(testCase => {
+-			it(`should not dispatch event if assignment details enabled is ${testCase.flags.activityDetailsEnabled}, userActivityUsageHref is ${testCase.assignmentLocation}, and event is ${testCase.event}`, function() {
++			it(`should not dispatch event if assignment details enabled is ${testCase.flags.activityDetailsEnabled}, userActivityUsageHref is ${testCase.assignmentLocation}, and event is ${testCase.event}`, function(done) {
+ 				element.flags = testCase.flags;
+-				setActivityItem('assignment', false, testCase.assignmentLocation);
+-				var processedEvent = getEvent(testCase.event);
+-				container.dispatchEvent(processedEvent, true);
+-				expect(element.dispatchEvent).to.not.be.called;
++				setActivityItem('assignment', false, testCase.assignmentLocation, () => {
++					var processedEvent = getEvent(testCase.event);
++					container.dispatchEvent(processedEvent, true);
++					expect(element.dispatchEvent).to.not.be.called;
++					done();
++				});
+ 			});
+ 		});
+
+@@ -184,16 +188,18 @@ describe('<d2l-assessments-list-item>', function() {
+ 				};
+ 				var processedEvent = getEvent(testCase.event);
+
+-				setActivityItem('quiz', false, '/path/to/userActivityUsageQuiz');
+-				container.dispatchEvent(processedEvent);
+-				Polymer.RenderStatus.afterNextRender(element, () => {
+-					expect(element.dispatchEvent).to.not.be.called;
+-
+-					setActivityItem(null, false, null);
++				setActivityItem('quiz', false, '/path/to/userActivityUsageQuiz', () => {
+ 					container.dispatchEvent(processedEvent);
+-					Polymer.RenderStatus.afterNextRender(element, () => {
++					afterNextRender(element, () => {
+ 						expect(element.dispatchEvent).to.not.be.called;
+-						done();
++
++						setActivityItem(null, false, null, () => {
++							container.dispatchEvent(processedEvent);
++							afterNextRender(element, () => {
++								expect(element.dispatchEvent).to.not.be.called;
++								done();
++							});
++						});
+ 					});
+ 				});
+ 			});
+@@ -207,15 +213,17 @@ describe('<d2l-assessments-list-item>', function() {
+ 			{ type: 'discussion', event: 'enter' },
+ 			{ type: 'discussion', event: 'space' }
+ 		].forEach(testCase => {
+-			it(`should dispatch event for ${testCase.type} when all conditions are met and event is ${testCase.event}`, function() {
++			it(`should dispatch event for ${testCase.type} when all conditions are met and event is ${testCase.event}`, function(done) {
+ 				element.flags = {
+ 					assignmentDetailsEnabled: true,
+ 					discussionDetailsEnabled: true
+ 				};
+-				setActivityItem(testCase.type, false, '/path/to/userActivityUsageAssignment');
+-				var processedEvent = getEvent(testCase.event);
+-				container.dispatchEvent(processedEvent);
+-				expect(element.dispatchEvent).to.have.been.calledOnce;
++				setActivityItem(testCase.type, false, '/path/to/userActivityUsageAssignment', () => {
++					var processedEvent = getEvent(testCase.event);
++					container.dispatchEvent(processedEvent);
++					expect(element.dispatchEvent).to.have.been.calledOnce;
++					done();
++				});
+ 			});
+ 		});
+ 	});
+diff --git a/test/components/d2l-assessments-list.html b/test/components/d2l-assessments-list.html
+index 737bc04..6e49528 100644
+--- a/test/components/d2l-assessments-list.html
++++ b/test/components/d2l-assessments-list.html
+@@ -17,6 +17,6 @@
+ 			</template>
+ 		</test-fixture>
+
+-		<script src="./d2l-assessments-list.js"></script>
++		<script type="module" src="./d2l-assessments-list.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/components/d2l-assessments-list.js b/test/components/d2l-assessments-list.js
+index 6a10f04..2d4f4b0 100644
+--- a/test/components/d2l-assessments-list.js
++++ b/test/components/d2l-assessments-list.js
+@@ -1,6 +1,7 @@
+ /* global describe, it, fixture, expect, beforeEach */
+
+-'use strict';
++import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+
+ describe('<d2l-assessments-list>', function() {
+
+@@ -64,8 +65,8 @@ describe('<d2l-assessments-list>', function() {
+
+ 		it('renders the correct number of list items', function(done) {
+ 			element.set('assessmentItems', assessmentItems);
+-			Polymer.RenderStatus.afterNextRender(element, () => {
+-				var listElements = Polymer.dom(element.root).querySelectorAll('d2l-assessments-list-item');
++			afterNextRender(element, () => {
++				var listElements = dom(element.root).querySelectorAll('d2l-assessments-list-item');
+ 				expect(listElements.length).to.equal(assessmentItems.length);
+ 				done();
+ 			});
+@@ -73,15 +74,15 @@ describe('<d2l-assessments-list>', function() {
+
+ 		it('re-renders the list when a new set of items is supplied', function(done) {
+ 			element.set('assessmentItems', assessmentItems);
+-			Polymer.RenderStatus.afterNextRender(element, () => {
++			afterNextRender(element, () => {
+ 				var template = element.$$('template');
+ 				template && template.render && template.render();
+
+ 				element.set('assessmentItems', newAssessmentItems);
+-				Polymer.RenderStatus.afterNextRender(element, () => {
++				afterNextRender(element, () => {
+ 					template && template.render && template.render();
+
+-					var listElements = Polymer.dom(element.root).querySelectorAll('d2l-assessments-list-item');
++					var listElements = dom(element.root).querySelectorAll('d2l-assessments-list-item');
+ 					expect(listElements.length).to.equal(newAssessmentItems.length);
+ 					done();
+ 				});
