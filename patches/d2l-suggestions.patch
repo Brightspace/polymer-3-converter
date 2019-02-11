@@ -1,0 +1,91 @@
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index b375878..e006a8c 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -10,8 +10,6 @@ jobs:
+ 
+       - restore_cache:
+           key: v1-package-{{ checksum "package.json" }}
+-      - restore_cache:
+-          key: v1-bower-{{ checksum "bower.json" }}
+ 
+       - run: npm install
+       - run: npm test
+@@ -20,10 +18,6 @@ jobs:
+           paths:
+             - node_modules
+           key: v1-package-{{ checksum "package.json" }}
+-      - save_cache:
+-          paths:
+-            - bower_components
+-          key: v1-bower-{{ checksum "bower.json" }}
+ 
+   publish:
+     docker:
+@@ -31,8 +25,9 @@ jobs:
+ 
+     steps:
+       - checkout
+-      - run: npm install artifactory-bower-publisher
+-      - run: ./node_modules/.bin/artifactory-bower-publisher -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASS -a https://d2lartifacts.artifactoryonline.com/d2lartifacts/simple/bower-local/polymer -n d2l-suggestions
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
++      - run: sudo npm install -g publish
++      - run: publish
+ 
+ workflows:
+   version: 2
+@@ -41,6 +36,7 @@ workflows:
+     jobs:
+       - build
+       - publish:
++          context: ci-write
+           requires:
+             - build
+           filters:
+diff --git a/d2l-suggestions.js b/d2l-suggestions.js
+index d6377e8..cd3a825 100644
+--- a/d2l-suggestions.js
++++ b/d2l-suggestions.js
+@@ -26,6 +26,10 @@ const $_documentContainer = document.createElement('template');
+ $_documentContainer.innerHTML = `<dom-module id="d2l-suggestions">
+ 	<template strip-whitespace="">
+ 		<style include="d2l-typography">
++			:host {
++				position: relative;
++				display: block;
++			}
+ 			paper-material {
+ 				display: none;
+ 				position: absolute;
+@@ -95,6 +99,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-suggestions">
+ 
+ 			d2l-tooltip {
+ 				white-space: nowrap;
++				z-index: 1001;
+ 			}
+ 
+ 			/* IE11 paper-item min-height bug: https://github.com/PolymerElements/paper-item/issues/35 */
+@@ -788,7 +793,7 @@ Polymer({
+ 	_onMouseEnter: function(event) {
+ 		// Retrieve the d2l-icon
+ 		var child = event.target.children[0].getBoundingClientRect();
+-		var parent = this.$.removeTooltip.offsetParent.getBoundingClientRect();
++		var parent = this.$.removeTooltip.parentElement.getBoundingClientRect();
+ 		var customTarget = {
+ 			top: child.top - parent.top,
+ 			left: child.left - parent.left,
+diff --git a/package.json b/package.json
+index 90adc3e..aca69f5 100644
+--- a/package.json
++++ b/package.json
+@@ -4,8 +4,8 @@
+     "type": "git"
+   },
+   "homepage": "https://github.com/Brightspace/d2l-suggestions",
+-  "name": "d2l-suggestions",
+-  "version": "1.0.0",
++  "name": "@d2l/suggestions",
++  "version": "3.0.0",
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+     "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
