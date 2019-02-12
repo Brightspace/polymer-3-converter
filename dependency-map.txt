@@ -63,6 +63,7 @@ d2l-suggestions,@d2l/suggestions,^3
 d2l-switch,@d2l/switch,^3
 d2l-table,d2l-table,BrightspaceUI/table#semver:^2
 d2l-tabs,d2l-tabs,BrightspaceUI/tabs#semver:^1
+d2l-tag-filter,@d2l/tag-filter,^2
 d2l-telemetry-browser-client,d2l-telemetry-browser-client,Brightspace/d2l-telemetry-browser-client#semver:^1
 d2l-time-picker,d2l-time-picker,BrightspaceUI/time-picker#semver:^2
 d2l-tooltip,d2l-tooltip,BrightspaceUI/tooltip#semver:^3

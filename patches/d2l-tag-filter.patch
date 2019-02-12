@@ -1,0 +1,266 @@
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index b611337..222d8ad 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -10,8 +10,8 @@ jobs:
+ 
+       - restore_cache:
+           key: v1-package-{{ checksum "package.json" }}
+-      - restore_cache:
+-          key: v1-bower-{{ checksum "bower.json" }}
++
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
+ 
+       - run: npm install
+       - run: npm test
+@@ -20,10 +20,6 @@ jobs:
+           paths:
+             - node_modules
+           key: v1-package-{{ checksum "package.json" }}
+-      - save_cache:
+-          paths:
+-            - bower_components
+-          key: v1-bower-{{ checksum "bower.json" }}
+ 
+   publish:
+     docker:
+@@ -31,8 +27,9 @@ jobs:
+ 
+     steps:
+       - checkout
+-      - run: npm install artifactory-bower-publisher
+-      - run: ./node_modules/.bin/artifactory-bower-publisher -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASS -a https://d2lartifacts.artifactoryonline.com/d2lartifacts/simple/bower-local/polymer -n d2l-tag-filter
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
++      - run: sudo npm install -g publish
++      - run: publish
+ 
+ workflows:
+   version: 2
+diff --git a/d2l-filter-list-item-styles.js b/d2l-filter-list-item-styles.js
+index 4057402..b04442f 100644
+--- a/d2l-filter-list-item-styles.js
++++ b/d2l-filter-list-item-styles.js
+@@ -11,7 +11,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-list-item-styles">
+ 				@apply --d2l-body-compact-text;
+ 			}
+ 
+-			d2l-icon {
++			:host d2l-icon {
+ 				--d2l-icon-height: 1rem;
+ 				--d2l-icon-width: 1rem;
+ 				visibility: visible;
+@@ -28,6 +28,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-list-item-styles">
+ 				display: none;
+ 			}
+ 
++			.icon-unchecked,
+ 			:host([selected]) .icon-checked {
+ 				display: inline-block;
+ 			}
+diff --git a/d2l-filter-list-item.js b/d2l-filter-list-item.js
+index 42db902..c2e5029 100644
+--- a/d2l-filter-list-item.js
++++ b/d2l-filter-list-item.js
+@@ -25,7 +25,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-list-item">
+ 
+ 		<div class="item-text">[[_getText(text)]]</div>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/d2l-filter-menu-tab.js b/d2l-filter-menu-tab.js
+index 6e1abbe..597feff 100644
+--- a/d2l-filter-menu-tab.js
++++ b/d2l-filter-menu-tab.js
+@@ -41,7 +41,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-menu-tab">
+ 		<div class="no-items-text" hidden$="[[_showContent]]">[[noFiltersText]]</div>
+ 	</template>
+ 
+-	
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -115,8 +114,6 @@ Polymer({
+ 		this.selectedFilters = [];
+ 	},
+ 	resize: function() {
+-		dom(this.root).querySelector('d2l-menu').resize();
+-
+ 		setTimeout(function() {
+ 			window.dispatchEvent(new Event('resize'));
+ 		}.bind(this), 200);
+diff --git a/d2l-filter-menu.js b/d2l-filter-menu.js
+index c67b266..6e3a08f 100644
+--- a/d2l-filter-menu.js
++++ b/d2l-filter-menu.js
+@@ -104,7 +104,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-menu">
+ 		</iron-pages>
+ 	</template>
+ 
+-	
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -167,9 +166,20 @@ Polymer({
+ 	},
+ 	attached: function() {
+ 		this.addEventListener('selected-filters-changed', this._boundOnSchoolOrClassTagsFiltersChanged);
++
++		this.wrapper = D2L.Dom.findComposedAncestor(this.root, node => node.tagName === 'D2L-DROPDOWN-CONTENT');
++		this.open = this.open.bind(this);
++
++		if (this.wrapper) {
++			// Needed to make the menu properly resize after opening the dialog
++			this.wrapper.addEventListener('d2l-dropdown-open', this.open);
++		}
+ 	},
+ 	detached: function() {
+ 		this.removeEventListener('selected-filters-changed', this._boundOnSchoolOrClassTagsFiltersChanged);
++		if (this.wrapper) {
++			this.wrapper.removeEventListener('d2l-dropdown-open', this.open);
++		}
+ 	},
+ 
+ 	open: function() {
+diff --git a/demo/index.html b/demo/index.html
+index 59d2ab7..73c8ff1 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -1,14 +1,9 @@
+ <!doctype html>
+ <html>
+-	<head>
+-		<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-		<script type="module" src="../../d2l-typography/d2l-typography.js"></script>
+-		<script type="module" src="../../d2l-dropdown/d2l-dropdown.js"></script>
+-		<script type="module" src="../../d2l-dropdown/d2l-dropdown-content.js"></script>
+-		<script type="module" src="../../d2l-icons/d2l-icons.js"></script>
+ 
+-		<script type="module" src="../d2l-filter-menu.js"></script>
+-		<!-- FIXME(polymer-modulizer):
++<head>
++	<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
++	<!-- FIXME(polymer-modulizer):
+ 		These imperative modules that innerHTML your HTML are
+ 		a hacky way to be sure that any mixins in included style
+ 		modules are ready before any elements that reference them are
+@@ -17,9 +12,9 @@
+ 		See: https://github.com/Polymer/polymer-modulizer/issues/154
+ 		-->
+ 	<script type="module">
+-const $_documentContainer = document.createElement('template');
++		const $_documentContainer = document.createElement('template');
+ 
+-$_documentContainer.innerHTML = `<style>
++		$_documentContainer.innerHTML = `<style>
+ 			body {
+ 				margin: 20px;
+ 			}
+@@ -29,43 +24,33 @@ $_documentContainer.innerHTML = `<style>
+ 			}
+ 		</style>`;
+ 
+-document.head.appendChild($_documentContainer.content);
+-</script>
+-		<script type="module">
+-const $_documentContainer = document.createElement('template');
++		document.head.appendChild($_documentContainer.content);
++	</script>
++	<script type="module">
++		const $_documentContainer = document.createElement('template');
+ 
+-$_documentContainer.innerHTML = `<custom-style include="d2l-typography">
++		$_documentContainer.innerHTML = `<custom-style include="d2l-typography">
+ 			<style is="custom-style" include="d2l-typography">
+ 				/* polymer-cli linter breaks with empty line */
+ 			</style>
+ 		</custom-style>`;
+ 
+-document.body.appendChild($_documentContainer.content);
+-</script>
+-		<script type="module">
+-import 'd2l-typography/d2l-typography.js';
+-import 'd2l-dropdown/d2l-dropdown.js';
+-import 'd2l-dropdown/d2l-dropdown-content.js';
+-import 'd2l-icons/d2l-icons.js';
+-import '../d2l-filter-menu.js';
+-var tagsObj = {
+-	schoolTags: [
+-	  {'id': 1, 'name': 'A Tag', 'links': {}, 'actions': {}},
+-	  {'id': 2, 'name': 'B Tag', 'links': {}, 'actions': {}},
+-	  {'id': 3, 'name': 'C Tag', 'links': {}, 'actions': {}}
+-	],
+-	classTags: ['b', 'b1', 'b2', 'b3', 'b4', 'b5'],
+-};
++		document.body.appendChild($_documentContainer.content);
++	</script>
++	<script type="module">
++		import 'd2l-typography/d2l-typography.js';
++		import 'd2l-dropdown/d2l-dropdown.js';
++		import 'd2l-dropdown/d2l-dropdown-content.js';
++		import 'd2l-icons/d2l-icons.js';
++		import '../d2l-filter-menu.js';
++	</script>
++</head>
+ 
+-var filterMenu = document.getElementById("filterMenu");
+-filterMenu.tags = tagsObj;
+-</script>
+-	</head>
+-	<body class="d2l-typography">
+-		<script type="module">
+-const $_documentContainer = document.createElement('template');
++<body class="d2l-typography">
++	<script type="module">
++		const $_documentContainer = document.createElement('template');
+ 
+-$_documentContainer.innerHTML = `<div class="container">
++		$_documentContainer.innerHTML = `<div class="container">
+ 			<d2l-dropdown id="filterDropdown">
+ 				<button class="d2l-dropdown-opener dropdown-button" aria-labelledby="filterText">
+ 					<span id="filterText" class="dropdown-opener-text">Filter</span>
+@@ -78,7 +63,19 @@ $_documentContainer.innerHTML = `<div class="container">
+ 			</d2l-dropdown>
+ 		</div>`;
+ 
+-document.body.appendChild($_documentContainer.content);
+-</script>
+-	</body>
++		var tagsObj = {
++			schoolTags: [
++				{ 'id': 1, 'name': 'A Tag', 'links': {}, 'actions': {} },
++				{ 'id': 2, 'name': 'B Tag', 'links': {}, 'actions': {} },
++				{ 'id': 3, 'name': 'C Tag', 'links': {}, 'actions': {} }
++			],
++			classTags: ['b', 'b1', 'b2', 'b3', 'b4', 'b5'],
++		};
++		document.body.appendChild($_documentContainer.content);
++
++		const filterMenu = document.querySelector('#filterMenu');
++		filterMenu.tags = tagsObj;
++	</script>
++</body>
++
+ </html>
+diff --git a/package.json b/package.json
+index 78f523b..1fc66d4 100644
+--- a/package.json
++++ b/package.json
+@@ -4,12 +4,12 @@
+     "type": "git"
+   },
+   "homepage": "https://github.com/Brightspace/d2l-tag-filter",
+-  "name": "d2l-tag-filter",
++  "name": "@d2l/tag-filter",
+   "version": "2.0.0",
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "lint:wc": "polymer lint",
++    "lint:js": "eslint . --ext .js,.html demo/*.html",
++    "lint:wc": "polymer lint -i \"./*\" \"demo\"",
+     "start": "polymer serve",
+     "test": "npm run lint"
+   },
