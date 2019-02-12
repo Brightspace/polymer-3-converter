@@ -71,6 +71,7 @@ d2l-upcoming-assessments,d2l-upcoming-assessments,Brightspace/d2l-upcoming-asses
 d2l-user-tile,d2l-user-tile,BrightspaceUI/user-tile#semver:^4
 d2l-user-elements,@d2l/user-elements,^2
 d2l-user-profile-behavior,d2l-user-profile-behavior,Brightspace/user-profile-behavior#semver:^4
+d2l-user-switcher,d2l-user-switcher,Brightspace/user-switcher#semver:^4
 d2l-users,d2l-users,BrightspaceHypermediaComponents/users#semver:^2
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
 lie,lie,^3.3.0
