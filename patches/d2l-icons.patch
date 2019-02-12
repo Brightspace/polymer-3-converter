@@ -1,10 +1,21 @@
+From 0c18ade30fd169ff3d70228e2f9665f96d233a43 Mon Sep 17 00:00:00 2001
+From: Dave Batiste <dave.batiste@d2l.com>
+Date: Mon, 11 Feb 2019 16:26:31 -0500
+Subject: [PATCH] Polymer 3 Conversion - apply original patch
+
+---
+ cli/iconset-builder.js | 17 +++++++++--------
+ d2l-icon.js            |  4 +++-
+ package.json           |  2 +-
+ 3 files changed, 13 insertions(+), 10 deletions(-)
+
 diff --git a/cli/iconset-builder.js b/cli/iconset-builder.js
 index 3cc8d11..32de587 100644
 --- a/cli/iconset-builder.js
 +++ b/cli/iconset-builder.js
 @@ -6,10 +6,6 @@ var path = require('path'),
  	fs = require('fs');
-
+ 
  var iconsetObjTemplate = {
 -	'link': [
 -		{'$': {'rel': 'import', 'href': '../polymer/polymer.html'}},
@@ -23,9 +34,9 @@ index 3cc8d11..32de587 100644
  		parser.parseString(xml, function(err, result) {
  			if (err) {
 @@ -108,9 +104,14 @@ module.exports = function(iconsetPath) {
-
+ 
  			var deferred = q.defer();
-
+ 
 -			xml = xml.substring(7, xml.length - 7);
 -
 -			fs.writeFile(path.join(__dirname, '../', name + '-icons.html'), xml, function(err) {
@@ -56,7 +67,7 @@ index 2e418f4..d1f14c7 100644
  				} else {
  					this.listen(window, 'iron-iconset-added', '_updateIcon');
 diff --git a/package.json b/package.json
-index 230af8d..3cb474e 100644
+index 55d280e..f6fbe76 100644
 --- a/package.json
 +++ b/package.json
 @@ -41,7 +41,7 @@
@@ -68,3 +79,123 @@ index 230af8d..3cb474e 100644
      "eslint-plugin-html": "^4.0.1",
      "fs": "0.0.2",
      "imagemin": "^4.0.0",
+-- 
+2.4.3
+
+From 76a56ad6ca58b5325106cf23b9fb1889983678b1 Mon Sep 17 00:00:00 2001
+From: Dave Lockhart <dave.lockhart@d2l.com>
+Date: Thu, 24 Jan 2019 10:52:24 -0500
+Subject: [PATCH] querySelector is faster than innerHTML
+
+---
+ d2l-icon.js | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/d2l-icon.js b/d2l-icon.js
+index d1f14c7..a996670 100644
+--- a/d2l-icon.js
++++ b/d2l-icon.js
+@@ -65,7 +65,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-icon">
+ 			}
+ 		</style>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -105,7 +105,11 @@ Polymer({
+ 
+ 	_iconChanged: function(icon) {
+ 		var parts = (icon || '').split(':');
+-		this._iconName = parts.pop();
++		var iconName = parts.pop();
++		if (iconName !== this._iconName) {
++			this._d2lIconName = undefined;
++		}
++		this._iconName = iconName;
+ 		this._iconsetName = parts.pop() || this._DEFAULT_ICONSET;
+ 		this._updateIcon();
+ 	},
+@@ -127,9 +131,11 @@ Polymer({
+ 				this._iconset = /** @type {?Polymer.Iconset} */ (
+ 					this._meta.byKey(this._iconsetName));
+ 				if (this._iconset) {
+-					var d2lIcon = this._iconset.innerHTML.indexOf(`d2l-icon-${this._iconName}`) > -1;
+-					var iconName = d2lIcon ? (`d2l-icon-${this._iconName}`) : this._iconName;
+-					this._iconset.applyIcon(this, iconName, this.theme);
++					if (!this._d2lIconName) {
++						this._d2lIconName = this._iconset.querySelector(`#d2l-icon-${this._iconName}`) ?
++							(`d2l-icon-${this._iconName}`) : this._iconName;
++					}
++					this._iconset.applyIcon(this, this._d2lIconName, this.theme);
+ 					this.unlisten(window, 'iron-iconset-added', '_updateIcon');
+ 				} else {
+ 					this.listen(window, 'iron-iconset-added', '_updateIcon');
+-- 
+2.4.3
+
+From de1d9f8256f8a313d523c22f73df0eabd5a4772e Mon Sep 17 00:00:00 2001
+From: Dave Lockhart <dave.lockhart@d2l.com>
+Date: Thu, 24 Jan 2019 14:30:45 -0500
+Subject: [PATCH] Further reduce calls to "_iconChanged" by tracking if
+ anything actually changed
+
+---
+ d2l-icon.js | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/d2l-icon.js b/d2l-icon.js
+index a996670..ff8cd53 100644
+--- a/d2l-icon.js
++++ b/d2l-icon.js
+@@ -86,8 +86,6 @@ Polymer({
+ 		 */
+ 		src: String,
+ 
+-		theme: String,
+-
+ 		_meta: {
+ 			value: Base.create('iron-meta', {type: 'iconset'})
+ 		}
+@@ -96,21 +94,23 @@ Polymer({
+ 
+ 	observers: [
+ 		'_updateIcon(_meta, isAttached)',
+-		'_updateIcon(theme, isAttached)',
+ 		'_srcChanged(src, isAttached)',
+ 		'_iconChanged(icon, isAttached)'
+ 	],
+ 
+ 	_DEFAULT_ICONSET: 'icons',
+ 
+-	_iconChanged: function(icon) {
++	_iconChanged: function(icon, attached) {
++		if (!attached) return;
+ 		var parts = (icon || '').split(':');
+ 		var iconName = parts.pop();
+-		if (iconName !== this._iconName) {
+-			this._d2lIconName = undefined;
++		var iconSetName = parts.pop() || this._DEFAULT_ICONSET;
++		if (iconName === this._iconName && iconSetName === this._iconsetName && attached === this.attached) {
++			return;
+ 		}
++		this._d2lIconName = undefined;
+ 		this._iconName = iconName;
+-		this._iconsetName = parts.pop() || this._DEFAULT_ICONSET;
++		this._iconsetName = iconSetName;
+ 		this._updateIcon();
+ 	},
+ 
+@@ -135,7 +135,7 @@ Polymer({
+ 						this._d2lIconName = this._iconset.querySelector(`#d2l-icon-${this._iconName}`) ?
+ 							(`d2l-icon-${this._iconName}`) : this._iconName;
+ 					}
+-					this._iconset.applyIcon(this, this._d2lIconName, this.theme);
++					this._iconset.applyIcon(this, this._d2lIconName);
+ 					this.unlisten(window, 'iron-iconset-added', '_updateIcon');
+ 				} else {
+ 					this.listen(window, 'iron-iconset-added', '_updateIcon');
+-- 
+2.4.3
+
