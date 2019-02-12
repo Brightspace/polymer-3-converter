@@ -68,7 +68,7 @@ d2l-user-tile,d2l-user-tile,BrightspaceUI/user-tile#semver:^4
 d2l-user-elements,d2l-user-elements,Brightspace/d2l-user-elements#semver:^2
 d2l-user-profile-behavior,d2l-user-profile-behavior,Brightspace/user-profile-behavior#semver:^4
 d2l-users,d2l-users,BrightspaceHypermediaComponents/users#semver:^2
-d2l-video,@d2l/video,^1.0.0
+d2l-video,@d2l/video,^1
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
 lie,lie,^3.3.0
 s-html,s-html,Brightspace/s-html#semver:^2.0.0
