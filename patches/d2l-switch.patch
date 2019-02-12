@@ -1,0 +1,68 @@
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index 92c94fb..e006a8c 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -10,8 +10,6 @@ jobs:
+
+       - restore_cache:
+           key: v1-package-{{ checksum "package.json" }}
+-      - restore_cache:
+-          key: v1-bower-{{ checksum "bower.json" }}
+
+       - run: npm install
+       - run: npm test
+@@ -20,10 +18,6 @@ jobs:
+           paths:
+             - node_modules
+           key: v1-package-{{ checksum "package.json" }}
+-      - save_cache:
+-          paths:
+-            - bower_components
+-          key: v1-bower-{{ checksum "bower.json" }}
+
+   publish:
+     docker:
+@@ -31,8 +25,9 @@ jobs:
+
+     steps:
+       - checkout
+-      - run: npm install artifactory-bower-publisher
+-      - run: ./node_modules/.bin/artifactory-bower-publisher -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASS -a https://d2lartifacts.artifactoryonline.com/d2lartifacts/simple/bower-local/polymer -n d2l-switch
++      - run: curl -ks -u$ARTIFACTORY_USER:$ARTIFACTORY_PASS "https://d2lartifacts.artifactoryonline.com/d2lartifacts/api/npm/npm-local/auth/d2l" -o .npmrc
++      - run: sudo npm install -g publish
++      - run: publish
+
+ workflows:
+   version: 2
+diff --git a/demo/index.html b/demo/index.html
+index 243670c..0514ac9 100644
+--- a/demo/index.html
++++ b/demo/index.html
+@@ -1,11 +1,7 @@
+ <!doctype html>
+ <html>
+   <head>
+-	<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+-	<script type="module" src="../../../d2l-typography/d2l-typography.js"></script>
+-		<script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+-		<script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+-	<script type="module" src="../d2l-switch.js"></script>
++	<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+ 		<!-- FIXME(polymer-modulizer):
+ 		These imperative modules that innerHTML your HTML are
+ 		a hacky way to be sure that any mixins in included style
+@@ -38,10 +34,10 @@ $_documentContainer.innerHTML = `<demo-snippet>
+ 			<template>
+ 				<d2l-switch checked="">Toggle</d2l-switch>
+ 			</template>
+-
+-
++
++
+
+ </demo-snippet>`;
+
+ document.body.appendChild($_documentContainer.content);
+-</script>
+\ No newline at end of file
++</script>
