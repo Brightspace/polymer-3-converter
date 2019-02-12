@@ -1,22 +1,5 @@
 diff --git a/components/d2l-enrollment-card/d2l-enrollment-card.js b/components/d2l-enrollment-card/d2l-enrollment-card.js
-index ade8339..5adeb17 100644
---- a/components/d2l-enrollment-card/d2l-enrollment-card.js
-+++ b/components/d2l-enrollment-card/d2l-enrollment-card.js
-@@ -174,12 +174,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-enrollment-card">
- 				right: -0.375rem;
- 			}
- 
--			/* P2-shadow */
--			:host-context([dir="rtl"]) .d2l-enrollment-card-alert-colour-circle {
--				right: auto;
--				left: -0.375rem;
--			}
--			/* P1-shady, P2-shady */
- 			:host(:dir(rtl)) .d2l-enrollment-card-alert-colour-circle {
- 				right: auto;
- 				left: -0.375rem;
-diff --git a/components/d2l-enrollment-card/d2l-enrollment-card.js b/components/d2l-enrollment-card/d2l-enrollment-card.js
-index 9bb2fc8..ade8339 100644
+index 9bb2fc8..5adeb17 100644
 --- a/components/d2l-enrollment-card/d2l-enrollment-card.js
 +++ b/components/d2l-enrollment-card/d2l-enrollment-card.js
 @@ -17,7 +17,9 @@ import 'd2l-course-image/d2l-course-image.js';
@@ -39,7 +22,20 @@ index 9bb2fc8..ade8339 100644
  import '../d2l-user-activity-usage/d2l-user-activity-usage.js';
  import './d2l-enrollment-updates.js';
  import './localize-behavior.js';
-@@ -385,7 +387,6 @@ Polymer({
+@@ -172,12 +174,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-enrollment-card">
+ 				right: -0.375rem;
+ 			}
+ 
+-			/* P2-shadow */
+-			:host-context([dir="rtl"]) .d2l-enrollment-card-alert-colour-circle {
+-				right: auto;
+-				left: -0.375rem;
+-			}
+-			/* P1-shady, P2-shady */
+ 			:host(:dir(rtl)) .d2l-enrollment-card-alert-colour-circle {
+ 				right: auto;
+ 				left: -0.375rem;
+@@ -385,7 +381,6 @@ Polymer({
  		_notifications: Array
  	},
  	behaviors: [
@@ -47,7 +43,7 @@ index 9bb2fc8..ade8339 100644
  		D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior,
  		D2L.PolymerBehaviors.Enrollment.Card.LocalizeBehavior
  	],
-@@ -468,11 +469,11 @@ Polymer({
+@@ -468,11 +463,11 @@ Polymer({
  
  	_computeCanAccessCourseInfo: function(organization) {
  		return organization
@@ -61,7 +57,7 @@ index 9bb2fc8..ade8339 100644
  	},
  	_computeCourseSettingsLabel: function(organization) {
  		return organization
-@@ -567,21 +568,21 @@ Polymer({
+@@ -567,21 +562,21 @@ Polymer({
  		if (
  			!enrollment
  			|| !enrollment.hasLinkByRel
@@ -88,7 +84,7 @@ index 9bb2fc8..ade8339 100644
  		}
  
  		return this._fetchSirenEntity(this._organizationUrl)
-@@ -611,14 +612,14 @@ Polymer({
+@@ -611,14 +606,14 @@ Polymer({
  			this.fire('course-tile-organization');
  		}.bind(this));
  
@@ -109,7 +105,7 @@ index 9bb2fc8..ade8339 100644
  			if (imageEntity.href) {
  				this._fetchSirenEntity(imageEntity.href)
  					.then(function(hydratedImageEntity) {
-@@ -628,8 +629,8 @@ Polymer({
+@@ -628,8 +623,8 @@ Polymer({
  				this._image = imageEntity;
  			}
  		}
@@ -120,7 +116,7 @@ index 9bb2fc8..ade8339 100644
  			this._organizationHomepageUrl = homepageEntity
  				&& homepageEntity.properties
  				&& homepageEntity.properties.path;
-@@ -741,8 +742,8 @@ Polymer({
+@@ -741,8 +736,8 @@ Polymer({
  	},
  	_pinClickHandler: function() {
  		var pinAction = this._pinned
@@ -131,7 +127,7 @@ index 9bb2fc8..ade8339 100644
  
  		var body = '';
  		var fields = pinAction.fields || [];
-@@ -799,7 +800,7 @@ Polymer({
+@@ -799,7 +794,7 @@ Polymer({
  			return response
  				.json()
  				.then(function(json) {
@@ -163,7 +159,7 @@ index 6c32688..c06e748 100644
  	_hideDefaultSlot: function(date, overrideToDefault) {
  		return date && !overrideToDefault;
 diff --git a/package.json b/package.json
-index d2c0bb1..5e014f0 100644
+index 2f21a14..cf64930 100644
 --- a/package.json
 +++ b/package.json
 @@ -4,13 +4,13 @@
@@ -197,14 +193,11 @@ index 6b882ff..864a60e 100644
 +  }
  }
 diff --git a/test/d2l-enrollment-card/d2l-enrollment-card.html b/test/d2l-enrollment-card/d2l-enrollment-card.html
-index 8146d87..9e3b301 100644
+index 8146d87..4e1a5b4 100644
 --- a/test/d2l-enrollment-card/d2l-enrollment-card.html
 +++ b/test/d2l-enrollment-card/d2l-enrollment-card.html
-@@ -2,10 +2,11 @@
- 	<head>
- 		<meta charset="utf-8">
+@@ -4,8 +4,8 @@
  		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-+		<script src="../../../@babel/polyfill/browser.js"></script>
  		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../../wct-browser-legacy/browser.js"></script>
 -		<script src="https://s.brightspace.com/lib/d2lfetch/1.2.0/d2lfetch.js"></script>
@@ -244,14 +237,11 @@ index f5ece2f..b513bbb 100644
  
  			});
 diff --git a/test/d2l-user-activity-usage/d2l-user-activity-usage.html b/test/d2l-user-activity-usage/d2l-user-activity-usage.html
-index 1e8fde6..5912c30 100644
+index 1e8fde6..73fd810 100644
 --- a/test/d2l-user-activity-usage/d2l-user-activity-usage.html
 +++ b/test/d2l-user-activity-usage/d2l-user-activity-usage.html
-@@ -2,10 +2,11 @@
- 	<head>
- 		<meta charset="utf-8">
+@@ -4,8 +4,8 @@
  		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-+		<script src="../../../@babel/polyfill/browser.js"></script>
  		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
  		<script src="../../../wct-browser-legacy/browser.js"></script>
 -		<script src="https://s.brightspace.com/lib/d2lfetch/1.2.0/d2lfetch.js"></script>
