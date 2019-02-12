@@ -1,0 +1,163 @@
+diff --git a/.travis.yml b/.travis.yml
+index f91d8de..2c44a7e 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -5,6 +5,5 @@ sudo: required
+ addons:
+   chrome: stable
+ script:
+-- npm run test:lint:html
+-- npm run test:lint:wc
++- npm run test:lint
+ - xvfb-run polymer test --skip-plugin sauce
+diff --git a/d2l-user-switcher-item.js b/d2l-user-switcher-item.js
+index 9dc26f2..4fb00eb 100644
+--- a/d2l-user-switcher-item.js
++++ b/d2l-user-switcher-item.js
+@@ -5,7 +5,6 @@ import 'd2l-menu/d2l-menu-item-styles.js';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-image/d2l-image.js';
+ import 'd2l-user-profile-behavior/d2l-user-profile-behavior.js';
+-import 'ifrau-import/ifrau-client.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+ const $_documentContainer = document.createElement('template');
+ 
+@@ -64,7 +63,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-user-switcher-item">
+ 			</div>
+ 		</a>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+diff --git a/d2l-user-switcher.js b/d2l-user-switcher.js
+index e952e99..18ab511 100644
+--- a/d2l-user-switcher.js
++++ b/d2l-user-switcher.js
+@@ -12,14 +12,14 @@ import '@polymer/polymer/polymer-legacy.js';
+ import 'd2l-colors/d2l-colors.js';
+ import 'd2l-dropdown/d2l-dropdown.js';
+ import 'd2l-dropdown/d2l-dropdown-menu.js';
+-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
++import { Rels } from 'd2l-hypermedia-constants';
+ import 'd2l-icons/d2l-icons.js';
+ import 'd2l-image/d2l-image.js';
+-import 'ifrau-import/ifrau-client.js';
+ import 'd2l-menu/d2l-menu.js';
+ import 'd2l-menu/d2l-menu-item.js';
+ import 'd2l-menu/d2l-menu-item-link.js';
+ import 'd2l-user-profile-behavior/d2l-user-profile-behavior.js';
++import SirenParse from 'siren-parser';
+ import './d2l-user-switcher-item.js';
+ import './localize-behavior.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+@@ -135,7 +135,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-user-switcher">
+ 			</template>
+ 		</template>
+ 	</template>
+-	
++
+ </dom-module>`;
+ 
+ document.head.appendChild($_documentContainer.content);
+@@ -186,7 +186,6 @@ Polymer({
+ 	},
+ 
+ 	behaviors: [
+-		window.D2L.Hypermedia.HMConstantsBehavior,
+ 		window.D2L.UserProfileBehavior,
+ 		window.D2L.UserSwitcher.LocalizeBehavior
+ 	],
+@@ -200,12 +199,12 @@ Polymer({
+ 	},
+ 
+ 	_parseEntity: function(entity) {
+-		return window.D2L.Hypermedia.Siren.Parse(entity);
++		return SirenParse(entity);
+ 	},
+ 
+ 	_getUserUrl: function(user) {
+ 		var userEntity = this._parseEntity(user);
+-		return (userEntity.getLinkByRel(this.HypermediaRels.user) || {}).href;
++		return (userEntity.getLinkByRel(Rels.user) || {}).href;
+ 	},
+ 
+ 	close: function() {
+@@ -280,7 +279,7 @@ Polymer({
+ 	_generateUserRequestFromEntity: function(student) {
+ 		var self = this;
+ 		var studentEntity = self._parseEntity(student);
+-		var studentLink = studentEntity.getLinkByRel(self.HypermediaRels.user);
++		var studentLink = studentEntity.getLinkByRel(Rels.user);
+ 		var studentId = studentLink.href.match(/[0-9a-zA-Z]+$/)[0];
+ 		if (studentId === self.selectedUserId) {
+ 			var userUrl = self._getUserUrl(student);
+diff --git a/demo/.eslintrc.json b/demo/.eslintrc.json
+new file mode 100644
+index 0000000..8968993
+--- /dev/null
++++ b/demo/.eslintrc.json
+@@ -0,0 +1,5 @@
++{
++  "globals": {
++    "Promise": false
++  }
++}
+diff --git a/package.json b/package.json
+index 0e13e2d..31c1b56 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,7 @@
+     "url": "https://github.com/Brightspace/user-switcher.git"
+   },
+   "homepage": "https://github.com/Brightspace/user-switcher",
+-  "name": "user-switcher",
++  "name": "d2l-user-switcher",
+   "scripts": {
+     "test": "npm run test:lint && npm run test:polymer",
+     "test:lint": "npm run test:lint:wc && npm run test:lint:js",
+diff --git a/test/d2l-user-switcher.html b/test/d2l-user-switcher.html
+index a081dae..cb8c041 100644
+--- a/test/d2l-user-switcher.html
++++ b/test/d2l-user-switcher.html
+@@ -18,6 +18,6 @@
+ 			</template>
+ 		</test-fixture>
+ 
+-		<script src="./d2l-user-switcher.js"></script>
++		<script type="module" src="./d2l-user-switcher.js"></script>
+ 	</body>
+ </html>
+diff --git a/test/d2l-user-switcher.js b/test/d2l-user-switcher.js
+index ccf6ca9..62e9aaa 100644
+--- a/test/d2l-user-switcher.js
++++ b/test/d2l-user-switcher.js
+@@ -1,16 +1,12 @@
+ /* global describe, fixture, it, expect, beforeEach, MockInteractions */
+-'use strict';
++import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+ 
+ describe('d2l-user-switcher', function() {
+ 	var component;
+ 	var hasUsersTemplate;
+ 
+ 	var componentQuerySelector = function(selector) {
+-		if (!Polymer.Element) {
+-			return component.querySelector(selector);
+-		} else {
+-			return component.shadowRoot.querySelector(selector);
+-		}
++		return component.shadowRoot.querySelector(selector);
+ 	};
+ 
+ 	beforeEach(function() {
+@@ -258,7 +254,7 @@ describe('d2l-user-switcher', function() {
+ 					beforeEach(function() {
+ 						hasUsersTemplate.render();
+ 						dropdown = componentQuerySelector('d2l-dropdown');
+-						entries = Polymer.dom(dropdown).querySelectorAll('d2l-user-switcher-item');
++						entries = dom(dropdown).querySelectorAll('d2l-user-switcher-item');
+ 					});
+ 
+ 					it('should have a user-switcher-item for each child', function(done) {
