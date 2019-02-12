@@ -104,6 +104,19 @@ index 0000000..8968993
 +    "Promise": false
 +  }
 +}
+diff --git a/package.json b/package.json
+index 0e13e2d..31c1b56 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,7 @@
+     "url": "https://github.com/Brightspace/user-switcher.git"
+   },
+   "homepage": "https://github.com/Brightspace/user-switcher",
+-  "name": "user-switcher",
++  "name": "d2l-user-switcher",
+   "scripts": {
+     "test": "npm run test:lint && npm run test:polymer",
+     "test:lint": "npm run test:lint:wc && npm run test:lint:js",
 diff --git a/test/d2l-user-switcher.html b/test/d2l-user-switcher.html
 index a081dae..cb8c041 100644
 --- a/test/d2l-user-switcher.html
