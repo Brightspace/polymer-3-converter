@@ -83,3 +83,17 @@ index 96d6f03..706ee2e 100644
  			:host(:dir(rtl)) .d2l-navigation-link-back-text {
  				padding-left: 0;
  				padding-right: var(--d2l-navigation-link-back-left-padding, 5px);
+diff --git a/package.json b/package.json
+index 5e89494..b4bf95f 100644
+--- a/package.json
++++ b/package.json
+@@ -8,7 +8,7 @@
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+     "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "lint:wc": "polymer lint",
++    "lint:wc": "polymer lint -i \"./*\" \"test\" \"demo\"",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test:polymer:sauce": "polymer test --skip-plugin local",
+     "test": "npm run lint && npm run test:polymer:local"
+	 
