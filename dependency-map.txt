@@ -76,7 +76,7 @@ d2l-user-switcher,d2l-user-switcher,Brightspace/user-switcher#semver:^4
 d2l-users,d2l-users,BrightspaceHypermediaComponents/users#semver:^2
 fullscreen-api,fullscreen-api,Brightspace/fullscreen-api#semver:^3
 lie,lie,^3.3.0
-s-html,s-html,Brightspace/s-html#semver:^2.0.0
+s-html,s-html,Brightspace/s-html#semver:^2
 siren-entity,siren-entity,BrightspaceHypermediaComponents/siren-entity#semver:^1
 siren-parser-import,siren-parser,^8.0.0
 stickyfill,stickyfilljs,^2.1.0
