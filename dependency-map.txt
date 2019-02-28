@@ -17,7 +17,7 @@ d2l-date-picker,d2l-date-picker,BrightspaceUI/date-picker#semver:^2
 d2l-datetime-picker,d2l-datetime-picker,BrightspaceUI/datetime-picker#semver:^4
 d2l-dropdown,d2l-dropdown,BrightspaceUI/dropdown#semver:^7
 d2l-enrollments,d2l-enrollments,BrightspaceHypermediaComponents/enrollments#semver:^1
-d2l-evidence-tile,@d2l/evidence-tile,^6.0.0
+d2l-evidence-tile,@d2l/evidence-tile,^6
 d2l-fastdom-import,fastdom,^1.0.8
 d2l-fetch,d2l-fetch,Brightspace/d2l-fetch.git#semver:^2
 d2l-fetch-dedupe,d2l-fetch-dedupe,^1
