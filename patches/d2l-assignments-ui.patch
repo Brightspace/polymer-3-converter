@@ -648,7 +648,7 @@ index 4a4053a..0f674f5 100644
      "d2l-offscreen": "BrightspaceUI/offscreen#semver:^4",
 +    "d2l-tooltip": "BrightspaceUI/tooltip#semver:^3",
 +    "d2l-typography": "BrightspaceUI/typography#semver:^7",
-     "s-html": "Brightspace/s-html#semver:^2.0.0",
+     "s-html": "Brightspace/s-html#semver:^2",
 -    "d2l-datetime-picker": "BrightspaceUI/datetime-picker#semver:^4",
 -    "d2l-loading-spinner": "BrightspaceUI/loading-spinner#semver:^7",
 -    "d2l-attachments-ui": "Brightspace/attachments-ui#semver:^3",
