@@ -45,6 +45,7 @@ d2l-outcomes-level-of-achievements,d2l-outcomes-level-of-achievements,Brightspac
 d2l-opt-in-flyout-webcomponent,d2l-opt-in-flyout-webcomponent,Brightspace/d2l-opt-in-flyout-webcomponent#semver:^2
 d2l-organizations,d2l-organizations,BrightspaceHypermediaComponents/organizations#semver:^1
 d2l-organization-hm-behavior,d2l-organization-hm-behavior,Brightspace/organization-hm-behavior#semver:^3
+d2l-pdf-viewer,d2l-pdf-viewer,Brightspace/d2l-pdf-viewer#semver:^2
 d2l-polymer-behaviors,d2l-polymer-behaviors,Brightspace/d2l-polymer-behaviors-ui#semver:^2
 d2l-polymer-siren-behaviors,d2l-polymer-siren-behaviors,Brightspace/polymer-siren-behaviors#semver:^1
 d2l-portfolio-course-tile,@d2l/portfolio-course-tile,^4

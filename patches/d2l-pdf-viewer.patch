@@ -1,0 +1,227 @@
+From 1baf8c8fb3576cf0dcfc8598afd00a9f97da2d41 Mon Sep 17 00:00:00 2001
+From: Adam Palaniuk <Adam.Palaniuk@D2L.com>
+Date: Fri, 8 Feb 2019 17:36:11 -0600
+Subject: [PATCH] post-conversion fixes
+
+---
+ .bowerrc                 | 11 -----------
+ .gitignore               |  2 --
+ d2l-pdf-viewer.js        | 24 ++++++++++++------------
+ demo/.eslintrc.json      |  5 +++++
+ lang/.eslintrc.json      |  5 +++++
+ package.json             |  7 ++++---
+ test/d2l-pdf-viewer.html | 27 ++++-----------------------
+ 7 files changed, 30 insertions(+), 51 deletions(-)
+ delete mode 100644 .bowerrc
+ create mode 100644 demo/.eslintrc.json
+ create mode 100644 lang/.eslintrc.json
+
+diff --git a/.bowerrc b/.bowerrc
+deleted file mode 100644
+index eee9f79..0000000
+--- a/.bowerrc
++++ /dev/null
+@@ -1,11 +0,0 @@
+-{
+-	"registry": {
+-		"search": [
+-			"https://ro-bower-d2l-file-viewer:mjQ63EVnKvAx2BL8tgUfmb_cX_Eh7w0CTKIYjcL0Ift1GC-dQuoNRNEC1i_mQwnjpPnBNqppDtprgtcfmuvbAg@d2lartifacts.jfrog.io/d2lartifacts/api/bower/bower-local",
+-			"https://registry.bower.io"
+-		]
+-	},
+-	"resolvers": [
+-		"bower-art-resolver"
+-	]
+-}
+diff --git a/.gitignore b/.gitignore
+index 2402785..d5f19d8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,2 @@
+ node_modules
+ package-lock.json
+-
+-node_modules
+diff --git a/d2l-pdf-viewer.js b/d2l-pdf-viewer.js
+index ff58fac..26423f9 100644
+--- a/d2l-pdf-viewer.js
++++ b/d2l-pdf-viewer.js
+@@ -4,8 +4,9 @@ import 'fullscreen-api/fullscreen-api.js';
+ import './d2l-pdf-viewer-toolbar.js';
+ import './d2l-pdf-viewer-progress-bar.js';
+ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+-import 'pdfjs-dist/build/pdf.min.js';
+-import 'pdfjs-dist/web/pdf_viewer.js';
++import pdf, { LinkTarget } from 'pdfjs-dist-modules/pdf.js';
++import { PDFLinkService } from 'pdfjs-dist-modules/pdf_link_service.js';
++import { PDFViewer } from 'pdfjs-dist-modules/pdf_viewer.js';
+ const $_documentContainer = document.createElement('template');
+
+ $_documentContainer.innerHTML = `<dom-module id="d2l-pdf-viewer">
+@@ -454,11 +455,10 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-pdf-viewer">
+ 			<div id="viewer" class="pdfViewer" tabindex="0"></div>
+ 		</div>
+ 	</template>
+-
++
+ </dom-module>`;
+
+ document.head.appendChild($_documentContainer.content);
+-/* global pdfjsViewer, pdfjsLib */
+
+ /**
+  * `<d2l-pdf-viewer>`
+@@ -540,18 +540,18 @@ Polymer({
+ 		// under Shady DOM
+ 		this.scopeSubtree(this.$.viewerContainer, true);
+
+-		pdfjsLib.GlobalWorkerOptions.workerSrc =
+-			this.pdfJsWorkerSrc ||
+-			this.importPath + '../pdfjs-dist/build/pdf.worker.min.js';
++		pdf.GlobalWorkerOptions.workerSrc =
++			this.pdfJsWorkerSrc || import.meta.url + '/../node_modules/pdfjs-dist-modules/pdf.worker.min.js';
+
+ 		// (Optionally) enable hyperlinks within PDF files.
+-		this._pdfLinkService = new pdfjsViewer.PDFLinkService({
+-			externalLinkTarget: pdfjsLib.LinkTarget.BLANK
++		this._pdfLinkService = new PDFLinkService({
++			externalLinkTarget: LinkTarget.BLANK
+ 		});
+
+-		this._pdfViewer = new pdfjsViewer.PDFViewer({
++		this._pdfViewer = new PDFViewer({
+ 			container: this.$.viewerContainer,
+-			linkService: this._pdfLinkService
++			linkService: this._pdfLinkService,
++			useOnlyCssZoom: true, // Use CSS zooming only, as default zoom rendering in (modularized?) pdfjs-dist is buggy
+ 		});
+
+ 		this._pdfLinkService.setViewer(this._pdfViewer);
+@@ -640,7 +640,7 @@ Polymer({
+ 		this._setPdfNameFromUrl(src);
+
+ 		destroyLoadingTask.then(() => {
+-			const loadingTask = this._loadingTask = pdfjsLib.getDocument({
++			const loadingTask = this._loadingTask = pdf.getDocument({
+ 				url: src
+ 			});
+
+diff --git a/demo/.eslintrc.json b/demo/.eslintrc.json
+new file mode 100644
+index 0000000..2fcdb37
+--- /dev/null
++++ b/demo/.eslintrc.json
+@@ -0,0 +1,5 @@
++{
++  "rules": {
++    "prefer-const": ["off"]
++  }
++}
+diff --git a/lang/.eslintrc.json b/lang/.eslintrc.json
+new file mode 100644
+index 0000000..bd5e47b
+--- /dev/null
++++ b/lang/.eslintrc.json
+@@ -0,0 +1,5 @@
++{
++  "rules": {
++    "quotes": ["error", "double"]
++  }
++}
+diff --git a/package.json b/package.json
+index 041fc5f..5b1e4a4 100644
+--- a/package.json
++++ b/package.json
+@@ -7,7 +7,7 @@
+   "scripts": {
+     "lint": "npm run lint:wc && npm run lint:js",
+     "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+-    "lint:wc": "polymer lint",
++    "lint:wc": "polymer lint -i \"./*\" \"test\" \"demo\"",
+     "serve": "polymer serve",
+     "test:polymer:local": "polymer test --skip-plugin sauce",
+     "test": "npm run lint && npm run test:polymer:local"
+@@ -36,13 +36,14 @@
+   },
+   "main": "d2l-pdf-viewer.js",
+   "dependencies": {
++    "@polymer/polymer": "^3.0.0",
+     "d2l-colors": "BrightspaceUI/colors#semver:^4",
+-    "fastdom": "^1.0.8",
+     "d2l-icons": "BrightspaceUI/icons#semver:^6",
+     "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
+     "d2l-polymer-behaviors": "Brightspace/d2l-polymer-behaviors-ui#semver:^2",
+     "d2l-typography": "BrightspaceUI/typography#semver:^7",
++    "fastdom": "^1.0.8",
+     "fullscreen-api": "Brightspace/fullscreen-api#semver:^3",
+-    "@polymer/polymer": "^3.0.0"
++    "pdfjs-dist-modules": "github:Brightspace/pdfjs-dist-modules#semver:2.0.943"
+   }
+ }
+diff --git a/test/d2l-pdf-viewer.html b/test/d2l-pdf-viewer.html
+index ba5a15c..7b1e17b 100644
+--- a/test/d2l-pdf-viewer.html
++++ b/test/d2l-pdf-viewer.html
+@@ -15,15 +15,7 @@
+ 		</test-fixture>
+ 		<script type="module">
+ import '../d2l-pdf-viewer.js';
+-class PdfjsMock {
+-	constructor(config = {}) {
+-		this.__config = config;
+-	}
+-
+-	getDocument(opts) {
+-		return this.__config.loadingTasks[opts.url];
+-	}
+-}
++import pdf from 'pdfjs-dist-modules/pdf.js';
+
+ class LoadingTaskMock {
+ 	constructor(config = {}) {
+@@ -42,27 +34,20 @@ class LoadingTaskMock {
+
+ describe('<d2l-pdf-viewer>', function() {
+ 	let pdfViewer;
+-	let pdfJsReal;
+
+ 	describe('loading', function() {
+ 		beforeEach(function() {
+ 			pdfViewer = fixture('basic');
+-
+-			pdfJsReal = pdfJsReal || window.pdfjsLib;
+ 		});
+
+ 		afterEach(function() {
+-			window.pdfjsLib = pdfJsReal;
++			sinon.sandbox.restore();
+ 		});
+
+ 		it('should report the determinate progress when available', function(done) {
+ 			const loadingTaskMock = new LoadingTaskMock();
+
+-			window.pdfjsLib = new PdfjsMock({
+-				loadingTasks: {
+-					'https://some.dummy.url/and-a-fake.pdf': loadingTaskMock
+-				}
+-			});
++			sinon.sandbox.stub(pdf, 'getDocument', () => loadingTaskMock);
+
+ 			pdfViewer.src = 'https://some.dummy.url/and-a-fake.pdf';
+
+@@ -83,11 +68,7 @@ describe('<d2l-pdf-viewer>', function() {
+ 		it('should use an indeterminate loading bar when total progress not available', function(done) {
+ 			const loadingTaskMock = new LoadingTaskMock();
+
+-			window.pdfjsLib = new PdfjsMock({
+-				loadingTasks: {
+-					'https://some.dummy.url/and-a-fake.pdf': loadingTaskMock
+-				}
+-			});
++			sinon.sandbox.stub(pdf, 'getDocument', () => loadingTaskMock);
+
+ 			pdfViewer.src = 'https://some.dummy.url/and-a-fake.pdf';
+
+--
+2.17.1.windows.2
+
