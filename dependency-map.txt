@@ -81,3 +81,4 @@ siren-entity,siren-entity,BrightspaceHypermediaComponents/siren-entity#semver:^1
 siren-parser-import,siren-parser,^8.0.0
 stickyfill,stickyfilljs,^2.1.0
 d2l-dnd-sortable,d2l-dnd-sortable,Brightspace/dnd-sortable#semver:^3
+d2l-progress,d2l-progress,BrightspaceUI/progress#semver:^1
